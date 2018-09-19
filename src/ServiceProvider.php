@@ -23,6 +23,25 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->alias(Test::class, 'test');
     }
 
+    public function boot()
+    {
+
+//        $this->publishes([
+//            __DIR__.'/path/to/config/courier.php' => config_path('courier.php'),
+//        ]);
+//        $this->publishes([
+//            __DIR__.'/path/to/config/' => config_path('courier'),
+//        ]);
+//        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+//        $this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+//        if ($this->app->runningInConsole()) {
+//            $this->commands([
+//                FooCommand::class,
+//                BarCommand::class,
+//            ]);
+//        }
+    }
+
     public function provides()
     {
         return [Test::class, 'test'];

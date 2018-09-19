@@ -51,11 +51,12 @@ class Api extends Model
                 $this->_modelName = $tmp[0].'.'.substr($tmp[1],strlen($tmp[0]));
             }
         }
+
         $this->_schemas = Schemas::getSchemas($this->_modelName);
 
-        if ($this->_schemas === false) {
-            throw new \Exception('找不到schemas配置:' . $this->_modelName);
-        }
+//        if ($this->_schemas === false) {
+//            throw new \Exception('找不到schemas配置:' . $this->_modelName);
+//        }
         if ($this->_schemas === false)
             $this->_schemas = [];
         else

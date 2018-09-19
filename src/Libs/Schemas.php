@@ -16,7 +16,9 @@ class Schemas
      * 返回false 就代表不存在
      */
     public static function getSchemas($name){
-        $fileName = dirname(dirname(dirname(__FILE__))).'/config/Schemas/Schemas/'.self::fomartName($name).'.php';
+        $fileName = config_path().'/Schemas/Schemas/'.self::fomartName($name).'.php';
+//        echo $fileName;
+//        echo "\r\n";
         if(file_exists($fileName))
             $data = include $fileName;
         else

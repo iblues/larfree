@@ -1,0 +1,41 @@
+<?php
+return [
+    'detail'=>[
+        
+            'id'=>[
+                'name'=>'id',
+                'tip'=>'',
+                'type'=>'text',
+            ],
+            'test_id'=>[
+                'name'=>'所属项目',
+                'tip'=>'',
+                'type'=>'text',
+            ],
+            'uid'=>[
+                'name'=>'uid',
+                'tip'=>'',
+                'type'=>'text',
+            ],
+            'content'=>[
+                'name'=>'内容',
+                'tip'=>'',
+                'type'=>'text',
+            ],
+            'thumb'=>[
+                'name'=>'缩略图',
+                'tip'=>'',
+                'type'=>'text',
+            ],
+            'created_at'=>[
+                'name'=>'created_at',
+                'tip'=>'',
+                'type'=>'timestamp',
+            ],
+            'updated_at'=>[
+                'name'=>'updated_at',
+                'tip'=>'',
+                'type'=>'timestamp',
+            ],
+    ],
+];

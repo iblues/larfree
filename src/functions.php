@@ -254,3 +254,9 @@ function array_merges(array $array1, $array2)
     }
     return array_merge($array1, $array2);
 }
+
+if( !function_exists('config_path')){
+    function config_path(){
+        return dirname(__FILE__).'/Copy/config';
+    }
+}

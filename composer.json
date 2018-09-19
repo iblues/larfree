@@ -1,8 +1,8 @@
 {
-    "name": "larfree",
+    "name": "iblues/larfree",
     "autoload": {
         "psr-4": {
-            "Iblues\\Larfree\\": "src"
+            "Larfree\\": "src"
         },
         "files":["src/functions.php"]
     },
@@ -23,7 +23,10 @@
         "laravel": {
             "providers": [
                 "Iblues\\Larfree\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Debugbar": "Barryvdh\\Debugbar\\Facade"
+            }
         }
     }
 }
