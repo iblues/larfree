@@ -14,6 +14,9 @@ use App\Models\Admin\AdminNav;
 class Make
 {
     function __construct($tableName,$controller,$model){
+        //先读取数据库 生成配置
+        $this->makeConfig($tableName);
+
         if($controller){
             $this->makeControoler($controller);
         }

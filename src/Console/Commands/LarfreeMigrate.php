@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Larfree\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class larfreeMigrate extends Command
+class LarfreeMigrate extends Command
 {
     /**
      * The name and signature of the console command.

@@ -6,7 +6,7 @@
  * Time: 16:52
  */
 
-namespace App\Console\Commands;
+namespace Larfree\Console\Commands;
 
 
 use App\Models\Address\AddressArea;

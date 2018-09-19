@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Larfree\Console\Commands;
 
 use Illuminate\Console\Command;
 use Larfree\Libs\Make;
 
-class larfreeMake extends Command
+class LarfreeMake extends Command
 {
     protected $signature = 'larfree:make {table} {controller=y} {model=y}';
 
