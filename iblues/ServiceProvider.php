@@ -36,7 +36,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 //            __DIR__.'/path/to/config/' => config_path('courier'),
 //        ]);
 //        $this->loadRoutesFrom(__DIR__ . '/routes.php');
-//        $this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AddressMake::class,
