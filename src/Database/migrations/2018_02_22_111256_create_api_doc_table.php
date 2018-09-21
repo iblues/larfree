@@ -15,10 +15,12 @@ class CreateApiDocTable extends Migration
     {
         Schema::create('system_api_doc', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('url')->index()->comment('uri');
+            $table->string('url')->index()->comment('url');
             $table->string('show_url')->index()->comment('展示url');
             $table->string('method')->default('get')->comment('请求方式')->index();
             $table->string('title')->comment('api标题')->index();
+            $table->text('content')->comment('描述');
+            $table->boolean('auth')->comment('登录');
             $table->string('group')->default('default')->comment('分组')->index();
             $table->text('cache')->comment('上次数据');
             $table->integer('status')->comment('是否启用')->index();

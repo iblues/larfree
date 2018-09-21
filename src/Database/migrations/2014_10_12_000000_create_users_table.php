@@ -19,19 +19,19 @@ class CreateUsersTable extends Migration
             $table->string('name')->comment('备注');
             $table->string('api_token', 64)->unique();
             $table->string('first_site')->comment('首次注册城市')->default(1);
-            $table->char('ip',15)->comment('ip地址')->index();
+            $table->char('ip',15)->comment('ip地址')->index()->default('');
 
 
-            $table->string('phone',11)->comment('电话');
-            $table->string('mail')->comment('邮箱');
-            $table->string('password')->comment('密码');
+            $table->string('phone',11)->comment('电话')->default('');
+            $table->string('email')->comment('邮箱')->default('');
+            $table->string('password')->comment('密码')->default('');
 
 
-            $table->string('openid')->comment('openid')->index();
-            $table->string('uniqueid')->comment('uniqueid')->index();
+            $table->string('openid')->comment('微信openid')->index()->default('');
+            $table->string('uniqueid')->comment('微信uniqueid')->index()->default('');
 
 
-//            $table->rememberToken();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

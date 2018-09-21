@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatAuthArea extends Migration
+class CreatAuthRole extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class CreatAuthArea extends Migration
      */
     public function up()
     {
-        Schema::create('notice_router', function (Blueprint $table) {
+        Schema::create('auth_role', function (Blueprint $table) {
             $table->increments('id')->comment('id');//唯一编号
-            $table->string('name')->comment('范围');
-            $table->string('rule')->comment('规则');
-            $table->string('param')->comment('参数');
+            $table->string('name')->comment('角色名');
+            //拥有的范围
+            //router
+            //action
+            //nav
             $table->boolean('status')->comment('有效')->default(0);
             $table->timestamps();
         });

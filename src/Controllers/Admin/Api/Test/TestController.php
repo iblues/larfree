@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Admin\Api\Test;
 
 use App\Models\Test\TestTest;
 use Illuminate\Http\Request;
-use Larfree\Controllers\AdminApiController as Controller;
+use Larfree\Controllers\ApisController as Controller;
 class TestController extends Controller
 {
     public function __construct(TestTest $model )

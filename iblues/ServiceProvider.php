@@ -10,6 +10,7 @@ namespace Iblues\Larfree;
 
 
 use Larfree\Console\Commands\AddressMake;
+use Larfree\Console\Commands\LarfreeInstall;
 use Larfree\Console\Commands\LarfreeMake;
 use Larfree\Console\Commands\LarfreeMigrate;
 
@@ -29,18 +30,26 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
 
+        $path = dirname(__DIR__).'/src';
 //        $this->publishes([
 //            __DIR__.'/path/to/config/courier.php' => config_path('courier.php'),
 //        ]);
-//        $this->publishes([
-//            __DIR__.'/path/to/config/' => config_path('courier'),
-//        ]);
+        $this->publishes([
+            $path.'/Copy/app/Http/Controllers' => app_path('http/Controllers'),
+        ]);
+        $this->publishes([
+            $path.'/Copy/config/Schemas' => config_path('Schemas'),
+        ]);
 //        $this->loadRoutesFrom(__DIR__ . '/routes.php');
-        $this->loadMigrationsFrom(__DIR__.'/path/to/migrations');
+
+        //数据库
+        $this->loadMigrationsFrom(dirname(__DIR__).'/src/Database/migrations');
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AddressMake::class,
                 LarfreeMake::class,
+                LarfreeInstall::class,
                 LarfreeMigrate::class,
             ]);
         }

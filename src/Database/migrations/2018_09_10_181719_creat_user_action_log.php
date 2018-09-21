@@ -16,7 +16,7 @@ class CreatUserActionLog extends Migration
 
         Schema::create('user_action_log', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('uuid')->comment('用户编号')->index();
+            $table->integer('user_id')->comment('用户编号')->index();
             $table->unsignedInteger('user_type')->comment('用户类型')->index();
             $table->unsignedTinyInteger('type')->comment('类型')->default(1);
             $table->string('ip',15)->comment('ip');
@@ -28,7 +28,7 @@ class CreatUserActionLog extends Migration
             $table->string('model')->comment('模块')->index();
 
 
-            $table->foreign('uuid')->references('id')->on('common_user');//用户外键约束
+//            $table->foreign('id')->references('id')->on('common_user');//用户外键约束
 
 //            $table->rememberToken();
             $table->timestamps();

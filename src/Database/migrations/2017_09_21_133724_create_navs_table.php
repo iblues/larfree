@@ -20,9 +20,9 @@ class CreateNavsTable extends Migration
             $table->string('class')->default('')->comment('图标class');
             $table->string('module')->default('')->comment('是否使用module');
             $table->integer('parent_id')->commonet('上级')->default(0)->index();//父id
-            $table->integer('catid')->default(0)->comment('分类');//父id
+            $table->integer('cat_id')->default(0)->comment('分类');//父id
             $table->tinyInteger('status')->comment('状态')->default(1);//父id
-            $table->integer('ranking')->default(0)->comment('排序');
+            $table->integer('ranking')->default(50)->comment('排序');
             $table->timestamps();
         });
     }

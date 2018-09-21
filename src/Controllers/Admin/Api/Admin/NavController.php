@@ -27,4 +27,15 @@ class NavController extends Controller
             return parent::index($request);
         }
     }
+
+    /**
+     * 获取树状结构的菜单栏
+     * @return array
+     */
+    public function tree(){
+        $nav = $this->model->where('status',1)->get();
+        $nav = $nav->toArray();
+        $nav = listToTree($nav, 'id', 'parent_id', 'child');
+        return $nav;
+    }
 }
