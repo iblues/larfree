@@ -14,18 +14,16 @@ class ApiFormat
      */
     public function handle($request, Closure $next)
     {
-        //强制为ajax
-        $request->headers->set('X_REQUESTED_WITH','XMLHttpRequest');
         $response = $next($request);
-//        print_r($response);
+
         //跨域
-        $response->header('Access-Control-Allow-Origin','*');
-        $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
-        $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, PTIONS, DELETE');
-        $response->header('Access-Control-Allow-Credentials', 'false');
+//        $response->header('Access-Control-Allow-Origin','*');
+//        $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
+//        $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, PTIONS, DELETE');
+//        $response->header('Access-Control-Allow-Credentials', 'false');
 
         $content = $response->getOriginalContent();
-        //如果status已经有了 就不处理了
+        //如果status已经有了 说明apiResource处理了 就不处理了
         if(isset($content['status'])){
             return $response;
         }
@@ -37,7 +35,7 @@ class ApiFormat
         if(!$request->ajax())
             return $response;
         //200代码的才是正常返回
-        $code = $response->getStatusCode()!=200?0:1;
+        $code = $response->getStatusCode()<400?0:1;
 
         //对分页进行再处理
         $page = $this->FormatPage($content);
