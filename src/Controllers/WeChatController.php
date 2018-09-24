@@ -1,11 +1,13 @@
 <?php
-namespace App\Http\Controllers;
+namespace Larfree\Controllers;
 
 use App\Models\Common\CommonUser;
 use Log;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Image;
+use Illuminate\Routing\Controller as Controller;
+
 class WeChatController extends Controller
 {
 
@@ -20,7 +22,7 @@ class WeChatController extends Controller
 
         $app = app('wechat.official_account');
         $app->server->push(function($message){
-            return "欢迎关注 overtrue！";
+            return "欢迎关注 Larfree！";
         });
         return $app->server->serve();
     }
