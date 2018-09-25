@@ -23,7 +23,7 @@ class Make
         if($model){
             $this->makeModel($model);
         }
-        $this->makeConfig($tableName);
+//        $this->makeConfig($tableName);
 //        $this->makeRoute($tableName);
         $this->makeAdminMenu($tableName);
     }
@@ -51,8 +51,10 @@ class Make
 
     function makeAdminMenu($name){
         list($fullName,$name,$modelName) = $this->fomartName($name);
-        $fullName = strtolower($fullName);
+//        $fullName = strtolower($fullName);
         $fullName = strtr($fullName,'/','.');
+        $fullName = humpToLine($fullName);
+        $fullName = str_replace('._','.',$fullName);
         AdminNav::firstOrCreate([
             'name'=>$fullName,
             'url'=>'/curd/'.$fullName.'/',
@@ -73,10 +75,10 @@ class Make
  * Larfree Api类
  * @author blues
  */
-namespace App\Http\Controllers\Admin\Api\\{$folder};
+namespace App\Http\Controllers\Admin\{$folder};
 
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use Larfree\Controllers\AdminApisController as Controller;
 use App\Models\\{$folder}\\{$folder}{$nameSpace};
 class {$name}Controller extends Controller
 {
@@ -146,11 +148,35 @@ MODEL;
  */
 namespace App\Models{$nameSpace};
 use Larfree\Models\Api;
+use App\Scopes{$nameSpace}\\{$modelName}Scope;
 class {$modelName} extends Api
 {
+    use {$modelName}Scope;
 }
 MODEL;
         $path= base_path().'/app/Models/'.$fullName.'.php';
+        if(file_exists($path)) {
+            echo $path."已经存在.\r\n";
+        }else{
+            $this->file_force_contents($path, $content);
+            echo $path."生成.\r\n";
+        }
+
+
+
+        $content =<<<MODEL
+<?php
+/**
+ * 没有任何逻辑的Model类
+ * @author blues
+ */
+namespace App\Scopes{$nameSpace};
+trait {$modelName}Scope
+{
+
+}
+MODEL;
+        $path= base_path().'/app/Scopes/'.$fullName.'.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{
