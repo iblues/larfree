@@ -39,7 +39,7 @@ class ApiResource extends Resource
             $mate = $this->meta($return);
             $this->additional['link']=$link;
             $mate['per_page'] = $mate['per_page']*1;//转成数字
-            $this->additional['mate']=$mate;
+            $this->additional['meta']=$mate;
             return $return = $return['data'];
         }else {
 //            $request = $this->getDoc($request);

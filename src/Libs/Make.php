@@ -139,7 +139,7 @@ MODEL;
             $nameSpace='\\'.$nameSpace;
 
         $Name = ucfirst($name);
-        $Name = lineToHump($Name);
+//        $Name = lineToHump($Name);
 
         $tmp = explode('/',$fullName);
         if(@$tmp[1]){
@@ -147,7 +147,6 @@ MODEL;
         }
 
         $apiUrl = str_replace('/_','/',humpToLine($fullName));
-
 
         $content =<<<MODEL
 <?php
@@ -168,7 +167,7 @@ class {$name}Test extends TestCase
      */
     public function testBasicExample()
     {
-        \$response = \$this->json('GET', '/api/{$apiUrl}', ['name' => 'Sally']);
+        \$response = \$this->json('GET', '/api/{$apiUrl}');
         \$response
             ->assertStatus(200)
             ->assertJson([
@@ -185,9 +184,6 @@ MODEL;
             $this->file_force_contents($path, $content);
             echo $path."生成.\r\n";
         }
-
-
-
 
         $content =<<<MODEL
 <?php
@@ -208,7 +204,7 @@ class {$name}Test extends TestCase
      */
     public function testBasicExample()
     {
-        \$response = \$this->json('GET', '/api/admin/{$apiUrl}', ['name' => 'Sally']);
+        \$response = \$this->json('GET', '/api/admin/{$apiUrl}');
         \$response
             ->assertStatus(200)
             ->assertJson([
