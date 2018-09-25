@@ -25,7 +25,11 @@
         "laravel": {
             "providers": [
                 "Iblues\\Larfree\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "ApiController": "Larfree\\Controllers\\ApisController",
+                "AdminApiController": "Larfree\\Controllers\\AdminApisController"
+            }
         }
     }
 }

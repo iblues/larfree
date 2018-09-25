@@ -25,7 +25,7 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
-Route::group(['middleware' => ['api']],function () {
+Route::group(['middleware' => ['api'],'prefix' => 'api'],function () {
 
         //图片压缩
         Route::get('images/{date}/{img}','System\\Api\\ImgController@images');

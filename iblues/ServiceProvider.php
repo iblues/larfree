@@ -26,7 +26,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 //            return new Test(123);
 //        });
 
-//        $this->app->alias(Test::class, 'test');
+//        $this->app->alias(ApisController::class, 'ApiController');
+
+//        $this->app->alias(AdminApisController::class, 'AdminApiController');
     }
 
     public function boot()

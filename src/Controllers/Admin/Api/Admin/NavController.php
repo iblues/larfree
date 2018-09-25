@@ -7,7 +7,7 @@ namespace Larfree\Controllers\Admin\Api\Admin;
 
 use Larfree\Models\Admin\AdminNav;
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use ApiController as Controller;
 class NavController extends Controller
 {
     public function __construct(AdminNav $model )

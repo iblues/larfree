@@ -6,7 +6,7 @@
 namespace Larfree\Controllers\Admin\Api\System;
 
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use ApiController as Controller;
 use App\Models\System\SystemConfig;
 use Larfree\Libs\Schemas;
 class ConfigController extends Controller

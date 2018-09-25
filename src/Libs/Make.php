@@ -75,7 +75,7 @@ class Make
  * Larfree Api类
  * @author blues
  */
-namespace App\Http\Controllers\Admin\{$folder};
+namespace App\Http\Controllers\Admin\\{$folder};
 
 use Illuminate\Http\Request;
 use Larfree\Controllers\AdminApisController as Controller;
@@ -97,7 +97,7 @@ MODEL;
  */
 namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use ApiController as Controller;
 use App\Models\\{$folder}\\{$folder}{$nameSpace};
 class {$name}Controller extends Controller
 {
@@ -109,7 +109,7 @@ class {$name}Controller extends Controller
 }
 MODEL;
         $apiPath= base_path().'/app/Http/Controllers/Api/'.$folder.'/'.$fullName.'Controller.php';
-        $adminApiPath = base_path().'/app/Http/Controllers/Admin/Api/'.$folder.'/'.$fullName.'Controller.php';
+        $adminApiPath = base_path().'/app/Http/Controllers/Admin/'.$folder.'/'.$fullName.'Controller.php';
         if(file_exists($apiPath)) {
             echo $apiPath."已经存在.\r\n";
         }else{
@@ -149,6 +149,7 @@ MODEL;
 namespace App\Models{$nameSpace};
 use Larfree\Models\Api;
 use App\Scopes{$nameSpace}\\{$modelName}Scope;
+use AdminApiController as Controller;
 class {$modelName} extends Api
 {
     use {$modelName}Scope;

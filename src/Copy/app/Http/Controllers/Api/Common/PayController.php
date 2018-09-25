@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Common;
 
 use App\Models\Common\CommonPay;
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController;
+use ApiController;
 use Larfree\Libs\Payment\WechatPay;
 
 //use Auth;

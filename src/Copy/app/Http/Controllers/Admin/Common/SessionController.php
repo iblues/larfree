@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Admin\Api\Common;
 
 use App\Models\Common\User;
 use Illuminate\Http\Request;
-
+use AdminApiController as Controller;
 class SessionController extends Controller
 {
     /**

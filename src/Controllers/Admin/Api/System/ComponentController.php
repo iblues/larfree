@@ -7,7 +7,7 @@ namespace Larfree\Controllers\Admin\Api\System;
 
 use App\Models\System\SystemComponent;
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use ApiController as Controller;
 use App\Models\Component;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Libs\Schemas;

@@ -4,7 +4,7 @@
  */
 namespace Larfree\Controllers;
 
-class AdminApiController extends ApisController
+class AdminApisController extends ApisController
 {
 
 }

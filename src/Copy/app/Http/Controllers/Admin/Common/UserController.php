@@ -6,7 +6,7 @@
 namespace App\Http\Controllers\Admin\Common;
 use App\Models\Common\CommonUser;
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApisController as Controller;
+use AdminApiController as Controller;
 class UserController extends Controller
 {
     public function __construct(CommonUser $model)
