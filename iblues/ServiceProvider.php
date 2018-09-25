@@ -57,6 +57,22 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 LarfreeMigrate::class,
             ]);
         }
+
+
+        Response::macro('error', function ($value = [],$status = '400') {
+            return Response::make($value,$status);
+        });
+
+
+//        return Response()->success(123,'成功',['sda'=>123]);
+        Response::macro('success', function ($value = [],string $msg = '成功',array $ext=[]) {
+            $ext['msg']=$msg;
+            if(!is_object($value)) {
+                $value = collect($value);
+            }
+            return (new ApiResource($value))->additional($ext);
+        });
+
     }
 
 //    public function provides()

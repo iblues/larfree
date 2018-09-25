@@ -6,7 +6,7 @@
  * Time: 15:53
  */
 
-namespace App\Http\Controllers\Admin\Api\Common;
+namespace Larfree\Controllers\Admin\Api\Common;
 
 use App\Models\Common\User;
 use Illuminate\Http\Request;

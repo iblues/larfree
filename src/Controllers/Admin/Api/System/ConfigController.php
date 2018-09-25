@@ -3,7 +3,7 @@
  * Larfree Api类
  * @author blues
  */
-namespace App\Http\Controllers\Admin\Api\System;
+namespace Larfree\Controllers\Admin\Api\System;
 
 use Illuminate\Http\Request;
 use Larfree\Controllers\ApisController as Controller;

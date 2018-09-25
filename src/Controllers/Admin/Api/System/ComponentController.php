@@ -3,7 +3,7 @@
  * Larfree Api类
  * @author blues
  */
-namespace App\Http\Controllers\Admin\Api\System;
+namespace Larfree\Controllers\Admin\Api\System;
 
 use App\Models\System\SystemComponent;
 use Illuminate\Http\Request;
@@ -13,21 +13,20 @@ use Larfree\Libs\ComponentSchemas;
 use Larfree\Libs\Schemas;
 class ComponentController extends Controller
 {
-    public function __construct(SystemComponent $model )
+    public function __construct()
     {
-        $this->model = $model;
+//        $this->model = $model;
         parent::__construct();
     }
 
     public function show($id, Request $request)
     {
-        return $this->model->where('key',$id)->first();
+//        return $this->model->where('key',$id)->first();
     }
 
     public function module($module,$action, Request $request){
         //根据test.test|chart.line.line的格式获取参数
         $config = ComponentSchemas::getComponentConfig($module,$action);
-
         //如果是配置类别,特殊处理下
         if(substr($module,0,7)=='config.'){
             $module = 'config';

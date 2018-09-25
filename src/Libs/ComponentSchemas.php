@@ -23,7 +23,7 @@ class ComponentSchemas extends Schemas
         $target = strtolower($target);
 
 
-        $file = dirname(dirname(dirname(__FILE__))) . '/config/Schemas/Components/' . self::fomartName($name) . '.php';
+        $file = config_path(). '/Schemas/Components/' . self::fomartName($name) . '.php';
 
         $GlobalSchemas = self::getSchemas($name);//主结构
         if (file_exists($file)) {
@@ -86,6 +86,7 @@ class ComponentSchemas extends Schemas
                 $search = array_intersect_key($GlobalSchemas, $search);
                 $Schemas['search'] = $search;
             }
+            return $Schemas;
 
         }else{
             $field = self::getSchemas($name);
@@ -101,9 +102,9 @@ class ComponentSchemas extends Schemas
      */
     static public function getComponetDefConfig($path,$config,$target=''){
         $name = str_replace('.','/',$path);
-        $cpath = dirname(dirname(dirname(__FILE__))).'/config/Schemas/Components/Default/'.self::fomartName($name).'.php';
+        $cpath = config_path().'/Schemas/Components/Default/'.self::fomartName($name).'.php';
         if(file_exists($cpath)) {
-             $func = include dirname(dirname(dirname(__FILE__))) . '/config/Schemas/Components/Default/' . self::fomartName($name) . '.php';
+             $func = include config_path(). '/Schemas/Components/Default/' . self::fomartName($name) . '.php';
             return $func($config,$path,$target);
         }else
             return [];
