@@ -36,7 +36,7 @@ return [
             'password'=>[
                 'name'=>'密码',
                 'tip'=>'',
-                'type'=>'text',
+                'type'=>'password',
             ],
             'brithday'=>[
                 'name'=>'生日',

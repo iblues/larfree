@@ -35,7 +35,7 @@ Route::group(['middleware' => ['api']],function () {
             $path = 'Larfree\\Controllers\\Admin\\Api\\';
 
             //声明首页
-//            Route::redirect('/', '/manager/', 302)->name('root');
+            Route::redirect('/', '/manager/', 302)->name('root');
 
             //系统预定义的组建
             Route::post('/common/session',$path.'Common\\AdminController@register')->name('register');

@@ -37,6 +37,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 //            __DIR__.'/path/to/config/courier.php' => config_path('courier.php'),
 //        ]);
         $this->publishes([
+            $path.'/Copy/app/Scopes' => app_path('Scopes/'),
+        ],'larfree');
+        $this->publishes([
             $path.'/Copy/app/Models' => app_path('Models/'),
         ],'larfree');
         $this->publishes([

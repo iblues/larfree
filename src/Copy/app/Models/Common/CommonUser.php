@@ -4,6 +4,7 @@
  * @author blues
  */
 namespace App\Models\Common;
+use App\Scopes\Common\CommonUserScope;
 use Larfree\Models\Api;
 class CommonUser extends Api
 {

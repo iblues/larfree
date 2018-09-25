@@ -24,7 +24,7 @@ class Make
             $this->makeModel($model);
         }
 //        $this->makeConfig($tableName);
-//        $this->makeRoute($tableName);
+        $this->makeRoute($tableName);
         $this->makeAdminMenu($tableName);
     }
 
@@ -328,10 +328,10 @@ CONTENT;
         $fullName = str_ireplace('/','\\',$fullName);
 
 
-        $path= base_path().'/routes/apiResource.php';
-        $adminPath= base_path().'/routes/apiAdminResource.php';
-        $route = "\r\nRoute::resource('{$apiPath}', 'Api\\{$fullName}Controller');//自动添加";
-        $adminRoute = "\r\nRoute::resource('{$apiPath}', \$path.'{$fullName}Controller');//自动添加";
+        $path= base_path().'/routes/api.php';
+        $adminPath= base_path().'/routes/api.php';
+        $route = "\r\nRoute::resource('{$apiPath}', 'Api\\{$fullName}Controller');//自动添加-API";
+        $adminRoute = "\r\nRoute::resource('admin/{$apiPath}', 'Admin\\{$fullName}Controller');//自动添加-ADMIN";
 
 
         $pathContent = file_get_contents($path);
