@@ -16,7 +16,7 @@ use Illuminate\Console\Command;
 
 class AddressMake extends Command
 {
-    protected $signature = 'address:init';
+    protected $signature = 'larfree:address_init';
 
     protected $description = '导入省市区到数据库';
 

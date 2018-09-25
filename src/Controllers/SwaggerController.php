@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Larfree\Controllers;
 
 use App\Http\Controllers\Api\TestController;
 use Illuminate\Http\Request;
 use Larfree\Libs\Swagger;
+use Illuminate\Routing\Controller as Controller;
 
 //可以这么用变量
 //define("API_HOST", ($env === "production") ? "example.com" : "localhost");
@@ -37,34 +38,35 @@ class SwaggerController extends Controller
     {
         // 你可以将API的`Swagger Annotation`写在实现API的代码旁，从而方便维护，
         // `swagger-php`会扫描你定义的目录，自动合并所有定义。这里我们直接用`Controller/`
-        $swagger = \Swagger\scan(app_path('Http/Controllers/'));
+        $swagger = \OpenApi\scan(app_path('Http/Controllers/Admin'));
 
-        $swagger->paths = $this->parseAction($swagger->paths);
+//        $swagger->paths = $this->parseAction($swagger->paths);
 
         //转成array
         $doc = json_decode(json_encode($swagger),true);
-        $doc['paths']['/test/{id}']['get']['responses'][403]['schema']=[
-            'type'=>'object',
-            'properties'=>[
-                'name'=>[
-                    'type'=>'string',
-                    'description'=>'测试',
-                    'example'=>1
-                ],
-                'name2'=>[
-                    'type'=>'array',
-                    'description'=>'测试',
-                    'items'=>[
-                        'type'=>'string',
-                        'description'=>'测试',
-                        'enum'=>[
-                           '1:测试',2,3
-                        ],
-                        'example'=>1
-                    ],
-                ],
-            ]
-        ];
+//        dump($doc);
+//        $doc['paths']['/test/{id}']['get']['responses'][403]['schema']=[
+//            'type'=>'object',
+//            'properties'=>[
+//                'name'=>[
+//                    'type'=>'string',
+//                    'description'=>'测试',
+//                    'example'=>1
+//                ],
+//                'name2'=>[
+//                    'type'=>'array',
+//                    'description'=>'测试',
+//                    'items'=>[
+//                        'type'=>'string',
+//                        'description'=>'测试',
+//                        'enum'=>[
+//                           '1:测试',2,3
+//                        ],
+//                        'example'=>1
+//                    ],
+//                ],
+//            ]
+//        ];
 
 
 
@@ -73,6 +75,7 @@ class SwaggerController extends Controller
     }
 
     public function getParameters($doc){
+        return $doc;
         $data = $doc['paths'];
         $methods=['get','post','put','delete','patch','delete'];
         foreach($data as $key=>$swg){
@@ -84,7 +87,6 @@ class SwaggerController extends Controller
 
                     $controller = \App::make(\App\Http\Controllers\Api\TestController::class);
                     $validate = $controller->getValidation($method);
-                    dump($validate);
 
                 }
             }

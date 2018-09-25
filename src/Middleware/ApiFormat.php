@@ -17,10 +17,10 @@ class ApiFormat
         $response = $next($request);
 
         //跨域
-//        $response->header('Access-Control-Allow-Origin','*');
-//        $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
-//        $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, PTIONS, DELETE');
-//        $response->header('Access-Control-Allow-Credentials', 'false');
+        $response->header('Access-Control-Allow-Origin','*');
+        $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, PTIONS, DELETE');
+        $response->header('Access-Control-Allow-Credentials', 'false');
 
         $content = $response->getOriginalContent();
         //如果status已经有了 说明apiResource处理了 就不处理了

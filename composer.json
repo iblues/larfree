@@ -16,7 +16,7 @@
         "ixudra/curl": "^6.16",
         "overtrue/laravel-filesystem-qiniu": "^1.0",
         "overtrue/laravel-lang": "^3.0",
-        "overtrue/laravel-wechat": "^4.0",
+        "overtrue/laravel-wechat": "~4.0",
         "predis/predis": "^1.1",
         "watson/rememberable": "^2.0",
         "zircote/swagger-php": "^3.0"

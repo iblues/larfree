@@ -35,12 +35,16 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 //            __DIR__.'/path/to/config/courier.php' => config_path('courier.php'),
 //        ]);
         $this->publishes([
-            $path.'/Copy/app/Http/Controllers' => app_path('http/Controllers'),
-        ]);
+            $path.'/Copy/app/Http' => app_path('http/'),
+        ],'larfree');
         $this->publishes([
             $path.'/Copy/config/Schemas' => config_path('Schemas'),
-        ]);
-//        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        ],'larfree');
+        $this->publishes([
+            $path.'/Copy/routes/' => dirname(app_path('')).'/routes/',
+        ],'larfree');
+
+        $this->loadRoutesFrom($path . '/routes/api.php');
 
         //数据库
         $this->loadMigrationsFrom(dirname(__DIR__).'/src/Database/migrations');
