@@ -26,6 +26,7 @@ class Make
 //        $this->makeConfig($tableName);
         $this->makeRoute($tableName);
         $this->makeAdminMenu($tableName);
+        $this->makeTest($tableName);
     }
 
     /**
@@ -123,6 +124,113 @@ MODEL;
             echo $adminApiPath."生成.\r\n";
         }
     }
+
+
+    /**
+     * 生成测试用例
+     * @param $name
+     */
+    function makeTest($name){
+        $name = lineToHump($name);
+        list($fullName,$name,$modelName) = $this->fomartName($name);
+        $nameSpace = dirname($fullName);
+        $nameSpace = str_ireplace('/','\\',$nameSpace);
+        if($nameSpace)
+            $nameSpace='\\'.$nameSpace;
+
+        $Name = ucfirst($name);
+        $Name = lineToHump($Name);
+
+        $tmp = explode('/',$fullName);
+        if(@$tmp[1]){
+            $fullName=$tmp[0].'/'.$tmp[1];
+        }
+
+        $apiUrl = str_replace('/_','/',humpToLine($fullName));
+
+
+        $content =<<<MODEL
+<?php
+/**
+ * 基础API测试
+ * @author blues
+ */
+
+namespace Tests\Feature\Api;
+use Tests\TestCase;
+
+class {$name}Test extends TestCase
+{
+    /**
+     * 一个基础的功能测试示例。
+     *
+     * @return void
+     */
+    public function testBasicExample()
+    {
+        \$response = \$this->json('GET', '/api/{$apiUrl}', ['name' => 'Sally']);
+        \$response
+            ->assertStatus(200)
+            ->assertJson([
+                'code' => true,
+            ]);
+    }
+}
+MODEL;
+
+        $path= base_path().'/tests/Feature/Api/'.$fullName.'Test.php';
+        if(file_exists($path)) {
+            echo $path."已经存在.\r\n";
+        }else{
+            $this->file_force_contents($path, $content);
+            echo $path."生成.\r\n";
+        }
+
+
+
+
+        $content =<<<MODEL
+<?php
+/**
+ * 基础API测试
+ * @author blues
+ */
+
+namespace Tests\Feature\Admin;
+use Tests\TestCase;
+
+class {$name}Test extends TestCase
+{
+    /**
+     * 一个基础的功能测试示例。
+     *
+     * @return void
+     */
+    public function testBasicExample()
+    {
+        \$response = \$this->json('GET', '/api/admin/{$apiUrl}', ['name' => 'Sally']);
+        \$response
+            ->assertStatus(200)
+            ->assertJson([
+                'code' => true,
+            ]);
+    }
+}
+MODEL;
+
+        $path= base_path().'/tests/Feature/Admin/'.$fullName.'Test.php';
+        if(file_exists($path)) {
+            echo $path."已经存在.\r\n";
+        }else{
+            $this->file_force_contents($path, $content);
+            echo $path."生成.\r\n";
+        }
+
+
+    }
+
+
+
 
     function makeModel($name){
 

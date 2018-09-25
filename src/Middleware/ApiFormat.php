@@ -53,16 +53,16 @@ class ApiFormat
         $StatusCode = $response->getStatusCode();
         $msg = '';
         //ios需要返回200才能解析
-        if($StatusCode!=500)
-            $response->setStatusCode(200);
+//        if($StatusCode!=500)
+//            $response->setStatusCode(200);
 
         if($StatusCode==422){
             $msg=current(current($content['errors']));
             $content = $content['errors'];
         }
 
-        if($StatusCode==401)
-            $code=-10;
+//        if($StatusCode==401)
+//            $code=-10;
 
         //重新设置格式
         if(method_exists($response,'setData')) {
