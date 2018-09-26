@@ -16,6 +16,8 @@ class ApiFormat
     {
         $response = $next($request);
 
+
+        $request->headers->set('X_REQUESTED_WITH','XMLHttpRequest');
         //跨域
         $response->header('Access-Control-Allow-Origin','*');
         $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
@@ -56,14 +58,15 @@ class ApiFormat
 //        if($StatusCode!=500)
 //            $response->setStatusCode(200);
 
-        if($StatusCode==422){
+        if($StatusCode==302){
             $msg=current(current($content['errors']));
             $content = $content['errors'];
         }
 
 //        if($StatusCode==401)
 //            $code=-10;
-
+//        dd($response);
+//        exit();
         //重新设置格式
         if(method_exists($response,'setData')) {
             //如果是json响应

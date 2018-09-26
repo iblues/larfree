@@ -47,13 +47,12 @@ class ApiSchemas extends Schemas
      * @param $method
      * @return array
      */
-    static function getValidate($name,$param=[]){
+    static function getValidate($name,$target,$param=[]){
         $schemas = self::getSchemas($name);
-
         //当主文件不存在的时候,$param
         if($schemas!==false) {
             //如果有传入自定义参数,合并
-            if (strlen($param) > 0) {
+            if (count($param) > 0) {
                 $param = self::formatFields($param);
 //               print_r($param);
                 $schemas = self::getFilterField($schemas, $param);

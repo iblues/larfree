@@ -334,7 +334,14 @@ class ApisController extends BaseController
         if( isset($parameters[0]) && $parameters[0] instanceof Request ){
             $this->filterInput($parameters[0],'in',$method);
             $validate = $this->getValidation($method);
-            $this->validate($parameters[0], $validate['rules'],$validate['msg']);
+
+            try {
+                $this->validate($parameters[0], $validate['rules'], $validate['msg']);
+            }catch (\Exception $e){
+                $error = $e->validator->errors()->all();
+                apiError($error[0],$error,422);
+//                dd($e->validator->errors()->all());
+            }
         }
 
         //执行真实的函数
