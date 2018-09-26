@@ -13,6 +13,7 @@ use Illuminate\Routing\Controller as Controller;
 class SwaggerController extends Controller
 {
 
+    protected $path;
     /**
      * 返回JSON格式的Swagger定义
      *
@@ -26,7 +27,7 @@ class SwaggerController extends Controller
      *     version="1.0.0"
      *   )
      * )
-     *
+     *  定义登录的方式
      *  @SWG\SecurityScheme(
      *   securityDefinition="Authorization",
      *   type="apiKey",
@@ -38,14 +39,28 @@ class SwaggerController extends Controller
     {
         // 你可以将API的`Swagger Annotation`写在实现API的代码旁，从而方便维护，
         // `swagger-php`会扫描你定义的目录，自动合并所有定义。这里我们直接用`Controller/`
-        $swagger = \OpenApi\scan(app_path('Http/Controllers/Admin'));
+        if(!$this->path)
+            apiError('Path未定义');
+        $swagger = \OpenApi\scan($this->path);
 
 //        $swagger->paths = $this->parseAction($swagger->paths);
 
         //转成array
         $doc = json_decode(json_encode($swagger),true);
-//        dump($doc);
-//        $doc['paths']['/test/{id}']['get']['responses'][403]['schema']=[
+        $doc = $this->walkResponses($doc);
+
+
+//        $doc['paths']['/test/test/']['get']['responses'][200]['content']['application/json']['schema']=[
+//            'type'=>'json',
+//            'example'=>'{
+//"data": [],
+//"code": 412,
+//"status": 0,
+//"msg": "Path未定义"
+//}',
+//        ];
+
+//        $doc['paths']['/test/test/']['get']['responses'][200]['content']['字典']['schema']=[
 //            'type'=>'object',
 //            'properties'=>[
 //                'name'=>[
@@ -68,10 +83,46 @@ class SwaggerController extends Controller
 //            ]
 //        ];
 
-
-
         $doc = $this->getParameters($doc);
         return response()->json($doc, 200);
+    }
+
+    public function walkResponses($doc){
+        array_walk($doc['paths'],function(&$url){
+            array_walk($url,function(&$method){
+                array_walk($method['responses'],function(&$responses){
+                    if(stripos($responses['description'],'md5:')!==false){
+
+                        $description = explode('md5:',$responses['description']);
+                        $responses['description'] = $description[0];
+                        $responses['content']['application/json']['schema']=[
+                            'type'=>'json',
+                            'example'=>$this->getMd5Content($description[1])['content']
+                        ];
+                    }
+
+                });
+            });
+        });
+        return $doc;
+    }
+
+    protected function getMd5Content($md5){
+        $tmpPath = storage_path('apiReturn/tmp/');
+        $usePath = storage_path('apiReturn/use/');
+
+        $file = $md5.'.json';
+        if( file_exists($usePath.$file) ){
+            $path = $usePath.$file;
+        }elseif(file_exists($tmpPath.$file) ){
+            copy($tmpPath.$file,$usePath.$file);
+            $path = $usePath.$file;
+        }else{
+            return 'json undefined';
+        }
+
+        return json_decode( trim(file_get_contents($path)) ,1);
+
     }
 
     public function getParameters($doc){
