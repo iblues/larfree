@@ -21,7 +21,7 @@ class ApiSchemas extends Schemas
      * @return array
      * 期待返回false 所有字段 或者 具体字段结构
      */
-    static function getApiAllowField($name,$group,$extField=[]){
+    static function getApiAllowField($name,$group,$target,$extField=[]){
 
         if(is_null($extField)){
             return false;
@@ -30,7 +30,7 @@ class ApiSchemas extends Schemas
         //如果主结构不存在,代表是虚拟的表
         if($schemas!==false) {
 
-            if (strlen($extField) > 0) {
+            if (count($extField) > 0) {
                 $extField = self::formatFields($extField);
                 $schemas = self::getFilterField($schemas, $extField);
             }

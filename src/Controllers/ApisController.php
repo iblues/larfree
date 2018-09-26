@@ -32,9 +32,9 @@ class ApisController extends BaseController
 
     public function __construct()
     {
-        //获取
-        $this->modelName=substr(get_class($this),strpos(get_class($this),'\Api\\')+5,-10);
-        $this->modelName = str_ireplace('\\','.',$this->modelName);
+        $name  = explode( '\\',get_class($this) );
+        $this->modelName= substr(array_pop($name),0,-10);
+        $this->modelName = array_pop($name).'.'.$this->modelName;
     }
 
 
@@ -314,8 +314,9 @@ class ApisController extends BaseController
         $ext = isset($this->in[$method])?$this->in[$method]:[];
         //字段过滤
         $fields = ApiSchemas::getApiAllowField($this->modelName ,'in',$method,$ext);
+
         if($fields!=false){
-            $data = array_diff_key($request->all(),array_flip($fields));
+            $data = array_diff_key($request->all(),array_flip(array_keys($fields)));
             foreach($data as $k=>$v){
                 $request->offsetUnset($k);
             }
@@ -330,9 +331,6 @@ class ApisController extends BaseController
         /**
          * 进行输入参数的验证和过滤
          */
-        //echo $method;
-//        print_r($parameters['good']);
-//        exit();
         if( isset($parameters[0]) && $parameters[0] instanceof Request ){
             $this->filterInput($parameters[0],'in',$method);
             $validate = $this->getValidation($method);
