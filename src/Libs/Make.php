@@ -98,7 +98,7 @@ MODEL;
  */
 namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
-use ApiController as Controller;
+use Larfree\Controllers\ApiController as Controller;
 use App\Models\\{$folder}\\{$folder}{$nameSpace};
 class {$name}Controller extends Controller
 {
@@ -253,7 +253,6 @@ MODEL;
 namespace App\Models{$nameSpace};
 use Larfree\Models\Api;
 use App\Scopes{$nameSpace}\\{$modelName}Scope;
-use AdminApiController as Controller;
 class {$modelName} extends Api
 {
     use {$modelName}Scope;
