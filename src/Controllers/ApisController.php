@@ -113,7 +113,11 @@ class ApisController extends BaseController
             });
         }
 
-        return $data1 = $model->paginate($pageSize);
+        $data = $model->paginate($pageSize);
+        $hook = $this->after_hook($data,$request,__FUNCTION__);
+        if($hook)
+            return $hook;
+        return $data;
     }
 
 
@@ -220,38 +224,6 @@ class ApisController extends BaseController
     }
 
 
-//    protected function parseWhere($key,$val,&$model){
-//
-//        //真实的key名字
-//        $real_key = substr($key,0,-1);
-//        $mode =substr($key,-1);
-//
-//        //如果字段中存在| 代表多字段.就or的关系
-//        if(stripos($key,'|')!==false && stripos($key,'|')!= strlen($key)-1){
-//            if($mode!='$' && $mode!='|')
-//                apiError('复杂筛选模式必须$或者|结尾,如id|title$');
-//            $multi = explode('|',$real_key);
-//            foreach($multi as $k){
-//                $model->orWhere(function($query)use($k,$val,$mode){
-//                    $query->parseWhere($k.$mode,$val,$query);
-////                    $query->where('id','like',$val);
-////                    $query->where('title','like',$val);
-//                });
-//            }
-//            return ;
-//        }
-//
-//        if(stripos($val,'%')!==false){
-//            //name$='%123%'    筛选
-//            //name|=>123,<123  筛选
-//            //name$=>123,<123  筛选
-//            //name$=[1,2,3]    筛选
-//            $model->where($real_key,'like','%1%');
-//        }
-//        if(stripos($val,',')){
-//            $model->where($real_key,'like',$val);
-//        }
-//    }
     /**
      *
      * 同一个字段及多个字段组合查询
@@ -324,7 +296,13 @@ class ApisController extends BaseController
     }
 
 
-
+    /**
+     * 所有的请求的回调
+     * @param $method
+     * @param $parameters
+     * @return \Illuminate\Support\Collection|mixed
+     * @throws \Larfree\Exceptions\ApiException
+     */
     public function callAction($method, $parameters)
     {
 
@@ -339,6 +317,7 @@ class ApisController extends BaseController
                 $this->validate($parameters[0], $validate['rules'], $validate['msg']);
             }catch (\Exception $e){
                 $error = $e->validator->errors()->all();
+//                dd($error);
                 apiError($error[0],$error,422);
 //                dd($e->validator->errors()->all());
             }
