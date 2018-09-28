@@ -43,7 +43,7 @@ class SwaggerController extends Controller
             apiError('Path未定义');
         $swagger = \OpenApi\scan($this->path);
 
-//        $swagger->paths = $this->parseAction($swagger->paths);
+        $swagger->paths = $this->parseAction($swagger->paths);
 
         //转成array
         $doc = json_decode(json_encode($swagger),true);
@@ -149,6 +149,7 @@ class SwaggerController extends Controller
      */
     public function parseAction($swagger){
         $methods=['get','post','put','delete','patch','delete'];
+        dd($swagger);
         foreach($swagger as $key=>$swg){
             foreach($swg as $k=>$action){
                 if(in_array($k,$methods)){

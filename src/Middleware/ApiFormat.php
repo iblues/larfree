@@ -14,10 +14,13 @@ class ApiFormat
      */
     public function handle($request, Closure $next)
     {
+        //必须加 否则422报错的时候回302跳转
+        $request->headers->set('X-Requested-With','XMLHttpRequest');
+        $request->headers->set('accept','application/json');
+
+//        dd($request->headers);s
         $response = $next($request);
 
-
-        $request->headers->set('X_REQUESTED_WITH','XMLHttpRequest');
         //跨域
         $response->header('Access-Control-Allow-Origin','*');
         $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
@@ -37,7 +40,7 @@ class ApiFormat
         if(!$request->ajax())
             return $response;
         //200代码的才是正常返回
-        $code = $response->getStatusCode()<400?0:1;
+        $code = $response->getStatusCode()<400?1:0;
 
         //对分页进行再处理
         $page = $this->FormatPage($content);
@@ -59,14 +62,16 @@ class ApiFormat
 //            $response->setStatusCode(200);
 
         if($StatusCode==302){
+            return $response;
+        }
+        if($StatusCode==422){
             $msg=current(current($content['errors']));
             $content = $content['errors'];
         }
 
 //        if($StatusCode==401)
 //            $code=-10;
-//        dd($response);
-//        exit();
+
         //重新设置格式
         if(method_exists($response,'setData')) {
             //如果是json响应
