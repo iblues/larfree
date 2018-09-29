@@ -126,7 +126,6 @@ class SwaggerController extends Controller
     }
 
     public function getParameters($doc){
-        return $doc;
         $data = $doc['paths'];
         $methods=['get','post','put','delete','patch','delete'];
         foreach($data as $key=>$swg){
@@ -135,10 +134,10 @@ class SwaggerController extends Controller
                     $className = $action['x-class'];
                     $namespace = $action['x-file']['namespace'];
                     $method = $action['x-method'];
-
-                    $controller = \App::make(\App\Http\Controllers\Api\TestController::class);
-                    $validate = $controller->getValidation($method);
-
+                    $class = $namespace.'\\'.$className;
+                    $controller = \App::make($class);
+                    $validate = $controller->getParamDefine($method);
+//                    dump($validate);
                 }
             }
         }
@@ -149,17 +148,21 @@ class SwaggerController extends Controller
      */
     public function parseAction($swagger){
         $methods=['get','post','put','delete','patch','delete'];
-        dd($swagger);
+
         foreach($swagger as $key=>$swg){
             foreach($swg as $k=>$action){
                 if(in_array($k,$methods)){
-//                    $action = @$methods[$method];
-//                    dump($action);
-//                    $doc = json_decode(json_encode($swagger),true);
-//                    print_r($action);
+                    if(!is_object($action))
+                        continue;
+
+                    $doc = json_decode(json_encode($swagger),true);
+
                     if(@$action->_context) {
                         $file = $action->_context->getRootContext();
+                        //获取对于注释的函数方法
                         $method =  $action->_context->method;
+
+                        $swagger[$key]->$k->x=[];
                         $swagger[$key]->$k->x['method']=$method;
                         $swagger[$key]->$k->x['file']=$file;
                         $swagger[$key]->$k->x['class']=$action->_context->class;

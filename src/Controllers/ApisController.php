@@ -273,7 +273,15 @@ class ApisController extends BaseController
         $ext = isset($this->in[$method])?$this->in[$method]:['*'];
         $validate = ApiSchemas::getValidate( $this->modelName ,'store',$ext);
         return $validate;
+    }
 
+    /**
+     * 获取输入变量的定义
+     */
+    public function getParamDefine($method,$group='in'){
+        $ext = isset($this->in[$method])?$this->in[$method]:['*'];
+        $validate = ApiSchemas::getApiAllowField( $this->modelName ,$method,$ext);
+        return $validate;
     }
 
     /**
@@ -286,7 +294,6 @@ class ApisController extends BaseController
         $ext = isset($this->in[$method])?$this->in[$method]:[];
         //字段过滤
         $fields = ApiSchemas::getApiAllowField($this->modelName ,'in',$method,$ext);
-
         if($fields!=false){
             $data = array_diff_key($request->all(),array_flip(array_keys($fields)));
             foreach($data as $k=>$v){
@@ -338,7 +345,6 @@ class ApisController extends BaseController
         if(!is_object($return)) {
             $return = collect($return);
         }
-
         return (new ApiResource( $return  ))
             ->additional(['msg'=>$this->msg]);
 

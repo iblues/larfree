@@ -29,10 +29,12 @@ class ApiSchemas extends Schemas
         $schemas = self::getSchemas($name);
         //如果主结构不存在,代表是虚拟的表
         if($schemas!==false) {
-
             if (count($extField) > 0) {
                 $extField = self::formatFields($extField);
                 $schemas = self::getFilterField($schemas, $extField);
+            }else{
+                //没有定义
+                return false;
             }
         }else{
             //那么就直接使用$extField的结构
