@@ -98,7 +98,7 @@ MODEL;
  */
 namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
-use Larfree\Controllers\ApiController as Controller;
+use Larfree\Controllers\ApisController as Controller;
 use App\Models\\{$folder}\\{$folder}{$nameSpace};
 class {$name}Controller extends Controller
 {
