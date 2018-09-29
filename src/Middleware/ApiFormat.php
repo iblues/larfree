@@ -20,7 +20,6 @@ class ApiFormat
 
 //        dd($request->headers);s
         $response = $next($request);
-
         //跨域
         $response->header('Access-Control-Allow-Origin','*');
         $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
@@ -28,8 +27,10 @@ class ApiFormat
         $response->header('Access-Control-Allow-Credentials', 'false');
 
         $content = $response->getOriginalContent();
+
+        $json=json_decode($response->getContent(),1);
         //如果status已经有了 说明apiResource处理了 就不处理了
-        if(isset($content['status'])){
+        if(isset($json['code'])){
             return $response;
         }
         //没数据的时候
