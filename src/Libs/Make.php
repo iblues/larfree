@@ -258,7 +258,7 @@ class {$modelName} extends Api
     use {$modelName}Scope;
 }
 MODEL;
-        $path= base_path().'/app/Models/'.$fullName.'Scopes.php';
+        $path= base_path().'/app/Models/'.$fullName.'.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{
@@ -280,7 +280,7 @@ trait {$modelName}Scope
 
 }
 MODEL;
-        $path= base_path().'/app/Scopes/'.$fullName.'.php';
+        $path= base_path().'/app/Scopes/'.$fullName.'Scope.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{
