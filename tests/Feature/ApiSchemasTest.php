@@ -142,7 +142,7 @@ class ApiSchemasTest extends TestCase
      */
     public function testOnlyAllowedField(){
         $method = 'only';
-        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'only','in',$this->in[$method]);
+        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'in','target',$this->in[$method]);
         $this->assertArrayHasKey('select',$allow);
         $this->assertArrayHasKey('title',$allow);
         $this->assertArrayNotHasKey('created_at',$allow,'不应该有created_at,除非created_at定义了规则');
@@ -153,7 +153,7 @@ class ApiSchemasTest extends TestCase
      */
     public function testShowAllowedField(){
         $method = 'show';
-        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'show','in',@$this->in[$method]);
+        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'in','target',@$this->in[$method]);
         $this->assertEquals($allow,false,'应该为*,允许所有的字段');
     }
 
@@ -162,7 +162,7 @@ class ApiSchemasTest extends TestCase
      */
     public function testIndexAllowedField(){
         $method = 'index';
-        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'update','in',$this->in[$method]);
+        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'in','update',$this->in[$method]);
         $this->assertArrayHasKey('datetime',$allow);
         $this->assertArrayHasKey('title4',$allow);
         $this->assertArrayNotHasKey('title',$allow,'不应该有title');
@@ -174,7 +174,7 @@ class ApiSchemasTest extends TestCase
      */
     public function testUpdateAllowedField(){
         $method = 'update';
-        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'update','in',$this->in[$method]);
+        $allow = ApiSchemas::getApiAllowField( 'test.test' ,'in','update',$this->in[$method]);
         $this->assertArrayHasKey('title',$allow);
         $this->assertArrayHasKey('title3',$allow);
     }

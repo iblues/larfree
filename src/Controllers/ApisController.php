@@ -271,7 +271,7 @@ class ApisController extends BaseController
     public function getValidation($method)
     {
         $ext = isset($this->in[$method])?$this->in[$method]:['*'];
-        $validate = ApiSchemas::getValidate( $this->modelName ,'store',$ext);
+        $validate = ApiSchemas::getValidate( $this->modelName ,'in',$ext);
         return $validate;
     }
 
@@ -280,7 +280,7 @@ class ApisController extends BaseController
      */
     public function getParamDefine($method,$group='in'){
         $ext = isset($this->in[$method])?$this->in[$method]:['*'];
-        $validate = ApiSchemas::getApiAllowField( $this->modelName ,$method,$ext);
+        $validate = ApiSchemas::getApiAllowField( $this->modelName ,$group,$method,$ext);
         return $validate;
     }
 

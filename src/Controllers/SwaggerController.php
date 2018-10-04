@@ -128,21 +128,102 @@ class SwaggerController extends Controller
     public function getParameters($doc){
         $data = $doc['paths'];
         $methods=['get','post','put','delete','patch','delete'];
-        foreach($data as $key=>$swg){
-            foreach($swg as $k=>$action){
+        foreach($data as $key=>&$swg){
+            foreach($swg as $k=>&$action){
                 if(in_array($k,$methods)){
                     $className = $action['x-class'];
                     $namespace = $action['x-file']['namespace'];
                     $method = $action['x-method'];
                     $class = $namespace.'\\'.$className;
                     $controller = \App::make($class);
-                    $validate = $controller->getParamDefine($method);
-//                    dump($validate);
+                    $param = $controller->getParamDefine($method);
+
+//                    dump($action);
+                    $action['parameters'] =$this->createParamDoc($param,@$action['parameters'],$k);
+
                 }
             }
         }
+//        dump($doc);
+        $doc['paths']=$data;
         return $doc;
     }
+
+    /**
+     * 生成对于的文档
+     */
+    protected function createParamDoc($params,$existParam=[],$method = 'index'){
+        if(!$params)
+            return [];
+
+        if(!$existParam)
+            $existParam=[];
+
+        $doc = $existParam;
+        foreach ($params as $param){
+            switch (@$param['type']){
+                case 'select':
+                    $type = 'integer';
+                    break;
+                case 'number':
+                    $type = 'integer';
+                    break;
+                default :
+                    $type = 'string';
+            }
+
+            $name = isset($param['name'])?$param['name']:$param['key'];
+            if(@$param['rule'])
+                $name .=  ' (验证规则):'. @print_r($param['rule'],1);
+
+            //查询方式
+            $in = 'query';
+            if($param['key']=='id'){
+                $in = 'path';
+            }
+
+            $docParam = [
+                'name'=>$param['key'],
+                'in'=>$in,
+                'description'=>$name
+                ,
+                'required'=>false,
+                'schema'=>[
+                    'type'=>$type
+                ],
+                'example'=>'',
+            ];
+
+            $exist=false;
+            //合并自定义的参数
+            foreach ($existParam as $k=>$v){
+                if($v['name']== $param['key']){
+                    $doc[$k] = array_merge($docParam,$v);
+                    $exist = true;
+                }
+            }
+            if(!$exist){
+                $doc[] = $docParam;
+            }
+
+
+        }
+
+
+        //post下可以排除id这个字段选项
+        if($method == 'post'){
+            foreach ($doc as $k=>$v){
+                if($v['name']== 'id'){
+                    unset($doc[$k]);
+                }
+            }
+        }
+
+//        dump($doc);
+
+        return array_values($doc);
+    }
+
     /**
      * 获取对应的文件路径出来
      */

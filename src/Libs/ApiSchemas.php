@@ -21,7 +21,10 @@ class ApiSchemas extends Schemas
      * @return array
      * 期待返回false 所有字段 或者 具体字段结构
      */
-    static function getApiAllowField($name,$group,$target,$extField=[]){
+    static function getApiAllowField($name,$group='in',$target='index',$extField=[]){
+        if(!in_array($group,['in','out'])){
+            throw new \Exception('target输入参数错误,只能in/out');
+        }
 
         if(is_null($extField)){
             return false;
@@ -32,6 +35,7 @@ class ApiSchemas extends Schemas
             if (count($extField) > 0) {
                 $extField = self::formatFields($extField);
                 $schemas = self::getFilterField($schemas, $extField);
+
             }else{
                 //没有定义
                 return false;
@@ -46,10 +50,14 @@ class ApiSchemas extends Schemas
     /**
      * 获取API对应验证规则
      * @param $name
-     * @param $method
+     * @param $group 代表是输入还是输出
+     * @param $param 额外补充的参数
      * @return array
      */
-    static function getValidate($name,$target,$param=[]){
+    static function getValidate($name,$group='in',$param=[]){
+        if(!in_array($group,['in','out'])){
+            throw new \Exception('target输入参数错误,只能in/out');
+        }
         $schemas = self::getSchemas($name);
         //当主文件不存在的时候,$param
         if($schemas!==false) {

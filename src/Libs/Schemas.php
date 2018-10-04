@@ -137,20 +137,23 @@ class Schemas
      */
     static protected function getFilterField($schemas,$apiSchemas){
 
-        if(!is_array($apiSchemas)){
-            return [];
-        }
         $newSchemas=[];
         //如果有*就全部加上
         if(in_array('*',$apiSchemas)){
             $newSchemas = $schemas;
         }
+
+        //没有额外的,就用配置的
+        if(!is_array($apiSchemas)){
+            return $newSchemas;
+        }
+
         //如果有排除字段,也全部加上,再来排除
         if(in_array(false,$apiSchemas)){
             $newSchemas = $schemas;
         }
 
-        //如果直接没有值.认为都没有
+        //如果直接没有值.连*都没有 认为都没有
         if($apiSchemas) {
             foreach ($apiSchemas as $k => $v) {
                 if($v=='*'){
@@ -162,10 +165,13 @@ class Schemas
                     unset($newSchemas[$k]);
                 }elseif($v){
                     //重写字段结构
-                    if(@$schemas[$k])
+                    if(@$schemas[$k]){
                         $newSchemas[$k] = array_merge($schemas[$k],$v);
-                    else
+                    }
+                    else{
                         $newSchemas[$k]=$v;
+                    }
+
                 }
                 //添加进去的字段
                 if( is_numeric($k) ){
