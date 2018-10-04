@@ -43,26 +43,26 @@ class ApisController extends BaseController
      * @param $request
      * @param $model
      */
-    protected function before_hook(&$request,&$model,$method){
-//        $method = $this->method();
-        $method = 'before_'.$method;
-        if(method_exists($this,$method)){
-            $this->$method($request,$model);
-        }
-    }
+//    protected function before_hook(&$request,&$model,$method){
+////        $method = $this->method();
+//        $method = 'before_'.$method;
+//        if(method_exists($this,$method)){
+//            $this->$method($request,$model);
+//        }
+//    }
 
     /**
      * 回调接口
      * @param $request
      * @param $model
      */
-    protected function after_hook(&$data,Request $request,$method){
-//        $method = $this->method();
-        $method = 'after_'.$method;
-        if(method_exists($this,$method)){
-            return $this->$method($data,$request);
-        }
-    }
+//    protected function after_hook(&$data,Request $request,$method){
+////        $method = $this->method();
+//        $method = 'after_'.$method;
+//        if(method_exists($this,$method)){
+//            return $this->$method($data,$request);
+//        }
+//    }
 
     /**
      * 获取当前调用的方法名
@@ -88,9 +88,6 @@ class ApisController extends BaseController
         //处理统计相关
         $model = $this->model->field($request['@columns'])->link();
         $model = $this->parseRequest($request,$model);//解析请求,处理where ordery等
-        $hook = $this->before_hook($request,$model,__FUNCTION__);
-        if($hook)
-            return $hook;
         $pageSize = isset($request->pageSize)?$request->pageSize:10;
 
         //改查询为统计
@@ -114,9 +111,6 @@ class ApisController extends BaseController
         }
 
         $data = $model->paginate($pageSize);
-        $hook = $this->after_hook($data,$request,__FUNCTION__);
-        if($hook)
-            return $hook;
         return $data;
     }
 
@@ -132,16 +126,21 @@ class ApisController extends BaseController
         $model = $this->model;
         //参数验证
         $data = $request->all();
-        $hook = $this->before_hook($data,$model,__FUNCTION__);
-        if($hook)
-            return $hook;
         $data = $model->create($data);
 
         //hook
-        $hook = $this->after_hook($data,$request,__FUNCTION__);
+        $hook = $this->after_store($data,$request,__FUNCTION__);
         if($hook)
             return $hook;
         return Response()->success($data,'添加成功');
+    }
+
+    /**
+     * store的回调
+     * @param $data
+     * @param $request
+     */
+    public function after_store($data,$request){
     }
 
     /**
@@ -153,16 +152,7 @@ class ApisController extends BaseController
     public function show($id,Request $request)
     {
         $model = $this->model->field($request['@columns'])->link();
-        $hook = $this->before_hook($id,$model,__FUNCTION__);
-        if($hook)
-            return $hook;
         $return = $model->find($id);
-
-        //hook
-        $hook = $this->after_hook($return,$request,__FUNCTION__);
-        if($hook)
-            return $hook;
-
         return $return;
     }
 
@@ -178,9 +168,6 @@ class ApisController extends BaseController
         $model = $this->model;
         //参数验证
         $data = $request->all();
-        $hook = $this->before_hook($data,$model,__FUNCTION__);
-        if($hook)
-            return $hook;
         $row = $model->find($id);
         foreach($data as $k=>$v){
             $row->$k=$v;
@@ -188,7 +175,7 @@ class ApisController extends BaseController
         $flag = $row->save();
 
         //hook
-        $hook = $this->after_hook($row,$request,__FUNCTION__);
+        $hook = $this->after_update($row,$request,$flag);
         if($hook)
             return $hook;
 
@@ -201,6 +188,15 @@ class ApisController extends BaseController
     }
 
     /**
+     * store的回调
+     * @param $data
+     * @param $request
+     */
+    public function after_update($data,$request,$flag){
+    }
+
+
+    /**
      * 删除
      *
      * @param  int  $id
@@ -208,12 +204,8 @@ class ApisController extends BaseController
      */
     public function destroy($id,Request $request)
     {
-        $hook = $this->before_hook($id,$this->model,__FUNCTION__);
-        if($hook)
-            return $hook;
-        //
         $return = $this->model->where('id',$id)->delete();
-        $hook = $this->after_hook($return,$request,__FUNCTION__);
+        $hook = $this->after_destory($return,$request);
         if($hook)
             return $hook;
         if($return){
@@ -221,6 +213,14 @@ class ApisController extends BaseController
         }else{
             apiError('删除失败');
         }
+    }
+
+    /**
+     * 删除回调
+     * @param $return
+     * @param $request
+     */
+    public function after_destory($return,$request){
     }
 
 
