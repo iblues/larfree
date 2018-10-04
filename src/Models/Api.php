@@ -164,6 +164,11 @@ class Api extends Model
                     break;
                 default:
                     $as = isset($link['as']) ? $schemas['link']['as'] : $key . '_link';
+                    //如果是_id_link结尾,并且定义中没有前面部分的
+                    //比如user_id_link  如果定义没有user 那就直接用user
+                    if( substr($as,-8) == '_id_link' && !isset($schemas[substr($as , 0,-8)]) ){
+                        $as = substr($as , 0,-8);
+                    }
                     break;
             }
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
