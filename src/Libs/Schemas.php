@@ -98,6 +98,7 @@ class Schemas
         //如果有*就全部加上
         if(in_array('*',array_keys($apiSchemas))){
             $newSchemas = $schemas;
+//            unset($apiSchemas['*']);
         }
 
         //没有额外的,就用配置的

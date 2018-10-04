@@ -160,6 +160,11 @@ class SwaggerController extends Controller
 
         $doc = $existParam;
         foreach ($params as $param){
+
+            if($param['key']=='*'){
+                continue;
+            }
+
             switch (@$param['type']){
                 case 'select':
                     $type = 'integer';
