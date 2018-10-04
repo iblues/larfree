@@ -176,6 +176,10 @@ class SwaggerController extends Controller
                     $type = 'string';
             }
 
+            if(@$param['sql_type']){
+                $type = $param['sql_type'];
+            }
+
             $name = isset($param['name'])?$param['name']:$param['key'];
             if(@$param['rule'])
                 $name .=  ' (验证规则):'. @print_r($param['rule'],1);
