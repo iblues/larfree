@@ -183,6 +183,8 @@ class Api extends Model
         return $schemas;
     }
 
+
+
     /**
      * 配置发起user_link的时候 回调他 进行关联
      * @param $field
@@ -196,13 +198,19 @@ class Api extends Model
             $parm = $schema['link']['model'];
             $method = $parm[0];
 
-            //自动创健中间关联表
-            if (@$_ENV['APP_DEBUG']) {
-                if ($method == 'belongsToMany'){
-                    $this->createLinkTable(get_class($this), $parm[1]);
-//                    return $this->belongsToMany($this,'user_user','user_id','user_sub_id','id','id');
+            if ($method == 'belongsToMany'){
+                //没有手动定义中间表的
+                if(!isset($parm[2])) {
+                    //自动创健中间关联表
+                    if (config('app.debug')) {
+                        $this->createLinkTable(get_class($this), $parm[1]);
+                    }
+                    //中间表名
+                    $tableName = $this->getLinkTableName(get_class($this), $parm[1]);
+                    $parm[2] = $tableName;
                 }
             }
+
             switch (count($parm)) {
                 case '2':
                     $model = $this->$method($parm[1]);
@@ -247,6 +255,9 @@ class Api extends Model
 
     protected function createLinkTable($table1,$table2){
         Table::creatLinkTable(getClassName($table1),getClassName($table2));
+    }
+    protected function getLinkTableName($table1,$table2){
+        return Table::getLinkTableName(getClassName($table1),getClassName($table2));
     }
 
     /**

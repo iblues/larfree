@@ -46,10 +46,7 @@ class Table
      * @return bool
      */
     static public function creatLinkTable($table1,$table2){
-//        echo $table1,$table2;
-        $table = [humpToLine($table1),humpToLine($table2)];
-        sort($table);//看哪个表应该在前面
-         $tableName = $table[0].'_'.$table[1];
+        $tableName = self::getLinkTableName($table1,$table2);
         if(self::isTableExist($tableName)){
             return true;
         }
@@ -59,6 +56,19 @@ class Table
             $table->unsignedInteger(humpToLine($table1).'_id');//索引
             $table->unsignedInteger(humpToLine($table2).'_id');
         });
+    }
+
+    /**
+     * 获取中间表名
+     * @param $table1
+     * @param $table2
+     * @return string
+     */
+    static public function getLinkTableName($table1,$table2){
+        $table = [humpToLine($table1),humpToLine($table2)];
+        sort($table);//看哪个表应该在前面
+        return $tableName = 'link_'.$table[0].'_'.$table[1];
+
     }
 
     /**
