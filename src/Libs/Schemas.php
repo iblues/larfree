@@ -59,49 +59,6 @@ class Schemas
     }
 
 
-//    /**
-//     * 获取组建 给模板赋值用的结构
-//     * @param $name
-//     * @param $component 组建路径,用来获取默认配置
-//     * @param $config
-//     * @return mixed
-//     */
-//    static public function getTplConfig($name='',$component='',$config=[]){
-//        $fullName = $name;
-//        $Schemas='';
-////        echo $component=lcfirst(lineToHump($component));
-//        $cid = str_replace('.', '_', $component.'.'.strtolower($fullName));
-//
-//        if($name) {
-//            $parm = explode('.', $name);
-//            $name = $parm[0];
-//            $action = array_pop($parm);
-//            $name = implode('.',$parm);
-//            $Component = 'App\\Components\\' . $name;
-//            //获取结构
-//            $Schemas = self::getComponentConfig($name, $action);//component单独设置的配置
-//            $defConfig = self::getComponetDefConfig($component);//默认配置
-//
-//            //如果component配置为false.那就用默认配置吧
-//            if($Schemas!==false)
-//                $Schemas = self::array_merge($defConfig,$Schemas);//合并配置.
-//            else
-//                $Schemas = $defConfig;
-//
-//            $Schemas =str_replace('{$COMPONENT}',strtolower($name),json_encode($Schemas));//替换变量
-//            $Schemas =str_replace('{$COMPONENT_ID}',$cid,$Schemas);//替换变量
-//            $Schemas =json_decode($Schemas,1);
-//        }else {
-//            //如果没有name就给一天随机数
-//            $name = rand(10000,99999);
-//        }
-//        $config['config'] = $Schemas;
-//        $config['id'] = $cid;//模板识别用
-//        $config['model'] = strtolower($name);
-//        return $config;
-//
-//    }
-
     static protected function array_merge($def,$new){
         $config='';
         if (isset($new['config'])) {
@@ -139,7 +96,7 @@ class Schemas
 
         $newSchemas=[];
         //如果有*就全部加上
-        if(in_array('*',$apiSchemas)){
+        if(in_array('*',array_keys($apiSchemas))){
             $newSchemas = $schemas;
         }
 
@@ -152,6 +109,7 @@ class Schemas
         if(in_array(false,$apiSchemas)){
             $newSchemas = $schemas;
         }
+
 
         //如果直接没有值.连*都没有 认为都没有
         if($apiSchemas) {
@@ -200,7 +158,6 @@ class Schemas
      */
     static protected function formatFields($schemas){
         $new = [];
-        $newSchema = [];
         //如果有单独设置字段就处理
         if (isset($schemas) && is_array($schemas)) {
             foreach($schemas as $k=>$v) {
@@ -211,7 +168,7 @@ class Schemas
                         $v['key']=$k;
                     $new[$k] = $v;
                 } else {
-                    $new[$v] = '';
+                    $new[$v] = ['key'=>$v];
                 }
             }
         }else{

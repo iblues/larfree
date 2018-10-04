@@ -137,7 +137,6 @@ class SwaggerController extends Controller
                     $class = $namespace.'\\'.$className;
                     $controller = \App::make($class);
                     $param = $controller->getParamDefine($method);
-
 //                    dump($action);
                     $action['parameters'] =$this->createParamDoc($param,@$action['parameters'],$k);
 
