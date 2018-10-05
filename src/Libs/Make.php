@@ -316,7 +316,7 @@ MODEL;
                 'name'=>'{$name}',
                 'tip'=>'',
                 'type'=>'{$type}',
-                'sql_type'=>'{$column['Type']},
+                'sql_type'=>'{$column['Type']}',
             ],";
         }
 
