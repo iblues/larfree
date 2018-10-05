@@ -54,20 +54,6 @@ return [
                 'tip'=>'',
                 'type'=>'text',
             ],
-            'coupon'=>[
-                'name'=>'优惠卷',
-                'tip'=>'',
-                'type'=>'select',
-                'link'=>[
-                    'model'=>[
-                        'belongsToMany',
-                        'App\\Models\\Shop\\ShopCoupon',
-                    ],
-                    'select'=>['id','name'],
-                    'field'=>['id','name']
-                ],
-                'multi'=>true,
-            ],
             'api_token'=>[
                 'name'=>'api_token',
                 'tip'=>'',
