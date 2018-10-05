@@ -53,6 +53,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             $path.'/Copy/routes/' => dirname(app_path('')).'/routes/',
         ],'larfree');
+        $this->publishes([
+            $path.'/Copy/tests/' => dirname(app_path('')).'/tests/',
+        ],'larfree');
 
         $this->loadRoutesFrom($path . '/routes/api.php');
 
