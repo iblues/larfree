@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use Larfree\Models\Api;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
+
 
 class UrlAdvWhereTest extends TestCase {
     /**
