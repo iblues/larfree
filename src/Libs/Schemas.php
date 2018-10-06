@@ -41,14 +41,29 @@ class Schemas
      * 会调用对于的config方法
      */
     static public function loadComponentConfg(&$config){
-        if(!isset($config['multi']) && isset($config['link']) && isset($config['model']) ){
-            switch ($config['model'][0]){
+        //自动设置Multi
+        if(!isset($config['multi']) && isset($config['link']) && isset($config['link']['model']) ){
+            switch ($config['link']['model'][0]){
                 case 'hasMany':
                 case 'belongsToMany':
                     $config['multi']=true;
+
                     break;
                 default:
                     $config['multi']=false;
+                    break;
+            }
+        }
+        //自动设置as字段
+        if(isset($config['link']) && !isset($config['link']['as'])  && isset($config['link']['model'])) {
+            switch ($config['link']['model'][0]) {
+                case 'hasMany':
+                case 'belongsToMany':
+                    //这2个链表的不用管
+                    break;
+                default:
+                    if( substr($config['key'],-3) == '_id')
+                        $config['link']['as'] = substr($config['key'],0,-3);
                     break;
             }
         }
