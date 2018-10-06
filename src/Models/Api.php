@@ -375,4 +375,18 @@ trait Chart {
         return $countData;
 
     }
+
+    /**
+     * 保存和添加的回调
+     * @param $data
+     */
+    public function beforeSave(Api $data){
+    }
+
+    /**
+     * 保存和添加的回调
+     * @param $data
+     */
+    public function afterSave(Api $data){
+    }
 }

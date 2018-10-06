@@ -77,13 +77,13 @@ class Table
      */
     static public function getColumns($table){
         $return = [];
-        if(!env('APP_DEBUG'))
+        if(!config('app.debug'))
             $return = Cache::get($table . '_columns');
 
         if (!$return) {
             $return = Schema::getColumnListing($table);
             if ($return) {
-                Cache::put($table . '_columns', $return, 1440);
+                Cache::put($table . '_columns', $return, 14400);
             }
         }
         return $return;

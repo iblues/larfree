@@ -36,6 +36,7 @@ class ModelSaved
                 }
             }
         }
+        $data->afterSave($data);
         //
     }
 
