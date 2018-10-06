@@ -18,7 +18,7 @@ class CreateTestsTable extends Migration
             $table->string('title')->comment('标题');
             $table->longText('content')->comment('详情');
             $table->unsignedInteger('user_id')->comment('用户id')->index();//索引
-            $table->unsignedInteger('select')->comment('普通下拉');
+//            $table->unsignedInteger('select')->comment('普通下拉');
             $table->text('upload');//上传的图片  用json存
             $table->text('file');//上传的文件  用json存
             $table->decimal('price',10,2)->index();// 10位,10个小数
