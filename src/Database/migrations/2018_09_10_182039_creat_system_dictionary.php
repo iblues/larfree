@@ -30,6 +30,6 @@ class CreatSystemDictionary extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('system_dictionary');
     }
 }

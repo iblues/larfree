@@ -13,7 +13,7 @@ class CreateAddressTable extends Migration
      */
     public function up()
     {
-        Schema::create('address', function (Blueprint $table) {
+        Schema::create('address_address', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->comment('用户');
             $table->string('name')->comment('收货人名称');
@@ -35,6 +35,6 @@ class CreateAddressTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('address');
+        Schema::dropIfExists('address_address');
     }
 }

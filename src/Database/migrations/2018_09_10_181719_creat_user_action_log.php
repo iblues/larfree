@@ -42,6 +42,6 @@ class CreatUserActionLog extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('user_action_log');
     }
 }

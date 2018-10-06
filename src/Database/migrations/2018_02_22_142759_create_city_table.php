@@ -13,7 +13,7 @@ class CreateCityTable extends Migration
      */
     public function up()
     {
-        Schema::create('city', function (Blueprint $table) {
+        Schema::create('address_city', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('province_id')->comment('省');
             $table->string('name')->comment('名称');
@@ -28,6 +28,6 @@ class CreateCityTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('city');
+        Schema::dropIfExists('address_city');
     }
 }

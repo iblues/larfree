@@ -32,6 +32,7 @@ class CreatAuthRole extends Migration
      */
     public function down()
     {
-        //
+
+        Schema::dropIfExists('auth_role');
     }
 }

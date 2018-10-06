@@ -32,6 +32,7 @@ class CreatAuthScope extends Migration
      */
     public function down()
     {
-        //
+
+        Schema::dropIfExists('auth_scope');
     }
 }
