@@ -268,10 +268,19 @@ class ApisController extends BaseController
     /**
      * 进行输入验证
      */
-    public function getValidation($method)
+    public function getValidation($method,$httpMethod='POST')
     {
         $ext = isset($this->in[$method])?$this->in[$method]:['*'];
         $validate = ApiSchemas::getValidate( $this->modelName ,'in',$ext);
+        //PUT修改的,不一定是所有字段都有,所以自动加上sometimes
+        if($httpMethod=='PUT'){
+           array_walk($validate['rules'],function (&$value){
+               if(stripos($value,'sometimes')===false){
+                   $value = 'sometimes|'.$value;
+               }
+           });
+
+        }
         return $validate;
     }
 
@@ -319,7 +328,7 @@ class ApisController extends BaseController
          */
         if( isset($parameters[0]) && $parameters[0] instanceof Request && $parameters[0]->getMethod() != 'GET'){
             $this->filterInput($parameters[0],'in',$method);
-            $validate = $this->getValidation($method);
+            $validate = $this->getValidation($method,$parameters[0]->getMethod());
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
         }
 
