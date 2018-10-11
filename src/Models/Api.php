@@ -336,6 +336,22 @@ class Api extends Model
         $model->appends = $field;
         return $model;
     }
+
+
+
+    /**
+     * 保存和添加的回调
+     * @param $data
+     */
+    public function beforeSave(Api $data){
+    }
+
+    /**
+     * 保存和添加的回调
+     * @param $data
+     */
+    public function afterSave(Api $data){
+    }
 }
 
 
@@ -374,19 +390,5 @@ trait Chart {
 
         return $countData;
 
-    }
-
-    /**
-     * 保存和添加的回调
-     * @param $data
-     */
-    public function beforeSave(Api $data){
-    }
-
-    /**
-     * 保存和添加的回调
-     * @param $data
-     */
-    public function afterSave(Api $data){
     }
 }
