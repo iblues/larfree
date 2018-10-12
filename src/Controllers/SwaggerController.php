@@ -181,8 +181,12 @@ class SwaggerController extends Controller
             }
 
             $name = isset($param['name'])?$param['name']:$param['key'];
+            if(@$param['default']){
+                $name .='<br />参考值:'.$param['default'];
+            }
             if(@$param['rule'])
-                $name .=  ' (验证规则):'. @print_r($param['rule'],1);
+                $name .=  ' <br />验证规则:'. @print_r($param['rule'],1);
+
 
             //查询方式
             $in = 'query';
@@ -199,7 +203,7 @@ class SwaggerController extends Controller
                 'schema'=>[
                     'type'=>$type
                 ],
-                'example'=>'',
+                'example'=>@$param['default'],
             ];
 
             $exist=false;
