@@ -65,7 +65,7 @@ class LarfreeMigrate extends Command
         if($number==1){
             foreach($dir as $key => $path){
                 if($key>1){
-                    echo $path = '/database/migrations/'.$dir[$number],"\r\n";
+                    echo $path = '/database/migrations/'.$dir[$key],"\r\n";
                     $this->call('migrate', [
                         '--path' =>$path,
                     ]);
@@ -73,6 +73,6 @@ class LarfreeMigrate extends Command
             }
         }
 
-        
+
     }
 }
