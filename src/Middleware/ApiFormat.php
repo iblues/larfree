@@ -31,6 +31,7 @@ class ApiFormat
         $json=json_decode($response->getContent(),1);
         //如果status已经有了 说明apiResource处理了 就不处理了
         if(isset($json['code'])){
+            $response->setStatusCode($json['code']);
             return $response;
         }
         //没数据的时候
