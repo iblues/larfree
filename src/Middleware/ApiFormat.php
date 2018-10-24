@@ -27,8 +27,8 @@ class ApiFormat
         $response->header('Access-Control-Allow-Credentials', 'false');
 
         $content = $response->getOriginalContent();
-
-        $json=json_decode($response->getContent(),1);
+//dump($content);
+        $json=json_decode($content,true);
         //如果status已经有了 说明apiResource处理了 就不处理了
         if(isset($json['code'])){
             $response->setStatusCode($json['code']);
