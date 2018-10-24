@@ -97,7 +97,7 @@ class SwaggerController extends Controller
                         $responses['description'] = $description[0];
                         $responses['content']['application/json']['schema']=[
                             'type'=>'json',
-                            'example'=>$this->getMd5Content($description[1])['content']
+                            'example'=>@$this->getMd5Content($description[1])['content']
                         ];
                     }
 
@@ -136,14 +136,17 @@ class SwaggerController extends Controller
                     $method = $action['x-method'];
                     $class = $namespace.'\\'.$className;
                     $controller = \App::make($class);
+
                     $param = $controller->getParamDefine($method);
-//                    dump($action);
-                    $action['parameters'] =$this->createParamDoc($param,@$action['parameters'],$k);
+                    $this->createParamDoc($param,@$action,$k);
+                    if($action['summary'] == '修改数据'){
+
+//                        dump($action);
+                    }
 
                 }
             }
         }
-//        dump($doc);
         $doc['paths']=$data;
         return $doc;
     }
@@ -151,7 +154,10 @@ class SwaggerController extends Controller
     /**
      * 生成对于的文档
      */
-    protected function createParamDoc($params,$existParam=[],$method = 'index'){
+    protected function createParamDoc($params,&$apiDoc,$method = 'index'){
+
+        $existParam= @$apiDoc['parameters'];
+
         if(!$params)
             return [];
 
@@ -187,6 +193,8 @@ class SwaggerController extends Controller
             if(@$param['rule'])
                 $name .=  ' <br />验证规则:'. @print_r($param['rule'],1);
 
+            if(@$param['tip'])
+                $name .=  ' <br />提示:'. $param['tip'];
 
             //查询方式
             $in = 'query';
@@ -231,11 +239,49 @@ class SwaggerController extends Controller
             }
         }
 
-//        dump($doc);
 
-        return array_values($doc);
+        //put何
+        $body = [];
+        if($method=='post' || $method=='put'){
+            foreach ($doc as $k=>$v){
+                //query就是body
+                if($v['in']== 'query'){
+                    $body[] = $doc[$k];
+                    unset($doc[$k]);
+                }
+            }
+        }
+
+        $doc = array_values($doc);
+
+        $apiDoc['requestBody']['content']['application/json']['schema']=$this->ParamToBodyParam($body);
+        $apiDoc['parameters'] = $doc;
     }
 
+
+    /**
+     * 把普通输入参数转换成body请求的参数
+     * @param array $bdoy
+     * @return mixed
+     */
+    protected function ParamToBodyParam(array $body){
+//        dump($body);
+
+        $properties = [];
+        $example = [];
+        foreach ($body as $k=>$v){
+            $param=[];
+            $param['title']=@$v['name'];
+            $param['description']=@$v['description'];
+            $param['type']=@$v['schema']['type'];
+            $properties[@$v['name']]=$param;
+            $example[$v['name']]=$v['example']??'';
+        }
+
+        $doc = ['properties'=>$properties,'type'=>'object','example'=>$example];
+
+        return $doc;
+    }
     /**
      * 获取对应的文件路径出来
      */
