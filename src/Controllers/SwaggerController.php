@@ -136,14 +136,10 @@ class SwaggerController extends Controller
                     $method = $action['x-method'];
                     $class = $namespace.'\\'.$className;
                     $controller = \App::make($class);
-
-                    $param = $controller->getParamDefine($method);
-                    $this->createParamDoc($param,@$action,$k);
-                    if($action['summary'] == '修改数据'){
-
-//                        dump($action);
+                    if(method_exists($controller,'getParamDefine')) {
+                        $param = $controller->getParamDefine($method);
+                        $this->createParamDoc($param, @$action, $k);
                     }
-
                 }
             }
         }
