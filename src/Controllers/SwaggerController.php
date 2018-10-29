@@ -135,6 +135,7 @@ class SwaggerController extends Controller
                     $namespace = $action['x-file']['namespace'];
                     $method = $action['x-method'];
                     $class = $namespace.'\\'.$className;
+
                     $controller = \App::make($class);
                     if(method_exists($controller,'getParamDefine')) {
                         $param = $controller->getParamDefine($method);
@@ -192,11 +193,21 @@ class SwaggerController extends Controller
             if(@$param['tip'])
                 $name .=  ' <br />提示:'. $param['tip'];
 
+            if(@$param['param'])
+                $name .=  ' <br />模型:'. '<pre><code>'.print_r($param['param'],1).'</code></pre>';
+
             //查询方式
             $in = 'query';
             if($param['key']=='id'){
                 $in = 'path';
             }
+
+            $example = @$param['example'];
+            if(!$example)
+            {
+                $example = @$param['default'];
+            }
+
 
             $docParam = [
                 'name'=>$param['key'],
@@ -207,7 +218,7 @@ class SwaggerController extends Controller
                 'schema'=>[
                     'type'=>$type
                 ],
-                'example'=>@$param['default'],
+                'example'=>$example,
             ];
 
             $exist=false;
@@ -261,8 +272,6 @@ class SwaggerController extends Controller
      * @return mixed
      */
     protected function ParamToBodyParam(array $body){
-//        dump($body);
-
         $properties = [];
         $example = [];
         foreach ($body as $k=>$v){
@@ -273,7 +282,6 @@ class SwaggerController extends Controller
             $properties[@$v['name']]=$param;
             $example[$v['name']]=$v['example']??'';
         }
-
         $doc = ['properties'=>$properties,'type'=>'object','example'=>$example];
 
         return $doc;
@@ -290,7 +298,7 @@ class SwaggerController extends Controller
                     if(!is_object($action))
                         continue;
 
-//                    $doc = json_decode(json_encode($swagger),true);
+                    $doc = json_decode(json_encode($swagger),true);
 
                     if(@$action->_context) {
                         $file = $action->_context->getRootContext();
