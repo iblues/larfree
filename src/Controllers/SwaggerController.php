@@ -290,7 +290,7 @@ class SwaggerController extends Controller
                     if(!is_object($action))
                         continue;
 
-                    $doc = json_decode(json_encode($swagger),true);
+//                    $doc = json_decode(json_encode($swagger),true);
 
                     if(@$action->_context) {
                         $file = $action->_context->getRootContext();
