@@ -249,8 +249,8 @@ class SwaggerController extends Controller
         }
 
         $doc = array_values($doc);
-
-        $apiDoc['requestBody']['content']['application/json']['schema']=$this->ParamToBodyParam($body);
+        if($body)
+            $apiDoc['requestBody']['content']['application/json']['schema']=$this->ParamToBodyParam($body);
         $apiDoc['parameters'] = $doc;
     }
 
