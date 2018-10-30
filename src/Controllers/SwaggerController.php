@@ -128,13 +128,27 @@ class SwaggerController extends Controller
         $return = json_decode( trim(file_get_contents($path)) ,1);
         $content = json_decode($return['content'],1);
         //给返回值添加注释
-        $content = json_encode( $this->addReturnCode($content['data'],$dictionary,'') ,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $content['data'] =  $this->addReturnCode($content['data'],$dictionary,'');
         $return['content'] = $content;
         return $return;
 
     }
 
+    /**
+     * 给返回参数增加注释
+     * @param $content
+     * @param $dictionary
+     * @param string $model
+     * @return mixed
+     */
     public function addReturnCode($content,$dictionary,$model=''){
+        //如果是数组
+
+        if( @$content[0]){
+//            dump($content);
+            return $this->addReturnCode($content[0],$dictionary,$model);
+        }
+
         foreach ($content as $k=>$v){
 //            $val = SystemDictionary::where('key',$k)->orderBy('id','desc')->first();
             $val=[];
