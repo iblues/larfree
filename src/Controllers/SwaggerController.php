@@ -122,24 +122,33 @@ class SwaggerController extends Controller
             return 'json undefined';
         }
 
+        $config = SystemDictionary::get();
+        $dictionary = ($config->toArray());//先获取所有的
+
         $return = json_decode( trim(file_get_contents($path)) ,1);
         $content = json_decode($return['content'],1);
         //给返回值添加注释
-        $content = json_encode( $this->addReturnCode($content['data'],'') ,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $content = json_encode( $this->addReturnCode($content['data'],$dictionary,'') ,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $return['content'] = $content;
         return $return;
 
     }
 
-    public function addReturnCode($content,$model){
+    public function addReturnCode($content,$dictionary,$model=''){
         foreach ($content as $k=>$v){
-            $val = SystemDictionary::where('key',$k)->orderBy('id','desc')->first();
+//            $val = SystemDictionary::where('key',$k)->orderBy('id','desc')->first();
+            foreach ($dictionary as $dict){
+                if($dict['key'] == $k){
+                    $val = $dict;
+                    break;
+                }
+            }
             if(!is_array($v)) {
-                if($val->value!=null) {
-                    $string = '  说明 : ' . $val->value ?? ' [资料缺失] ';
+                if($val['value']!=null) {
+                    $string = '  说明 : ' . $val['value'] ?? ' [资料缺失] ';
                 }
                 if($string)
-                    $content[$k] =str_pad($v,35-strlen($k),' ') .$string;
+                    $content[$k] =$v.str_pad('',35-strlen($k)-mb_strlen($v),' ') .$string;
             }else{
                 $content[$k] = $this->addReturnCode($v,'');
             }
