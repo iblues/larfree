@@ -39,7 +39,9 @@ class LarfreeDictionary extends Command
     public function handle()
     {
         $schemas = Schemas::getAllSchemasConfig();
-        array_walk($schemas,array($this,'model'));
+        foreach($schemas as $schema){
+            array_walk($schema,array($this,'model'));
+        }
     }
 
     public function model($model){

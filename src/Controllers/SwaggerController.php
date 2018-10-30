@@ -137,6 +137,7 @@ class SwaggerController extends Controller
     public function addReturnCode($content,$dictionary,$model=''){
         foreach ($content as $k=>$v){
 //            $val = SystemDictionary::where('key',$k)->orderBy('id','desc')->first();
+            $val=[];
             foreach ($dictionary as $dict){
                 if($dict['key'] == $k){
                     $val = $dict;
