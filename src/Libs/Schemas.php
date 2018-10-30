@@ -248,6 +248,24 @@ class Schemas
         $list = dirToArray($path);
         return $list;
     }
+
+    /**
+     * 获取所有的配置
+     * @return array
+     */
+    static function getAllSchemasConfig(){
+        $path = config_path().'/Schemas/Schemas';
+        $list = self::getAllSchemas();
+        foreach ($list  as  $module=>$file) {
+            $lists = array_map(function ($file) use ($path,$module) {
+                $filePath = $path.'/'.$module. '/' . $file;
+                $data = include($filePath);
+                $data['key'] = humpToLine(basename($file, '.php'));
+                return $data;
+            }, $file);
+        }
+        return $lists;
+    }
     /**
      * 获取所有的配置
      * @return array

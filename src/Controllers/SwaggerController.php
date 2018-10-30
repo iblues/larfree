@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\TestController;
 use Illuminate\Http\Request;
 use Larfree\Libs\Swagger;
 use Illuminate\Routing\Controller as Controller;
+use Larfree\Models\System\SystemDictionary;
 
 //可以这么用变量
 //define("API_HOST", ($env === "production") ? "example.com" : "localhost");
@@ -121,10 +122,30 @@ class SwaggerController extends Controller
             return 'json undefined';
         }
 
-        return json_decode( trim(file_get_contents($path)) ,1);
+        $return = json_decode( trim(file_get_contents($path)) ,1);
+        $content = json_decode($return['content'],1);
+        //给返回值添加注释
+        $content = json_encode( $this->addReturnCode($content['data'],'') ,JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $return['content'] = $content;
+        return $return;
 
     }
 
+    public function addReturnCode($content,$model){
+        foreach ($content as $k=>$v){
+            $val = SystemDictionary::where('key',$k)->orderBy('id','desc')->first();
+            if(!is_array($v)) {
+                if($val->value!=null) {
+                    $string = '  说明 : ' . $val->value ?? ' [资料缺失] ';
+                }
+                if($string)
+                    $content[$k] =str_pad($v,35-strlen($k),' ') .$string;
+            }else{
+                $content[$k] = $this->addReturnCode($v,'');
+            }
+        }
+        return $content;
+    }
     public function getParameters($doc){
         $data = $doc['paths'];
         $methods=['get','post','put','delete','patch','delete'];

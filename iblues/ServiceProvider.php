@@ -10,6 +10,7 @@ namespace Iblues\Larfree;
 
 
 use Larfree\Console\Commands\AddressMake;
+use Larfree\Console\Commands\LarfreeDictionary;
 use Larfree\Console\Commands\LarfreeInstall;
 use Larfree\Console\Commands\LarfreeMake;
 use Larfree\Console\Commands\LarfreeMigrate;
@@ -68,6 +69,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 LarfreeMake::class,
                 LarfreeInstall::class,
                 LarfreeMigrate::class,
+                LarfreeDictionary::class,
             ]);
         }
 
