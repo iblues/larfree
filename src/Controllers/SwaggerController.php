@@ -4,6 +4,7 @@ namespace Larfree\Controllers;
 
 use App\Http\Controllers\Api\TestController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Larfree\Libs\Swagger;
 use Illuminate\Routing\Controller as Controller;
 use Larfree\Models\System\SystemDictionary;
@@ -122,8 +123,16 @@ class SwaggerController extends Controller
             return 'json undefined';
         }
 
-        $config = SystemDictionary::get();
-        $dictionary = ($config->toArray());//先获取所有的
+
+
+        if(!Cache::has('SystemDictionary')){
+//            Cache::
+            $config = SystemDictionary::select('key','value')->get();
+            $dictionary = ($config->toArray());//先获取所有
+            Cache::put('SystemDictionary', $dictionary, 60);
+        }else{
+            $dictionary = Cache::get('SystemDictionary');
+        }
 
         $return = json_decode( trim(file_get_contents($path)) ,1);
         $content = json_decode($return['content'],1);
@@ -144,9 +153,10 @@ class SwaggerController extends Controller
     public function addReturnCode($content,$dictionary,$model=''){
         //如果是数组
 
-        if( @$content[0]){
+        if(@$content[0] && is_array($content[0])){
 //            dump($content);
-            return $this->addReturnCode($content[0],$dictionary,$model);
+            $content[0] = $this->addReturnCode($content[0],$dictionary,$model);
+            return $content;
         }
 
         foreach ($content as $k=>$v){
