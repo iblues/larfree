@@ -29,6 +29,7 @@ class ApisController extends BaseController
     protected $msg='';
     protected $additional='';
     public $in;
+    protected $link=true;
 
     public function __construct()
     {
@@ -86,7 +87,9 @@ class ApisController extends BaseController
     {
         $chart = $request->get('@chart');
         //处理统计相关
-        $model = $this->model->field($request['@columns'])->link();
+        $model = $this->model->field($request['@columns']);
+        if($this->link)
+            $model = $this->model->link();
         $model = $this->parseRequest($request,$model);//解析请求,处理where ordery等
         $pageSize = isset($request->pageSize)?$request->pageSize:10;
 
@@ -151,7 +154,9 @@ class ApisController extends BaseController
      */
     public function show($id,Request $request)
     {
-        $model = $this->model->field($request['@columns'])->link();
+        $model = $this->model->field($request['@columns']);
+        if($this->link)
+            $model = $this->model->link();
         $return = $model->find($id);
         return $return;
     }
@@ -274,11 +279,11 @@ class ApisController extends BaseController
         $validate = ApiSchemas::getValidate( $this->modelName ,'in',$ext);
         //PUT修改的,不一定是所有字段都有,所以自动加上sometimes
         if($httpMethod=='PUT'){
-           array_walk($validate['rules'],function (&$value){
-               if(stripos($value,'sometimes')===false){
-                   $value = 'sometimes|'.$value;
-               }
-           });
+            array_walk($validate['rules'],function (&$value){
+                if(stripos($value,'sometimes')===false){
+                    $value = 'sometimes|'.$value;
+                }
+            });
 
         }
         return $validate;
