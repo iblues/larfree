@@ -278,7 +278,7 @@ class ApisController extends BaseController
         $ext = isset($this->in[$method])?$this->in[$method]:['*'];
         $validate = ApiSchemas::getValidate( $this->modelName ,'in',$ext);
         //PUT修改的,不一定是所有字段都有,所以自动加上sometimes
-        if($httpMethod=='PUT'){
+        if($httpMethod=='PUT' && $method =='update'){
             array_walk($validate['rules'],function (&$value){
                 if(stripos($value,'sometimes')===false){
                     $value = 'sometimes|'.$value;
