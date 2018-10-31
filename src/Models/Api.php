@@ -283,10 +283,14 @@ class Api extends Model
      * @param $data
      */
     protected function callComponent($method,$config,&$data){
-        $class='App\Components\Field\\'.ucfirst($config['type']);
-        if(method_exists($class,$method)){
+        $larfreeClass='Larfree\Components\Field\\'.ucfirst($config['type']);
+        $class='Larfree\Components\Field\\'.ucfirst($config['type']);
+        if(method_exists($larfreeClass,$method)){
+            $larfreeClass::$method($config,$data);
+        }elseif(method_exists($class,$method)){
             $class::$method($config,$data);
         }
+
     }
 
     public function __call($method, $parameters)
