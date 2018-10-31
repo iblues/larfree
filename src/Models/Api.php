@@ -105,13 +105,19 @@ class Api extends Model
      * @param $model
      * @return mixed
      */
-    public function scopeLink($model){
+    public function scopeLink($model,array $field=[]){
         foreach($this->_dolink as $k=>$name){
+            if($field && !in_array($name,$field)){
+                continue;
+            }
             //多对多关系
             if($name)
                 $model = $model->with($name);
         }
         foreach($this->_dolinkCount as $k=>$name){
+            if($field && !in_array($name,$field)){
+                continue;
+            }
             //多对多关系
             if($name)
                 $model = $model->withCount($name);
