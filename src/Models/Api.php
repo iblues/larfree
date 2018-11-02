@@ -62,6 +62,7 @@ class Api extends Model
         else
             $this->_schemas = array_map([$this, 'initProtected'], $this->_schemas);
 
+
     }
 
 
@@ -130,7 +131,7 @@ class Api extends Model
      * 获取数据库中的数据列表
      * @return mixed
      */
-    public function getColumns(){
+    public function scopeGetColumns(){
         static $Columns=[];//laravels可能会出问题
         if(!$Columns)
             $Columns = Table::getColumns($this->getTable());
@@ -179,7 +180,6 @@ class Api extends Model
         }
         //dolink是实际执行
         //_link是保存个原始的方便恢复原状
-
 
         return $schemas;
     }
