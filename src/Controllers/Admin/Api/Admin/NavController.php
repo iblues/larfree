@@ -21,7 +21,7 @@ class NavController extends Controller
      * @return array
      */
     public function tree(){
-        $nav = $this->model->where('status',1)->get();
+        $nav = $this->model->where('status',1)->orderBy('ranking','desc')->get();
         $nav = $nav->toArray();
         $nav = listToTree($nav, 'id', 'parent_id', 'child');
         return $nav;
