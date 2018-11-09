@@ -174,7 +174,7 @@ function getThumb($filename, $width, $height, $mode = 0)
 {
     if (!$filename)
         return '';
-    $type = config('UPLOAD_TYPE','file');
+    $type = env('UPLOAD_TYPE','qiniu');
     switch ($type) {
         case 'file':
             return env('APP_URL') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
