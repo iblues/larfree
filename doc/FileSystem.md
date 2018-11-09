@@ -2,6 +2,9 @@
 config/filesystems.php
 .env
 
+默认是七牛
+UPLOAD_TYPE=qiniu
+
 APP_URL=http://localhost
 
         //https://github.com/zgldh/qiniu-laravel-storage
