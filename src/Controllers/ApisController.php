@@ -331,7 +331,8 @@ class ApisController extends BaseController
          * 进行输入参数的验证和过滤
          * //当参数存在,并且他是Request 而且不是Get. get就不做参数验证了
          */
-        if( isset($parameters[0]) && $parameters[0] instanceof Request && $parameters[0]->getMethod() != 'GET'){
+//        dd($parameters[0]);
+        if( isset($parameters[0]) && $parameters[0] instanceof Request && ( $parameters[0]->getMethod() != 'GET' && $parameters[0]->getMethod() != 'DELETE')){
             $this->filterInput($parameters[0],'in',$method);
             $validate = $this->getValidation($method,$parameters[0]->getMethod());
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
