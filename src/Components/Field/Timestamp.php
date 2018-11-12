@@ -18,6 +18,7 @@ class Timestamp extends Components
      */
     static public function getAttribute($config,&$array){
         $value  = $array[$config['key']];
-        $array[$config['key'] . '_timestamp'] = strtotime($value);
+        $time = strtotime($value);
+        $array[$config['key'] . '_timestamp'] = $time ? $time: 0;
     }
 }
