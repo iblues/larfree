@@ -338,7 +338,7 @@ class ApisController extends BaseController
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
         }
 
-        if(function_exists('clock')) {
+        if(function_exists('clock') && isset($parameters[0])) {
             clock($parameters[0]);
         }
 
