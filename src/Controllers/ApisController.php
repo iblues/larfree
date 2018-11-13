@@ -338,6 +338,10 @@ class ApisController extends BaseController
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
         }
 
+        if(function_exists('clock')) {
+            clock($parameters[0]);
+        }
+
         //执行真实的函数
         $return = call_user_func_array([$this, $method], $parameters);
 
