@@ -23,6 +23,7 @@ class Api extends Model
     protected $_dolink = [];//真正查询Link的
     protected $_dolinkCount = [];//统计link的数字
     protected $_tmpSave;//save事情临时存储用
+    protected $_log=false;//是否开启日志记录
     protected $dispatchesEvents = [
         'saved' => ModelSaved::class,//编辑和保存在里面
         'saving' => ModelSaving::class,//编辑和保存在里面
@@ -140,6 +141,10 @@ class Api extends Model
 
     public function  getSchemas(){
         return $this->_schemas;
+    }
+
+    public function  getModelName(){
+        return $this->_modelName;
     }
 
 
@@ -348,6 +353,18 @@ class Api extends Model
     }
 
 
+    /**
+     * 是否需要日志记录
+     */
+    public function is_log(){
+        return $this->_log;
+    }
+    /**
+     * 是否需要开启日志记录
+     */
+    public function set_log($flag = true){
+        return $this->_log = $flag;
+    }
 
     /**
      * 保存和添加的回调

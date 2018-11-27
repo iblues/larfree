@@ -28,6 +28,7 @@ class ApisController extends BaseController
     public $uid;
     protected $msg='';
     protected $additional='';
+    protected $log = false;//控制权记录日志,model也有的
     public $in;
     protected $link=true;
 
@@ -327,6 +328,10 @@ class ApisController extends BaseController
     public function callAction($method, $parameters)
     {
 
+        if(function_exists('clock') && isset($parameters[0])) {
+            clock($parameters[0]);
+        }
+
         /**
          * 进行输入参数的验证和过滤
          * //当参数存在,并且他是Request 而且不是Get. get就不做参数验证了
@@ -338,9 +343,7 @@ class ApisController extends BaseController
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
         }
 
-        if(function_exists('clock') && isset($parameters[0])) {
-            clock($parameters[0]);
-        }
+
 
         //执行真实的函数
         $return = call_user_func_array([$this, $method], $parameters);
