@@ -102,16 +102,15 @@ function getLoginUserID($uid = '')
     static $id;
     if ($uid) {
         $id = $uid;
+        Auth::loginUsingId($uid);
     }
     if ($id) {
         return $id;
-    } elseif (true) {
-        $user = \Auth::guard('api')->user();
-        if (!$user)
-            return @$_ENV['DEF_USER'];
-        return $user->id;
     } else {
-        return $_ENV['DEF_USER'];
+        $loginid = \Auth()->id();
+        if (!$loginid)
+            return @$_ENV['DEF_USER'];
+        return $loginid;
     }
 }
 
