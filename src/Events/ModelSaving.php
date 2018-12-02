@@ -26,7 +26,7 @@ class ModelSaving
         //过滤掉数据库没有的列,避免报错
         $columns = $data->getColumns();
         //日志记录
-        if($data->is_log()){
+        if($data->isLog()){
             $this->logAction($data);
         }
 
@@ -45,9 +45,12 @@ class ModelSaving
      */
     public function logAction(Api $data){
         if(class_exists('App\Events\Log\ModelChange') && $data->id ){
+
             $oldData = (new $data)->find($data->id);
             event(new \App\Events\Log\ModelChange($oldData,$data));
 //            $diff = array_diff($oldData->toArray(),$data->toArray());
+
+
         }
     }
 

@@ -26,9 +26,9 @@ class ApisController extends BaseController
 
     public $model;
     public $uid;
+    protected $log=false;
     protected $msg='';
     protected $additional='';
-    protected $log = false;//控制权记录日志,model也有的
     public $in;
     protected $link=true;
 
@@ -130,6 +130,12 @@ class ApisController extends BaseController
         $model = $this->model;
         //参数验证
         $data = $request->all();
+
+        //开启日志系统
+        if($this->log &&  method_exists($data,'startLog')){
+            $data->startLog();
+        }
+
         $data = $model->create($data);
 
         //hook
@@ -177,6 +183,10 @@ class ApisController extends BaseController
         $row = $model->find($id);
         foreach($data as $k=>$v){
             $row->$k=$v;
+        }
+        //开启日志系统
+        if($this->log &&  method_exists($row,'startLog')){
+            $row->startLog();
         }
         $flag = $row->save();
 
@@ -328,10 +338,6 @@ class ApisController extends BaseController
     public function callAction($method, $parameters)
     {
 
-        if(function_exists('clock') && isset($parameters[0])) {
-            clock($parameters[0]);
-        }
-
         /**
          * 进行输入参数的验证和过滤
          * //当参数存在,并且他是Request 而且不是Get. get就不做参数验证了
@@ -343,7 +349,10 @@ class ApisController extends BaseController
             $this->validate($parameters[0], $validate['rules'], $validate['msg']);
         }
 
-
+        //日志记录参数,方便debug
+        if(function_exists('clock') && isset($parameters[0])) {
+            clock($parameters[0]);
+        }
 
         //执行真实的函数
         $return = call_user_func_array([$this, $method], $parameters);
