@@ -132,8 +132,8 @@ class ApisController extends BaseController
         $data = $request->all();
 
         //开启日志系统
-        if($this->log &&  method_exists($data,'startLog')){
-            $data->startLog();
+        if($this->log &&  method_exists($model,'startLog')){
+            $model->startLog();
         }
 
         $data = $model->create($data);
