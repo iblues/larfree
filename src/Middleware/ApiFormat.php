@@ -27,6 +27,10 @@ class ApiFormat
         $response->header('Access-Control-Allow-Credentials', 'false');
 
         $content = $response->getOriginalContent();
+
+        if(method_exists($response,'setEncodingOptions')){
+            $request->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        }
         
 //dd($content);
         $json=json_decode($response->getContent(),true);

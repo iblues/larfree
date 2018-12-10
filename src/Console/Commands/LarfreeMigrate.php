@@ -61,6 +61,10 @@ class LarfreeMigrate extends Command
             ]);
         }
 
+
+        //清理缓存的表
+        Cache::tags(['table_column'])->flush();
+
         //遍历全部
         if($number==1){
             foreach($dir as $key => $path){
