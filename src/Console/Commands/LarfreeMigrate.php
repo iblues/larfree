@@ -3,6 +3,7 @@
 namespace Larfree\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class LarfreeMigrate extends Command
 {
@@ -61,7 +62,7 @@ class LarfreeMigrate extends Command
             ]);
         }
 
-
+//        Cache::
         //清理缓存的表
         Cache::tags(['table_column'])->flush();
 
