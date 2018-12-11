@@ -29,7 +29,7 @@ class ApiFormat
         $content = $response->getOriginalContent();
 
         if(method_exists($response,'setEncodingOptions')){
-            $request->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+            $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
         
 //dd($content);
