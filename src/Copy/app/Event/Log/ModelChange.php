@@ -63,7 +63,7 @@ class ModelChange
             $this->model=$after->getModelName();
             $this->type=2;
             $this->title='修改操作';
-            $this->after = array_diff($after->toArray(),$before->toArray());
+            $this->after = @array_diff($after->toArray(),$before->toArray());
         }
         //
     }
