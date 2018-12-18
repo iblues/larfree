@@ -26,6 +26,7 @@ class CreatUserActionLog extends Migration
             $table->text('before_content')->comment('操作后');
             $table->string('title')->comment('操作');
             $table->string('model')->comment('模块')->index();
+            $table->string('key')->comment('target')->default('')->index();
 
 
 //            $table->foreign('id')->references('id')->on('common_user');//用户外键约束

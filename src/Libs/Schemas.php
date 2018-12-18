@@ -261,7 +261,8 @@ class Schemas
             $lists[] = array_map(function ($file) use ($path,$module) {
                 $filePath = $path.'/'.$module. '/' . $file;
                 $data = include($filePath);
-                $data['key'] = humpToLine(basename($file, '.php'));
+                $data['key'] = humpToLine($module.'.'.basename($file, '.php'));
+                $data['key']  = ucfirst($data['key']);
                 return $data;
             }, $file);
         }

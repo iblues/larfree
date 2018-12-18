@@ -45,7 +45,7 @@ class LarfreeDictionary extends Command
     }
 
     public function model($model){
-        $modelName  = lcfirst(lineToHump( $model['key'] ) );
+        $modelName  = lineToHump( $model['key']);
         foreach ($model['detail'] as $k=>$field){
             $insert = [];
             $insert['key']=$k;
