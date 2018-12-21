@@ -88,7 +88,8 @@ class ComponentSchemas extends Schemas
                 if($advSearch)
                     $advSearch = array_intersect_key($GlobalSchemas, $advSearch);
                 $Schemas['search'] = $search;
-                $Schemas['adv_search']= $advSearch;
+                if($advSearch)
+                    $Schemas['adv_search']= $advSearch;
             }
             return $Schemas;
 
