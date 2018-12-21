@@ -31,6 +31,7 @@ class ComponentSchemas extends Schemas
             $Schemas = @$Schemas['detail'][$target];
             $field = self::formatFields(@$Schemas['fields']);
             $search = self::formatFields(@$Schemas['search']);
+            $advSearch = self::formatFields(@$Schemas['adv_search']);
             $filter_field = [];
             //合并结构
             if($field) {
@@ -84,7 +85,9 @@ class ComponentSchemas extends Schemas
                     }
                 }
                 $search = array_intersect_key($GlobalSchemas, $search);
+                $advSearch = array_intersect_key($GlobalSchemas, $advSearch);
                 $Schemas['search'] = $search;
+                $Schemas['adv_search']= $advSearch;
             }
             return $Schemas;
 
@@ -104,7 +107,7 @@ class ComponentSchemas extends Schemas
         $name = str_replace('.','/',$path);
         $cpath = config_path().'/Schemas/Components/Default/'.self::fomartName($name).'.php';
         if(file_exists($cpath)) {
-             $func = include config_path(). '/Schemas/Components/Default/' . self::fomartName($name) . '.php';
+            $func = include config_path(). '/Schemas/Components/Default/' . self::fomartName($name) . '.php';
             return $func($config,$path,$target);
         }else
             return [];

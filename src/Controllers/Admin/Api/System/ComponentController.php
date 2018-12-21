@@ -38,12 +38,16 @@ class ComponentController extends Controller
         $config = str_replace('{$COMPONENT_API}',str_ireplace('.','/',$module),$config);
         $config = json_decode($config,true);
 
+
+
         //增加url和show的url,供后端使用
         if(@$config['fields'])
             array_walk($config['fields'],[$this,'linkToUrl']);
         if(@$config['search'])
             array_walk($config['search'],[$this,'linkToUrl']);
 
+        if(@$config['adv_search'])
+            array_walk($config['adv_search'],[$this,'linkToUrl']);
         return $config;
     }
 
