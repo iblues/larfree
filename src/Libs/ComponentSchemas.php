@@ -85,7 +85,8 @@ class ComponentSchemas extends Schemas
                     }
                 }
                 $search = array_intersect_key($GlobalSchemas, $search);
-                $advSearch = array_intersect_key($GlobalSchemas, $advSearch);
+                if($advSearch)
+                    $advSearch = array_intersect_key($GlobalSchemas, $advSearch);
                 $Schemas['search'] = $search;
                 $Schemas['adv_search']= $advSearch;
             }
