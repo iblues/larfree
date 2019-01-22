@@ -1,6 +1,7 @@
 <?php
 
 namespace Larfree\Models;
+
 /**
  * 高级筛选,不耦合
  * Trait AdvWhere
@@ -47,11 +48,15 @@ trait AdvWhere{
             if(!in_array($mode,$mode_array))
                 apiError('复杂筛选模式必须$,|,!结尾,如id|title$');
             $multi = explode('|',$real_key);
-            foreach($multi as $k){
-                $model->orWhere(function($query)use($k,$val,$mode){
-                    $query->advWhere($k.$mode,$val,$query);
-                });
-            }
+
+            $model->where(function ($query)use($val,$mode,$multi){
+                foreach($multi as $k){
+                    $query->orWhere(function($query)use($k,$val,$mode){
+                        $query->advWhere($k.$mode,$val,$query);
+                    });
+                }
+            });
+
             return $model;
         }
 
