@@ -178,6 +178,10 @@ function getThumb($filename, $width, $height, $mode = 0)
         case 'file':
             return env('APP_URL') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
             break;
+        case 'oss':
+            $filename = $filename.'?x-oss-process=image/resize,l_'.$width;
+            return $filename.'&x-oss-process=image/crop,w_'.$width.',h_'.$height.',g_center';
+            break;
         default:
             $disk = \Storage::disk('qiniu'); //使用七牛云上传
             if ($mode == '-1') {
