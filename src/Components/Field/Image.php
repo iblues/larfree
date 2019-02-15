@@ -17,6 +17,11 @@ class Image extends Components
      * @param $array
      */
     static public function getAttribute($config,&$array){
+        if(@$config['multi']){
+            if(!is_array($array[$config['key']])){
+                $array[$config['key']] = json_decode($array[$config['key']],1);
+            }
+        }
         $value  = $array[$config['key']];
         if(is_array($array)) {
             $array[$config['key'] . '_small'] = getArrayThumb($value, '200', '200');
