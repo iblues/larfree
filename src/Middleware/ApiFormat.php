@@ -71,8 +71,8 @@ class ApiFormat
         if($StatusCode==302){
             return $response;
         }
-        if($StatusCode==422){
-            $msg=current(current($content['errors']));
+        if($StatusCode==422 && isset($content['errors'])){
+            $msg = current(current($content['errors']));
             $content = $content['errors'];
         }
 
