@@ -76,6 +76,12 @@ class ApiFormat
             $content = $content['errors'];
         }
 
+        //兼容不同版本的validate返回
+        if($StatusCode==422 && !$msg){
+            $msg = current(current($content));
+            $content = $content;
+        }
+
 //        if($StatusCode==401)
 //            $code=-10;
 
