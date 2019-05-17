@@ -64,7 +64,7 @@ class LarfreeMigrate extends Command
 
 //        Cache::
         //清理缓存的表
-//        Cache::tags(['table_column'])->flush();
+        Cache::tags(['table_column'])->flush();
 
         //遍历全部
         if($number==1){

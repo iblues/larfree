@@ -78,12 +78,12 @@ class Table
     static public function getColumns($table){
         $return = [];
         if(!config('app.debug'))
-            $return = Cache::store('file')->get($table . '_columns');
+            $return = Cache::get($table . '_columns');
 
         if (!$return) {
             $return = Schema::getColumnListing($table);
             if ($return && !config('app.debug')) {
-                Cache::store('file')->put($table . '_columns', $return, 120);
+                Cache::tags(['table_column'])->put($table . '_columns', $return, 120);
             }
         }
         return $return;
