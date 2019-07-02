@@ -87,7 +87,7 @@ class ApiSchemas extends Schemas
             foreach ($schemas as $item) {
                 if (isset($item['rule'])) {
                     $validate[$item['key']] = self::formatFieldValidate($item['rule']);
-                    $validateName[$item['key']] = $item['name'];
+                    $validateName[$item['key']] = isset($item['name'])?$item['name']:$item['key'];
                 }
             }
         }
