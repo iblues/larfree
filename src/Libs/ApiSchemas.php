@@ -66,6 +66,7 @@ class ApiSchemas extends Schemas
      */
     static function getValidate($name,$group='in',$param=[]){
         $validateName=[];
+
         if(!in_array($group,['in','out'])){
             throw new \Exception('target输入参数错误,只能in/out');
         }
