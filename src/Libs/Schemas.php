@@ -16,7 +16,7 @@ class Schemas
      * 返回false 就代表不存在
      */
     public static function getSchemas($name){
-        $fileName = config_path().'/Schemas/Schemas/'.self::fomartName($name).'.php';
+        $fileName = schemas_path('Schemas').'/'.self::fomartName($name).'.php';
 //        echo $fileName;
 //        echo "\r\n";
         if(file_exists($fileName))
@@ -203,8 +203,6 @@ class Schemas
      * @return array
      */
     static protected function formatValidate($defValidate,$fields){
-
-
         $messages = [];
         //处理格式,自定义消息
         array_walk($defValidate,function(&$item,$key)use(&$messages){
@@ -244,7 +242,7 @@ class Schemas
      * @return array
      */
     static function getAllSchemas(){
-        $path = config_path().'/Schemas/Schemas';
+        $path = schemas_path('Schemas');
         $list = dirToArray($path);
         return $list;
     }
@@ -254,7 +252,7 @@ class Schemas
      * @return array
      */
     static function getAllSchemasConfig(){
-        $path = config_path().'/Schemas/Schemas';
+        $path = schemas_path().'/Schemas/Schemas';
         $list = self::getAllSchemas();
         $lists=[];
         foreach ($list  as  $module=>$file) {
@@ -273,7 +271,7 @@ class Schemas
      * @return array
      */
     static function getAllConfig(){
-        $path = config_path().'/Schemas/Schemas/Config';
+        $path = schemas_path().'/Schemas/Schemas/Config';
         $list = scandir($path);
         array_shift($list);
         array_shift($list);

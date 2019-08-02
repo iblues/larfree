@@ -23,7 +23,7 @@ class ComponentSchemas extends Schemas
         $target = strtolower($target);
 
 
-        $file = config_path(). '/Schemas/Components/' . self::fomartName($name) . '.php';
+        $file = schemas_path('Components').'/'. self::fomartName($name) . '.php';
 
         $GlobalSchemas = self::getSchemas($name);//主结构
         if (file_exists($file)) {
@@ -107,9 +107,9 @@ class ComponentSchemas extends Schemas
      */
     static public function getComponetDefConfig($path,$config,$target=''){
         $name = str_replace('.','/',$path);
-        $cpath = config_path().'/Schemas/Components/Default/'.self::fomartName($name).'.php';
+        $cpath = schemas_path().'/Components/Default/'.self::fomartName($name).'.php';
         if(file_exists($cpath)) {
-            $func = include config_path(). '/Schemas/Components/Default/' . self::fomartName($name) . '.php';
+            $func = include schemas_path(). '/Components/Default/' . self::fomartName($name) . '.php';
             return $func($config,$path,$target);
         }else
             return [];

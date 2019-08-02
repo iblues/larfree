@@ -329,7 +329,7 @@ return [
 ];
 CONTENT;
 
-        $path= base_path().'/config/Schemas/Schemas/'.$fullName.'.php';
+        $path= schemas_path().'/Schemas/'.$fullName.'.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{
@@ -416,7 +416,7 @@ return [
 ];
 CONTENT;
 
-        $path= base_path().'/config/Schemas/Components/'.$fullName.'.php';
+        $path= schemas_path().'/Components/'.$fullName.'.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{

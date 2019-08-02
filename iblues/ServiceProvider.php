@@ -55,7 +55,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $path.'/Copy/app/Listeners' => app_path('Listeners/'),
         ],'larfree_event');
         $this->publishes([
-            $path.'/Copy/config/Schemas' => config_path('Schemas'),
+            $path.'/Copy/Schemas' => schemas_path(),
         ],'larfree');
         $this->publishes([
             $path.'/Copy/routes/' => dirname(app_path('')).'/routes/',

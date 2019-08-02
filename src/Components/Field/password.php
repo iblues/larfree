@@ -16,7 +16,7 @@ class Password extends Components
      * @param $config
      * @param $array
      */
-    static public function setAttribute($config,&$array){
-        dd(123);
-    }
+//    static public function setAttribute($config,&$array){
+//        dd(123);
+//    }
 }
