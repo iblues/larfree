@@ -49,7 +49,7 @@ class LarfreeInstall extends Command
             'module'=>'',
             'status'=>1,
         ];
-        CommonUser::create($nav);
+        CommonUser::insert($nav);
         $nav=[
             'name'=>'用户管理',
             'url'=>'/curd/common.user/',
@@ -57,11 +57,11 @@ class LarfreeInstall extends Command
             'module'=>'',
             'status'=>1,
         ];
-        CommonUser::create($nav);
+        CommonUser::insert($nav);
     }
 
     private function createAdmin(){
-        CommonUser::create(['name'=>'admin',
+        CommonUser::insert(['name'=>'admin',
             'phone'=>'',
             'mail'=>'i@iblues.name',
             'api_token'=>str_random(30),
