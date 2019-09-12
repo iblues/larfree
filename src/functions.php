@@ -187,22 +187,22 @@ if( !function_exists('getThumb')) {
     {
         if (!$filename)
             return '';
-        $type = env('UPLOAD_TYPE', 'qiniu');
+        $type = config('filesystems.default', 'file');
         switch ($type) {
-            case 'file':
-                return env('APP_URL') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
-                break;
-            case 'oss':
-                $filename = $filename . '?x-oss-process=image/resize,l_' . $width;
-                return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
-                break;
-            default:
+            case 'qiniu':
                 $disk = \Storage::disk('qiniu'); //使用七牛云上传
                 if ($mode == '-1') {
                     return $disk->downloadUrl($filename)->__toString();//裁剪
                 } else {
                     return $disk->imagePreviewUrl($filename, "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
                 }
+            case 'oss':
+                $filename = $filename . '?x-oss-process=image/resize,l_' . $width;
+                return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
+                break;
+            default:
+                return  config('public.url'). '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
+                break;
         }
     }
 }
