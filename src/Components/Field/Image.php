@@ -24,9 +24,9 @@ class Image extends Components
         }
         $value  = $array[$config['key']];
         if(is_array($array)) {
-            $array[$config['key'] . '_small'] = getArrayThumb($value, '200', '200');
-            $array[$config['key'] . '_big'] = getArrayThumb($value, '1000', '1000');
-            $array[$config['key'].'_origin'] = getArrayThumb($value,'0','0',-1);
+//            $array[$config['key'] . '_small'] = getArrayThumb($value, '200', '200');
+//            $array[$config['key'] . '_big'] = getArrayThumb($value, '1000', '1000');
+//            $array[$config['key'].'_origin'] = getArrayThumb($value,'0','0',-1);
             //上面的慢慢淘汰
             $array[$config['key'].'_link']=[
                 'small'=> getArrayThumb($value, '200', '200'),
@@ -34,9 +34,9 @@ class Image extends Components
                 'big'=>getArrayThumb($value,'0','0',-1),
             ];
         }else{
-            $array[$config['key'] . '_small'] = getThumb($value, '200', '200');
-            $array[$config['key'].'_big'] = getThumb($value,'1000','1000');
-            $array[$config['key'].'_origin'] = getThumb($value,'0','0',-1);
+//            $array[$config['key'] . '_small'] = getThumb($value, '200', '200');
+//            $array[$config['key'].'_big'] = getThumb($value,'1000','1000');
+//            $array[$config['key'].'_origin'] = getThumb($value,'0','0',-1);
             //上面的慢慢淘汰
             $array[$config['key'].'_link']=[
                 'small'=> getThumb($value, '200', '200'),

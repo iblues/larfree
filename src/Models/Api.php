@@ -1,27 +1,26 @@
 <?php
+
 namespace Larfree\Models;
 
 use Larfree\Events\ModelSaved;
 use Larfree\Events\ModelSaving;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
 use Larfree\Libs\Schemas;
 use Larfree\Libs\Table;
-use DB;
 use Watson\Rememberable\Rememberable;
 
 class Api extends Model
 {
-    use AdvWhere,Chart,Rememberable,Log;
+    use AdvWhere, Chart, Rememberable, Log;
 
     protected $_modelName = '';
-    protected $_schemas='';
-    protected $casts=[];
+    protected $_schemas = '';
+    protected $casts = [];
     protected $guarded = [];
     protected $appends = [];
     protected $_link = [];//link的列表
-    protected $_dolink = [];//真正查询Link的
-    protected $_dolinkCount = [];//统计link的数字
+    protected $_doLink = [];//真正查询Link的
+    protected $_doLinkCount = [];//统计link的数字
     protected $_tmpSave;//save事情临时存储用
     protected $dispatchesEvents = [
         'saved' => ModelSaved::class,//编辑和保存在里面
@@ -39,16 +38,16 @@ class Api extends Model
      */
     public function __construct(array $attributes = [])
     {
-        if(!$this->table)
-            $this->table= humpToLine(basename(str_ireplace('\\','/',get_class($this))));
+        if (!$this->table)
+            $this->table = humpToLine(basename(str_ireplace('\\', '/', get_class($this))));
         parent::__construct($attributes);
         if (!$this->_modelName) {
             //自动提取modelName
-            $this->_modelName=substr(get_class($this),strpos(get_class($this),'\Models\\')+8);
-            $this->_modelName = str_ireplace('\\','.',$this->_modelName);
-            $tmp = explode('.',$this->_modelName);
-            if(@$tmp[1]){
-                $this->_modelName = $tmp[0].'.'.substr($tmp[1],strlen($tmp[0]));
+            $this->_modelName = substr(get_class($this), strpos(get_class($this), '\Models\\') + 8);
+            $this->_modelName = str_ireplace('\\', '.', $this->_modelName);
+            $tmp = explode('.', $this->_modelName);
+            if (@$tmp[1]) {
+                $this->_modelName = $tmp[0] . '.' . substr($tmp[1], strlen($tmp[0]));
             }
         }
 
@@ -65,40 +64,47 @@ class Api extends Model
 
     }
 
-
-    public function scopeField($model,$field){
-        if(!$field)
+    /**
+     * 类似select函数. 但是他可以动态排除filed和link的字段
+     * @author Blues
+     * @param $model
+     * @param $field
+     * @return mixed
+     */
+    public function scopeField($model, $field)
+    {
+        if (!$field)
             return $model;
 
-        if(!is_array($field)){
-            $field = explode(',',$field);
+        if (!is_array($field)) {
+            $field = explode(',', $field);
         }
 
         //排除appends字段
-        if($this->appends) {
+        if ($this->appends) {
             $this->appends = array_intersect($field, $this->appends);
             $field = array_diff($field, $this->appends); //排除append的字段.
         }
 
         //排除link
-        if($field) {
-            $this->_dolink = array_intersect($this->_link,$field );
-            $link = array_flip($this->_dolink);
-            $field = array_merge($field,$link);//为了处理用了as的字段
+        if ($field) {
+            $this->_doLink = array_intersect($this->_link, $field);
+            $link = array_flip($this->_doLink);
+            $field = array_merge($field, $link);//为了处理用了as的字段
         }
 
-        foreach($field as $f){
-            if(stripos($f,'.count')) {
+        foreach ($field as $f) {
+            if (stripos($f, '.count')) {
                 $tmp = explode('.', $f);
                 if ($tmp[1] == 'count') {
-                    $_dolinkCount[$tmp[1]]=$tmp[1];
+                    $_doLinkCount[$tmp[1]] = $tmp[1];
                 }
             }
         }
 
 
         $columns = $this->getColumns();//只筛选数据库有的
-        return $model->select(array_intersect($columns,$field));
+        return $model->select(array_intersect($columns, $field));
     }
 
     /**
@@ -106,21 +112,22 @@ class Api extends Model
      * @param $model
      * @return mixed
      */
-    public function scopeLink($model,array $field=[]){
-        foreach($this->_dolink as $k=>$name){
-            if($field && !in_array($name,$field)){
+    public function scopeLink($model, array $field = [])
+    {
+        foreach ($this->_doLink as $k => $name) {
+            if ($field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
-            if($name)
+            if ($name)
                 $model = $model->with($name);
         }
-        foreach($this->_dolinkCount as $k=>$name){
-            if($field && !in_array($name,$field)){
+        foreach ($this->_doLinkCount as $k => $name) {
+            if ($field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
-            if($name)
+            if ($name)
                 $model = $model->withCount($name);
         }
         return $model;
@@ -131,21 +138,23 @@ class Api extends Model
      * 获取数据库中的数据列表
      * @return mixed
      */
-    public function scopeGetColumns(){
-        static $Columns=[];//laravels可能会出问题
-        if(!$Columns)
+    public function getColumns()
+    {
+        static $Columns = [];//laravels可能会出问题
+        if (!$Columns)
             $Columns = Table::getColumns($this->getTable());
         return $Columns;
     }
 
-    public function  getSchemas(){
+    public function getSchemas()
+    {
         return $this->_schemas;
     }
 
-    public function  getModelName(){
+    public function getModelName()
+    {
         return $this->_modelName;
     }
-
 
 
     /**
@@ -156,14 +165,15 @@ class Api extends Model
      * @param $schemas
      * @return mixed
      */
-    protected function initProtected($schemas){
+    protected function initProtected($schemas)
+    {
         $key = $schemas['key'];
-        if(isset($schemas['cast'])){
-            $this->casts[$key]=$schemas['cast'];
+        if (isset($schemas['cast'])) {
+            $this->casts[$key] = $schemas['cast'];
         }
 
-        if(isset($schemas['append'])){
-            $this->appends[]=$key;
+        if (isset($schemas['append'])) {
+            $this->appends[] = $key;
         }
         if (isset($schemas['link'])) {
             $link = $schemas['link'];
@@ -179,15 +189,14 @@ class Api extends Model
             }
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
             //不初始化
-            if(!isset($link['init']) || $link['init']==true )
-                $this->_dolink[$key] = $as;
+            if (!isset($link['init']) || $link['init'] == true)
+                $this->_doLink[$key] = $as;
         }
-        //dolink是实际执行
+        //doLink是实际执行
         //_link是保存个原始的方便恢复原状
 
         return $schemas;
     }
-
 
 
     /**
@@ -195,17 +204,18 @@ class Api extends Model
      * @param $field
      * @return mixed
      */
-    protected function callLink($field){
-        $link =  array_flip($this->_link);
+    protected function callLink($field)
+    {
+        $link = array_flip($this->_link);
         $field = $link[$field];
         $schema = $this->_schemas[$field];
-        if(isset($schema['link'])) {
+        if (isset($schema['link'])) {
             $parm = $schema['link']['model'];
             $method = $parm[0];
 
-            if ($method == 'belongsToMany'){
+            if ($method == 'belongsToMany') {
                 //没有手动定义中间表的
-                if(!isset($parm[2])) {
+                if (!isset($parm[2])) {
                     //自动创健中间关联表
                     if (config('app.debug')) {
                         $this->createLinkTable(get_class($this), $parm[1]);
@@ -233,23 +243,23 @@ class Api extends Model
                     $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4], $parm[5]);
                     break;
                 case '7':
-                    $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4], $parm[5],$parm[6]);
+                    $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4], $parm[5], $parm[6]);
                     break;
             }
 
             //额外筛选
-            if($model){
-                if(isset($schema['link']['with'])){
+            if ($model) {
+                if (isset($schema['link']['with'])) {
                     $model = $model->with($schema['link']['with']);
                 }
-                if(isset($schema['link']['field'])){
+                if (isset($schema['link']['field'])) {
                     //如果是has_many的时候 一定吧对应的外键给选出来,否则连不了
                     $model = $model->field($schema['link']['field']);
                 }
-                if(isset($schema['link']['where'])){
+                if (isset($schema['link']['where'])) {
                     $model = $model->where($schema['link']['where']);
                 }
-                if(isset($schema['link']['limit'])){
+                if (isset($schema['link']['limit'])) {
                     $model = $model->take($schema['link']['limit']);
                 }
             }
@@ -258,11 +268,14 @@ class Api extends Model
         return $this;
     }
 
-    protected function createLinkTable($table1,$table2){
-        Table::creatLinkTable(getClassName($table1),getClassName($table2));
+    protected function createLinkTable($table1, $table2)
+    {
+        Table::creatLinkTable(getClassName($table1), getClassName($table2));
     }
-    protected function getLinkTableName($table1,$table2){
-        return Table::getLinkTableName(getClassName($table1),getClassName($table2));
+
+    protected function getLinkTableName($table1, $table2)
+    {
+        return Table::getLinkTableName(getClassName($table1), getClassName($table2));
     }
 
     /**
@@ -272,12 +285,18 @@ class Api extends Model
     public function attributesToArray()
     {
         $attributes = parent::attributesToArray();
-        foreach ($attributes as $key=>$attribute){
-            if(isset($this->_schemas[$key])) {
-                $this->callComponent('getAttribute', $this->_schemas[$key], $attributes);
+        foreach ($attributes as $key => $attribute) {
+            if (isset($this->_schemas[$key])) {
+                $this->callComponent($this->_schemas[$key], 'getAttribute', $attributes);
             }
         }
         return $attributes;
+    }
+
+    public function setAttribute($key, $value)
+    {
+        $this->callComponent($this->_schemas[$key], 'setAttribute', $value);
+        return parent::setAttribute($key, $value);
     }
 
     /**
@@ -286,31 +305,45 @@ class Api extends Model
      * @param $config
      * @param $data
      */
-    protected function callComponent($method,$config,&$data){
-        $larfreeClass='Larfree\Components\Field\\'.ucfirst($config['type']);
-        $class='Larfree\Components\Field\\'.ucfirst($config['type']);
-        if(method_exists($larfreeClass,$method)){
-            $larfreeClass::$method($config,$data);
-        }elseif(method_exists($class,$method)){
-            $class::$method($config,$data);
+    protected function callComponent($config, $method = 'getAttribute', &$data)
+    {
+
+        //常用的就不用去找了
+        $blackType = ['text', 'number', 'text'];
+        $type = array_get($config, 'type', 'text');
+        //常用的可以不用去判断了 除非指定了component字段.
+        if (in_array($type, $blackType)) {
+            return '';
+        }
+        //如果有指定component字段, 用component的
+        $component = ucfirst(array_get($config, 'component', $type));
+        //扩展包内的
+        $larfreeClass = 'Larfree\Components\Field\\' . $component;
+        //程序内的
+        $class = 'App\Components\Field\\' . $component;
+        if (method_exists($larfreeClass, $method)) {
+            $larfreeClass::$method($config, $data);
+        } elseif (method_exists($class, $method)) {
+            $class::$method($config, $data);
         }
 
     }
 
     public function __call($method, $parameters)
     {
-        if(in_array($method,$this->_link)){
+        if (in_array($method, $this->_link)) {
             return $this->callLink($method);
-        }else {
+        } else {
             return parent::__call($method, $parameters);
         }
     }
 
-    public function create($data){
-        foreach($data as $k=>$v){
+    public function create($data)
+    {
+        foreach ($data as $k => $v) {
             $this->$k = $v;
         }
-        if( $this->save() )
+        if ($this->save())
             return $this;
         else
             return false;
@@ -321,18 +354,18 @@ class Api extends Model
      * @param string $key
      * @return mixed
      */
-    public function getTmpSave($key=''){
-        if(!$key)
+    public function getTmpSave($key = '')
+    {
+        if (!$key)
             return $this->_tmpSave;
         else
             return $this->_tmpSave[$key];
     }
 
-    public function setTmpSave($key,$val){
-        $this->_tmpSave[$key]=$val;
+    public function setTmpSave($key, $val)
+    {
+        $this->_tmpSave[$key] = $val;
     }
-
-
 
 
     /**
@@ -344,7 +377,7 @@ class Api extends Model
      */
     public function newInstance($attributes = [], $exists = false)
     {
-        $model =parent::newInstance($attributes, $exists);
+        $model = parent::newInstance($attributes, $exists);
         //解决get获取模型实例时丢失动态添加的appends
         $field = $this->getArrayableAppends();
         $model->appends = $field;
@@ -356,36 +389,44 @@ class Api extends Model
      * 保存和添加的回调
      * @param $data
      */
-    public function beforeSave(Api $data){
+    public function beforeSave(Api $data)
+    {
     }
 
     /**
      * 保存和添加的回调
      * @param $data
      */
-    public function afterSave(Api $data){
+    public function afterSave(Api $data)
+    {
     }
 }
-trait Log{
 
-    protected $_log=false;//是否开启日志记录
+trait Log
+{
+
+    protected $_log = false;//是否开启日志记录
+
     /**
      * 是否需要日志记录
      */
-    public function isLog(){
+    public function isLog()
+    {
         return $this->_log;
     }
+
     /**
      * 是否需要开启日志记录
      */
-    public function startLog(){
+    public function startLog()
+    {
         $this->_log = true;
         return $this;
     }
 
     public function scopeStartLog($query)
     {
-        $query->_log=true;
+        $query->_log = true;
         return $query;
     }
 }
@@ -395,27 +436,29 @@ trait Log{
  * Trait Chart
  * @package Larfree\Models
  */
-trait Chart {
+trait Chart
+{
     /**
      * 基于timestamp的统计
      */
-    function scopeTimeChart($query,array $y,string $xField='create_at',$xFormat='%Y-%m-%d %H:%M:%S'){
+    function scopeTimeChart($query, array $y, string $xField = 'create_at', $xFormat = '%Y-%m-%d %H:%M:%S')
+    {
 //        $ySql="({$ySql})";//方便实现字段之见的 操作
 //        $query2 = clone $query;
 
         $field = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
-        $query = $query->groupBy('x')->orderBy("x","asc");
-        $countData=[];
+        $query = $query->groupBy('x')->orderBy("x", "asc");
+        $countData = [];
 
 
-        foreach($y as $k=>$q){
+        foreach ($y as $k => $q) {
             $queryField = $field;
             $newQuery = clone $query;
-            $queryField[] = DB::raw('('.$q['sql']['field'].') as y');
+            $queryField[] = DB::raw('(' . $q['sql']['field'] . ') as y');
             $count = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
 
-            foreach($count as $v){
-                $countData[$v->x][$k]=$v->y;
+            foreach ($count as $v) {
+                $countData[$v->x][$k] = $v->y;
             }
         }
 //        $date = array_keys($countData);

@@ -7,7 +7,7 @@
  * @param int $mode
  * @return mixed
  */
-if( !function_exists('getArrayThumb')) {
+if (!function_exists('getArrayThumb')) {
     function getArrayThumb($array, $width, $height, $mode = 0)
     {
         if (is_array($array)) {
@@ -26,7 +26,7 @@ if( !function_exists('getArrayThumb')) {
  * @param $cat 分类名
  * @param $name 具体名
  */
-if( !function_exists('conf')) {
+if (!function_exists('conf')) {
     function conf($cat, $name = '')
     {
         if (!$name) {
@@ -45,7 +45,7 @@ if( !function_exists('conf')) {
  * @param bool $mode
  * @return mixed
  */
-if( !function_exists('larfree_json_decode')) {
+if (!function_exists('larfree_json_decode')) {
     function larfree_json_decode($str, $mode = 1)
     {
 //    if(preg_match('/(\w)+:/', $str)){
@@ -63,7 +63,7 @@ if( !function_exists('larfree_json_decode')) {
  * @param bool $ucfirst
  * @return string
  */
-if( !function_exists('lineToHump')) {
+if (!function_exists('lineToHump')) {
     function lineToHump($str, $ucfirst = true)
     {
         while (($pos = strpos($str, '_')) !== false)
@@ -78,7 +78,7 @@ if( !function_exists('lineToHump')) {
  * @param bool $ucfirst
  * @return string
  */
-if( !function_exists('humpToLine')) {
+if (!function_exists('humpToLine')) {
     function humpToLine($str, $separator = '_')
     {
         $str = lcfirst($str);
@@ -93,7 +93,7 @@ if( !function_exists('humpToLine')) {
  * @param $class
  * @return string
  */
-if( !function_exists('getClassName')) {
+if (!function_exists('getClassName')) {
     function getClassName($class)
     {
         return class_basename($class);
@@ -105,7 +105,7 @@ if( !function_exists('getClassName')) {
  * @param string $uid
  * @return mixed
  */
-if( !function_exists('getLoginUserID')) {
+if (!function_exists('getLoginUserID')) {
     function getLoginUserID($uid = '')
     {
         static $id;
@@ -131,7 +131,7 @@ if( !function_exists('getLoginUserID')) {
  * @param int $code
  * @throws \Larfree\Exceptions\ApiException
  */
-if( !function_exists('apiError')) {
+if (!function_exists('apiError')) {
     function apiError($msg = '', $data = [], $code = 412)
     {
         throw new Larfree\Exceptions\ApiException($msg, $data, $code);
@@ -146,7 +146,7 @@ if( !function_exists('apiError')) {
  * @param string $level level标记字段
  * @return array
  */
-if( !function_exists('getThumb')) {
+if (!function_exists('getThumb')) {
     function listToTree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
     {
         // 创建Tree
@@ -182,7 +182,7 @@ if( !function_exists('getThumb')) {
  * @param int $mode
  * @return mixed
  */
-if( !function_exists('getThumb')) {
+if (!function_exists('getThumb')) {
     function getThumb($filename, $width, $height, $mode = 0)
     {
         if (!$filename)
@@ -201,7 +201,7 @@ if( !function_exists('getThumb')) {
                 return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 break;
             default:
-                return  config('public.url'). '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
+                return config('public.url') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
                 break;
         }
     }
@@ -211,7 +211,7 @@ if( !function_exists('getThumb')) {
  * 类似dd
  * @param $data
  */
-if( !function_exists('pd')) {
+if (!function_exists('pd')) {
     function pd($data)
     {
         print_r($data);
@@ -219,7 +219,7 @@ if( !function_exists('pd')) {
     }
 }
 
-if( !function_exists('dirToArray')) {
+if (!function_exists('dirToArray')) {
     /**
      * 递归调目录文件
      * @param $dir
@@ -249,7 +249,7 @@ if( !function_exists('dirToArray')) {
  * @param $array2
  * @return array
  */
-if( !function_exists('array_merges')) {
+if (!function_exists('array_merges')) {
     function array_merges(array $array1, $array2)
     {
         foreach ($array1 as $key => $var) {
@@ -279,15 +279,17 @@ if( !function_exists('array_merges')) {
     }
 }
 
-if( !function_exists('schemas_path')){
-    function schemas_path($path=''){
-        $path=$path?'/'.$path:$path;
-        return base_path().'/schemas'.$path;
+if (!function_exists('schemas_path')) {
+    function schemas_path($path = '')
+    {
+        $path = $path ? '/' . $path : $path;
+        return base_path() . '/schemas' . $path;
     }
 }
 
-if( !function_exists('config_path')){
-    function config_path(){
-        return dirname(__FILE__).'/Copy/config';
+if (!function_exists('config_path')) {
+    function config_path()
+    {
+        return dirname(__FILE__) . '/Copy/config';
     }
 }
