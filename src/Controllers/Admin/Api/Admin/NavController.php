@@ -5,14 +5,16 @@
  */
 namespace Larfree\Controllers\Admin\Api\Admin;
 
+use App\Repositories\Admin\NavRepository;
+use Larfree\Controllers\AdminApisController;
 use Larfree\Models\Admin\AdminNav;
 use Illuminate\Http\Request;
 use ApiController as Controller;
-class NavController extends Controller
+class NavController extends AdminApisController
 {
-    public function __construct(AdminNav $model )
+    public function __construct(NavRepository $repository )
     {
-        $this->model = $model;
+        $this->repository = $repository;
         parent::__construct();
     }
 
@@ -21,9 +23,7 @@ class NavController extends Controller
      * @return array
      */
     public function tree(){
-        $nav = $this->model->where('status',1)->orderBy('ranking','desc')->get();
-        $nav = $nav->toArray();
-        $nav = listToTree($nav, 'id', 'parent_id', 'child');
+        $nav = $this->repository->getAdminNav();
         return $nav;
     }
 }

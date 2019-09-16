@@ -15,8 +15,8 @@ use Illuminate\Http\Request;
 //
 //这个不能有验证
 //微信验证.
-Route::group(['middleware' =>['web', 'wechat.oauth:snsapi_userinfo']], function () {
-    Route::any('/wechat/login','Larfree\\Controllers\\WeChatController@weChatLogin');
+Route::group(['middleware' => ['web', 'wechat.oauth:snsapi_userinfo']], function () {
+    Route::any('/wechat/login', 'Larfree\\Controllers\\WeChatController@weChatLogin');
 });
 
 Route::group(['prefix' => 'swagger'], function () {
@@ -25,38 +25,38 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
-Route::group(['middleware' => ['api'],'prefix' => 'api'],function () {
+Route::group(['middleware' => 'jwt.api.auth', 'prefix' => 'api'], function () {
 
-        //图片压缩
-        Route::get('images/{date}/{img}','System\\Api\\ImgController@images');
+    //图片压缩
+    Route::get('images/{date}/{img}', 'System\\Api\\ImgController@images');
 
-        Route::prefix('admin')->name('admin.api.')->group(function () {
-            $_ENV['ADMIN']=true;
-            $path = 'Larfree\\Controllers\\Admin\\Api\\';
+    Route::prefix('admin')->name('admin.api.')->group(function () {
+//            $_ENV['ADMIN']=true;
+        $path = 'Larfree\\Controllers\\Admin\\Api\\';
 
-            //声明首页
-            Route::redirect('/', '/manager/', 302)->name('root');
+        //声明首页
+//            Route::redirect('/', '/manager/', 302)->name('root');
 
-            //系统预定义的组建
-            Route::post('/common/session',$path.'Common\\AdminController@register')->name('register');
+        //注册
+        Route::post('/common/user', $path . 'User\\AdminController@register')->name('register');
 
-            //登录,退出等操作
-            Route::resource('/common/session',$path.'Common\\SeesionController');
+        //登录,退出等操作
+        Route::resource('/common/session', $path . 'Common\\SeesionController');
 
 
-            Route::get('/admin/nav/tree',$path.'Admin\\NavController@tree');
-            Route::resource('/admin/nav',$path.'Admin\\NavController');
+        Route::get('/admin/nav/tree', $path . 'Admin\\NavController@tree');
+        Route::resource('/admin/nav', $path . 'Admin\\NavController');
 
-            //上传相关
-            Route::any('/upload/images',$path.'Common\\UploadController@images')->name('upload.images');
-            Route::any('/upload/files',$path.'Common\\UploadController@files')->name('upload.files');
+        //上传相关
+        Route::any('/upload/images', $path . 'Common\\UploadController@images')->name('upload.images');
+        Route::any('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
 
-            //配置接口
-            Route::resource('config', $path.'System\ConfigController');
-            //component获取
-            Route::any('/system/component/{key}/{action}', $path.'System\ComponentController@module');
-            //系统预定义的组建 end
+        //配置接口
+        Route::resource('config', $path . 'System\ConfigController');
+        //component获取
+        Route::any('/system/component/{key}/{action}', $path . 'System\ComponentController@module');
+        //系统预定义的组建 end
 
-        });
+    });
 });
 
