@@ -40,7 +40,7 @@ class Api extends Model
     {
         if (!$this->table)
             $this->table = humpToLine(basename(str_ireplace('\\', '/', get_class($this))));
-        parent::__construct($attributes);
+
         if (!$this->_modelName) {
             //自动提取modelName
             $this->_modelName = substr(get_class($this), strpos(get_class($this), '\Models\\') + 8);
@@ -51,10 +51,9 @@ class Api extends Model
             }
         }
 
-
         //静态化此变量,避免多次读取
         static $schemas;
-        $schemas = $schemas??Schemas::getSchemas($this->_modelName);
+        $schemas = $schemas ?? Schemas::getSchemas($this->_modelName);
         $this->_schemas = $schemas;
 
 //        if ($this->_schemas === false) {
@@ -65,6 +64,7 @@ class Api extends Model
         else
             $this->_schemas = array_map([$this, 'initProtected'], $this->_schemas);
 
+        parent::__construct($attributes);
 
     }
 
@@ -75,7 +75,7 @@ class Api extends Model
      * @param $field
      * @return mixed
      */
-    public function scopeField($model, $field)
+    public function scopeField($model, $field='')
     {
         if (!$field)
             return $model;
@@ -299,7 +299,9 @@ class Api extends Model
 
     public function setAttribute($key, $value)
     {
-        $this->callComponent($this->_schemas[$key], 'setAttribute', $value);
+        if(isset($this->_schemas[$key])) {
+            $this->callComponent($this->_schemas[$key], 'setAttribute', $value);
+        }
         return parent::setAttribute($key, $value);
     }
 
@@ -308,6 +310,7 @@ class Api extends Model
      * @param $method
      * @param $config
      * @param $data
+     * @return mixed
      */
     protected function callComponent($config, $method = 'getAttribute', &$data)
     {
@@ -381,6 +384,7 @@ class Api extends Model
      */
     public function newInstance($attributes = [], $exists = false)
     {
+
         $model = parent::newInstance($attributes, $exists);
         //解决get获取模型实例时丢失动态添加的appends
         $field = $this->getArrayableAppends();
