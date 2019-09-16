@@ -46,33 +46,6 @@ class ApisController extends BaseController
         $this->modelName = array_pop($name) . '.' . $this->modelName;
     }
 
-
-    /**
-     * 回调接口
-     * @param $request
-     * @param $model
-     */
-//    protected function before_hook(&$request,&$model,$method){
-////        $method = $this->method();
-//        $method = 'before_'.$method;
-//        if(method_exists($this,$method)){
-//            $this->$method($request,$model);
-//        }
-//    }
-
-    /**
-     * 回调接口
-     * @param $request
-     * @param $model
-     */
-//    protected function after_hook(&$data,Request $request,$method){
-////        $method = $this->method();
-//        $method = 'after_'.$method;
-//        if(method_exists($this,$method)){
-//            return $this->$method($data,$request);
-//        }
-//    }
-
     /**
      * 获取当前调用的方法名
      * @return mixed
@@ -132,10 +105,10 @@ class ApisController extends BaseController
 
 
     /**
-     * 添加 post
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * 保存
+     * @author Blues
+     * @param Request $request
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function store(Request $request)
     {
@@ -153,9 +126,7 @@ class ApisController extends BaseController
         if ($this->link)
             $this->repository->link();
 
-        $row = $this->repository->find($row['id']);
-
-        return Response()->success($row, '添加成功');
+        return $this->repository->find($row['id']);
     }
 
     /**
@@ -185,25 +156,24 @@ class ApisController extends BaseController
     }
 
     /**
+     * 编辑
      * @author Blues
      * @param Request $request
      * @param $id
-     * @throws \Larfree\Exceptions\ApiException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
     public function update(Request $request, $id)
     {
         //参数验证
         $data = $request->all();
-        $row = $this->repository->update($data,$id);
+        $row = $this->repository->update($data, $id);
 
         //hook
         $hook = $this->after_update($row, $request);
         if ($hook)
             return $hook;
 
-//        return $this->repository->link()->find($id);
-        return Response()->success($row, '修改成功');
-
+        return $this->repository->link()->find($id);
     }
 
     /**
@@ -215,12 +185,13 @@ class ApisController extends BaseController
     {
     }
 
-
     /**
      * 删除
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @author Blues
+     * @param $id
+     * @param Request $request
+     * @return string|void
+     * @throws \Larfree\Exceptions\ApiException
      */
     public function destroy($id, Request $request)
     {
@@ -328,10 +299,12 @@ class ApisController extends BaseController
     }
 
     /**
-     * 对输入的字段进行过滤
+     * 对输入字段过滤 , in字段为字段明细
+     * @author Blues
      * @param $request
      * @param $group
      * @param $method
+     * @throws \Exception
      */
     protected function filterInput(&$request, $group, $method)
     {
