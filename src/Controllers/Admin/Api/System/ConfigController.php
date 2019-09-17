@@ -5,15 +5,18 @@
  */
 namespace Larfree\Controllers\Admin\Api\System;
 
+use App\Repositories\System\SystemConfigRepository;
 use Illuminate\Http\Request;
 use ApiController as Controller;
 use App\Models\System\SystemConfig;
 use Larfree\Libs\Schemas;
 class ConfigController extends Controller
 {
-    public function __construct(SystemConfig $model )
+    public $repository;
+    public function __construct(SystemConfig $model,SystemConfigRepository $repository )
     {
         $this->model = $model;
+        $this->repository = $repository;
         parent::__construct();
     }
 
@@ -22,34 +25,28 @@ class ConfigController extends Controller
         return $list = Schemas::getAllConfig();
     }
 
+    /**
+     * 获取配置 按 分类
+     * @author Blues
+     * @param $cat
+     * @param Request $request
+     * @return mixed
+     */
     public function show($cat, Request $request)
     {
-        $data = Schemas::getSchemas('Config.'.$cat);
-
-        $configDatas=[];
-        $datas = $this->model->link()->where('cat',$cat)->get();
-        $datas->map(function($v) use(&$configDatas){
-            $configDatas[$v->key] = $v->value;
-        });
-
-        foreach($data as $schema){
-            $configDatas[$schema['key']] = isset($configDatas[$schema['key']])?$configDatas[$schema['key']]:'';
-        }
-
-        return $configDatas;
+        return $this->repository->getAllByCat($request->cat);
     }
 
     /**
      * 更新
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  string $cat 分类名
+     * @return mixed
      */
     public function update(Request $request, $cat)
     {
         $data = $request->all();
-        $model = $this->model;
         foreach($data as $k=>$v){
             if($v) {
                 $this->model->updateOrCreate(

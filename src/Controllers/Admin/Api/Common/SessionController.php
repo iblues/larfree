@@ -9,7 +9,7 @@
 namespace Larfree\Controllers\Admin\Api\Common;
 
 use App\Models\Common\User;
-use App\Repositories\User\UserRepository;
+use App\Repositories\User\CommonUserRepository;
 use Illuminate\Http\Request;
 use Larfree\Controllers\AdminApisController;
 
@@ -53,7 +53,7 @@ class SessionController extends AdminApisController
         ],
     ];
 
-    public function __construct(UserRepository $repository)
+    public function __construct(CommonUserRepository $repository)
     {
         $this->repository = $repository;
     }
@@ -74,10 +74,9 @@ class SessionController extends AdminApisController
     public function store(Request $request)
     {
 
-        $User = new CommonUser();
+        $User = $this->repository;
 
-        $user = $User->where('phone', $request->phone)
-            ->first();
+        $user = $User->findByPhone($request->phone);
 
         if (!$user) {
             apiError('该手机未注册');

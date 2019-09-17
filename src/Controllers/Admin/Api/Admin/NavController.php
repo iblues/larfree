@@ -5,14 +5,13 @@
  */
 namespace Larfree\Controllers\Admin\Api\Admin;
 
-use App\Repositories\Admin\NavRepository;
+use App\Repositories\Admin\AdminNavRepository;
 use Larfree\Controllers\AdminApisController;
-use Larfree\Models\Admin\AdminNav;
 use Illuminate\Http\Request;
 use ApiController as Controller;
 class NavController extends AdminApisController
 {
-    public function __construct(NavRepository $repository )
+    public function __construct(AdminNavRepository $repository )
     {
         $this->repository = $repository;
         parent::__construct();

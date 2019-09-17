@@ -16,14 +16,16 @@ class Make
     function __construct($tableName,$controller,$model){
         //先读取数据库 生成配置
         $this->makeConfig($tableName);
-
+//
         if($controller){
             $this->makeControoler($controller);
         }
         if($model){
             $this->makeModel($model);
         }
+        $this->makeRepository($model);
 //        $this->makeConfig($tableName);
+
         $this->makeRoute($tableName);
         $this->makeAdminMenu($tableName);
         $this->makeTest($tableName);
@@ -80,12 +82,12 @@ namespace App\Http\Controllers\Admin\\{$folder};
 
 use Illuminate\Http\Request;
 use Larfree\Controllers\AdminApisController as Controller;
-use App\Models\\{$folder}\\{$folder}{$nameSpace};
+use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace} \$model )
+    public function __construct({$folder}{$nameSpace}Repository \$repository )
     {
-        \$this->model = \$model;
+        \$this->repository = \$repository;
         parent::__construct();
     }
 }
@@ -99,12 +101,12 @@ MODEL;
 namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
 use Larfree\Controllers\ApisController as Controller;
-use App\Models\\{$folder}\\{$folder}{$nameSpace};
+use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace} \$model)
+    public function __construct({$folder}{$nameSpace}Repository \$repository )
     {
-        \$this->model = \$model;
+        \$this->repository = \$repository;
         parent::__construct();
     }
 }
@@ -252,7 +254,6 @@ MODEL;
  */
 namespace App\Models{$nameSpace};
 use Larfree\Models\Api;
-use App\Scopes{$nameSpace}\\{$modelName}Scope;
 class {$modelName} extends Api
 {
     use {$modelName}Scope;
@@ -265,22 +266,56 @@ MODEL;
             $this->file_force_contents($path, $content);
             echo $path."生成.\r\n";
         }
+    }
 
+    /**
+     * 生成仓库
+     * @author Blues
+     * @param $name
+     */
+    function makeRepository($name){
 
+        $name = lineToHump($name);
+        list($fullName,$name,$modelName) = $this->fomartName($name);
+        $nameSpace = dirname($fullName);
+        $nameSpace = str_ireplace('/','\\',$nameSpace);
+        if($nameSpace)
+            $nameSpace='\\'.$nameSpace;
 
+        $Name = ucfirst($name);
+        $Name = lineToHump($Name);
+
+        $tmp = explode('/',$fullName);
+        if(@$tmp[1]){
+            $fullName=$tmp[0].'/'.$tmp[0].$tmp[1];
+        }
         $content =<<<MODEL
 <?php
 /**
- * 没有任何逻辑的Model类
+ * 仓库类. 所有数据交互通过此模式
  * @author blues
  */
-namespace App\Scopes{$nameSpace};
-trait {$modelName}Scope
+namespace App\Repositories{$nameSpace};
+use Larfree\Repositories\LarfreeRepository;
+use App\Models{$nameSpace}\\{$modelName};
+class {$modelName}Repository extends LarfreeRepository
 {
-
+    /**
+     * @var {$modelName}
+     */
+    public \$model;
+    
+    /**
+     * 可以指定为其他的model
+     * @return string
+     */
+    public function model()
+    {
+        return {$modelName}::Class;
+    }
 }
 MODEL;
-        $path= base_path().'/app/Scopes/'.$fullName.'Scope.php';
+        $path= base_path().'/app/Repositories/'.$fullName.'Repository.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{
