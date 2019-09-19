@@ -16,6 +16,7 @@ class AuthJWT
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
+     * @param int $is_force 是否强制登录
      * @return mixed
      * @throws \Larfree\Exceptions\ApiException
      */
