@@ -18,7 +18,7 @@ class CreatAuthScope extends Migration
             $table->increments('id')->comment('id');//唯一编号
             $table->string('name')->comment('范围');
             $table->string('scope')->comment('scope函数');
-            $table->json('param')->comment('参数');
+            $table->text('param')->comment('参数');
             $table->string('rule')->comment('其他规则');
             $table->boolean('status')->comment('有效')->default(0);
             $table->timestamps();
