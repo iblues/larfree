@@ -256,7 +256,6 @@ namespace App\Models{$nameSpace};
 use Larfree\Models\Api;
 class {$modelName} extends Api
 {
-    use {$modelName}Scope;
 }
 MODEL;
         $path= base_path().'/app/Models/'.$fullName.'.php';
