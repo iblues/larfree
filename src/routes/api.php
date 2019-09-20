@@ -35,7 +35,7 @@ Route::group(['middleware' => 'jwt.api.auth', 'prefix' => 'api'], function () {
         $path = 'Larfree\\Controllers\\Admin\\Api\\';
 
         //声明首页
-//            Route::redirect('/', '/manager/', 302)->name('root');
+        Route::redirect('/', '/manager/', 302)->name('root');
 
         //注册
         Route::post('/common/user', $path . 'User\\AdminController@register')->name('register');
