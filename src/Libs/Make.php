@@ -24,6 +24,7 @@ class Make
             $this->makeModel($model);
         }
         $this->makeRepository($model);
+        $this->makeService($model);
 //        $this->makeConfig($tableName);
 
         $this->makeRoute($tableName);
@@ -83,11 +84,13 @@ namespace App\Http\Controllers\Admin\\{$folder};
 use Illuminate\Http\Request;
 use Larfree\Controllers\AdminApisController as Controller;
 use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
+use App\Services\\{$folder}\\{$folder}{$nameSpace}Service;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace}Repository \$repository )
+    public function __construct({$folder}{$nameSpace}Repository \$repository, {$folder}{$nameSpace}Service \$service )
     {
         \$this->repository = \$repository;
+        \$this->service = \$service;
         parent::__construct();
     }
 }
@@ -102,11 +105,13 @@ namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
 use Larfree\Controllers\ApisController as Controller;
 use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
+use App\Services\\{$folder}\\{$folder}{$nameSpace}Service;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace}Repository \$repository )
+    public function __construct({$folder}{$nameSpace}Repository \$repository ,{$folder}{$nameSpace}Service \$service)
     {
         \$this->repository = \$repository;
+        \$this->service = \$service;
         parent::__construct();
     }
 }
@@ -315,6 +320,56 @@ class {$modelName}Repository extends LarfreeRepository
 }
 MODEL;
         $path= base_path().'/app/Repositories/'.$fullName.'Repository.php';
+        if(file_exists($path)) {
+            echo $path."已经存在.\r\n";
+        }else{
+            $this->file_force_contents($path, $content);
+            echo $path."生成.\r\n";
+        }
+    }
+    /**
+     * 生成服务
+     * @author Blues
+     * @param $name
+     */
+    function makeService($name){
+        $name = lineToHump($name);
+        list($fullName,$name,$modelName) = $this->fomartName($name);
+        $nameSpace = dirname($fullName);
+        $nameSpace = str_ireplace('/','\\',$nameSpace);
+        if($nameSpace)
+            $nameSpace='\\'.$nameSpace;
+
+        $Name = ucfirst($name);
+        $Name = lineToHump($Name);
+
+        $tmp = explode('/',$fullName);
+        if(@$tmp[1]){
+            $fullName=$tmp[0].'/'.$tmp[0].$tmp[1];
+        }
+        $content =<<<MODEL
+<?php
+/**
+ * 仓库类. 所有数据交互通过此模式
+ * @author blues
+ */
+namespace App\Services{$nameSpace};
+use Larfree\Services\LarfreeService;
+use App\Repositories{$nameSpace}\\{$modelName}Repository;
+class {$modelName}Service extends LarfreeService
+{
+    /**
+     * @var {$modelName}Repository
+     */
+    public \$repository;
+    public function __construct({$modelName}Repository \$repository )
+    {
+        \$this->repository = \$repository;
+        parent::__construct();
+    }
+}
+MODEL;
+        $path= base_path().'/app/Services/'.$fullName.'Service.php';
         if(file_exists($path)) {
             echo $path."已经存在.\r\n";
         }else{

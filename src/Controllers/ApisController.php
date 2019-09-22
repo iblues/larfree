@@ -32,6 +32,7 @@ class ApisController extends BaseController
      * @var LarfreeRepository
      */
     public $repository;
+    public $service;
     public $uid;
     protected $log = false;
     protected $msg = '';
