@@ -35,6 +35,7 @@ class LarfreeInstall extends Command
      */
     public function handle()
     {
+
         $arguments = $this->arguments();
         $replace = $arguments['replace'];
         $this->createAdmin();
