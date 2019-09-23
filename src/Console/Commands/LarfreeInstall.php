@@ -49,7 +49,7 @@ class LarfreeInstall extends Command
             'module'=>'',
             'status'=>1,
         ];
-        CommonUser::insert($nav);
+        AdminNav::insert($nav);
         $nav=[
             'name'=>'用户管理',
             'url'=>'/curd/common.user/',
@@ -57,7 +57,7 @@ class LarfreeInstall extends Command
             'module'=>'',
             'status'=>1,
         ];
-        CommonUser::insert($nav);
+        AdminNav::insert($nav);
     }
 
     private function createAdmin(){
