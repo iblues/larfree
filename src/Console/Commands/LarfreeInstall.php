@@ -62,8 +62,8 @@ class LarfreeInstall extends Command
 
     private function createAdmin(){
         CommonUser::insert(['name'=>'admin',
-            'phone'=>'',
-            'mail'=>'i@iblues.name',
+            'phone'=>'18008010521',
+            'email'=>'i@iblues.name',
             'api_token'=>str_random(30),
             'password'=>'123',
         ]);
