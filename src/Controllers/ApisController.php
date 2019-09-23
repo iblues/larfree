@@ -85,7 +85,7 @@ class ApisController extends BaseController
      */
     public function store(Request $request)
     {
-        $this->service->addOne($request->all());
+        return $this->service->addOne($request->all());
     }
 
 

@@ -90,13 +90,14 @@ class LarfreeService
      * @param Request $request
      * @param array|null $field
      * @throws \Exception
+     * @return model
      */
     public function detail($id, Request $request, array $field = null)
     {
         try {
             if ($field)
                 $this->repository->field($field);
-            $this->repository->link($this->link)->find($id);
+            return $this->repository->link($this->link)->find($id);
         } catch (\Exception $e) {
             throw $e;
         }
