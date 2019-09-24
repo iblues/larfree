@@ -22,7 +22,6 @@ use Larfree\Resources\ApiResource;
 use Illuminate\Support\Facades\DB;
 use Crypt;
 use Larfree\Services\LarfreeService;
-use Prettus\Repository\Eloquent\BaseRepository;
 
 class ApisController extends BaseController
 {

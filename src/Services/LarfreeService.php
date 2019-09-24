@@ -8,8 +8,8 @@
 
 namespace Larfree\Services;
 
-use Prettus\Repository\Eloquent\BaseRepository;
 use Illuminate\Http\Request;
+use Larfree\Repositories\LarfreeRepository;
 
 class LarfreeService
 {
@@ -111,7 +111,7 @@ class LarfreeService
      * @param $request
      * @return array
      */
-    public function parseRequest($request, BaseRepository $repository)
+    public function parseRequest($request, LarfreeRepository $repository)
     {
         $query = $request->all();
         /**
