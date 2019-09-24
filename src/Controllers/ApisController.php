@@ -110,7 +110,7 @@ class ApisController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        return $this->service->link()->updateOne($request,$id);
+        return $this->service->link()->updateOne($request->all(),$id);
     }
 
 
