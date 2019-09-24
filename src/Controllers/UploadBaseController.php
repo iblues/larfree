@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Common;
+namespace Larfree\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

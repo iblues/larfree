@@ -125,6 +125,18 @@ if (!function_exists('getLoginUserID')) {
 }
 
 /**
+ * 获取用户id,也可以指定
+ * @param string $uid
+ * @return mixed
+ */
+if (!function_exists('getLoginUser')) {
+    function getLoginUser($uid = '')
+    {
+        return \Auth()->user();
+    }
+}
+
+/**
  * api中报错,跑出异常
  * @param string $msg
  * @param array $data

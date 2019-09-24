@@ -5,7 +5,7 @@
  */
 namespace Larfree\Controllers\Admin\Api\System;
 
-use App\Repositories\System\SystemConfigRepository;
+use Larfree\Repositories\SystemConfigRepository;
 use Illuminate\Http\Request;
 use ApiController as Controller;
 use App\Models\System\SystemConfig;

@@ -25,10 +25,10 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
-Route::group(['middleware' => 'jwt.api.auth', 'prefix' => 'api'], function () {
+Route::group(['middleware' => 'api.auth', 'prefix' => 'api'], function () {
 
     //图片压缩
-    Route::get('images/{date}/{img}', 'System\\Api\\ImgController@images');
+//    Route::get('images/{date}/{img}', 'System\\Api\\ImgController@images');
 
     Route::prefix('admin')->name('admin.api.')->group(function () {
 //            $_ENV['ADMIN']=true;
@@ -37,11 +37,9 @@ Route::group(['middleware' => 'jwt.api.auth', 'prefix' => 'api'], function () {
         //声明首页
         Route::redirect('/', '/manager/', 302)->name('root');
 
-        //注册
-        Route::post('/common/user', $path . 'User\\AdminController@register')->name('register');
 
         //登录,退出等操作
-        Route::resource('/common/session', $path . 'Common\\SeesionController');
+//        Route::resource('/common/session', $path . 'Common\\SeesionController');
 
 
         Route::get('/admin/nav/tree', $path . 'Admin\\NavController@tree');
