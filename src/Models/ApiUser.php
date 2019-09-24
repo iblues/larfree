@@ -2,6 +2,8 @@
 
 
 namespace Larfree\Models;
+
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -37,8 +39,10 @@ class ApiUser extends Api implements
 //     *
 //     * @var array
 //     */
-//    protected $hidden = [
-//        'password', 'remember_token',
-//    ];
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+
+
 
 }

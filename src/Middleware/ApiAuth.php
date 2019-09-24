@@ -4,6 +4,8 @@ namespace Larfree\Middleware;
 
 use Closure;
 use App\Models\Common\CommonUser;
+use Illuminate\Support\Facades\Auth;
+use Larfree\Exceptions\ApiException;
 
 class ApiAuth
 {
@@ -33,9 +35,11 @@ class ApiAuth
                         app()->current_auth_user = Auth::user();;// 放入实例中，同请求内复用
                     }
                 }
+            } catch (ApiException $e) {
+                throw $e;
             } catch (\Exception $e) {
                 if ($is_force)
-                    apiError('登录时效,请重新登录', null, 401);
+                    apiError('登录失效,请重新登录', null, 401);
             }
 
             return $next($request);

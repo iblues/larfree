@@ -144,7 +144,7 @@ if (!function_exists('getLoginUser')) {
  * @throws \Larfree\Exceptions\ApiException
  */
 if (!function_exists('apiError')) {
-    function apiError($msg = '', $data = [], $code = 412)
+    function apiError($msg = '', $data = [], $code = 422)
     {
         throw new Larfree\Exceptions\ApiException($msg, $data, $code);
     }

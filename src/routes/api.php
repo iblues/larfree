@@ -38,10 +38,6 @@ Route::group(['middleware' => 'api.auth', 'prefix' => 'api'], function () {
         Route::redirect('/', '/manager/', 302)->name('root');
 
 
-        //登录,退出等操作
-//        Route::resource('/common/session', $path . 'Common\\SeesionController');
-
-
         Route::get('/admin/nav/tree', $path . 'Admin\\NavController@tree');
         Route::resource('/admin/nav', $path . 'Admin\\NavController');
 
