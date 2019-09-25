@@ -9,7 +9,6 @@
 namespace Larfree\Services;
 
 use Illuminate\Http\Request;
-use Larfree\Repositories\LarfreeRepository;
 
 class LarfreeService
 {

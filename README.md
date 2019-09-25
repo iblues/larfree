@@ -38,3 +38,22 @@ _The code contribution process is not very formal. You just need to make sure th
 ## License
 
 MIT
+
+
+LarfreeRepository
+新增$advFieldSearch
+
+    $advFieldSearch=['*']
+    $advFieldSearch=['id','name']
+    $advFieldSearch=null
+
+
+高级查询
+
+    name=$%123%
+    name=>|123,<123
+    name=>$123|<123     >123 or <123
+    name=$[1,2,3]
+    name=![1,2,3]          name not in [1,2,3] or id =1 
+    name=|[1,2,3]&id=|1    name in [1,2,3] or id =1 
+    
