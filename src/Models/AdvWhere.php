@@ -11,11 +11,11 @@ namespace Larfree\Models;
 trait AdvWhere{
     /**
      * 多种筛选方式,具体参考doc/url.md
-     * name$='%123%'
-     * name|=>123,<123
-     * name$=>123|<123     >123 or <123
-     * name$=[1,2,3]
-     * name!=[1,2,3]
+     * name=$%123%
+     * name=>|123,<123
+     * name=>$123|<123     >123 or <123
+     * name=$[1,2,3]
+     * name=![1,2,3]
      * @param $model
      * @param $key
      * @param $val
@@ -23,10 +23,6 @@ trait AdvWhere{
      * @throws \Larfree\Exceptions\ApiException
      */
     public function scopeAdvWhere(&$model,$key,$val){
-        //name$='%123%'    筛选
-        //name|=>123,<123  筛选
-        //name$=>123,<123  筛选
-        //name$=[1,2,3]    筛选
         $mode_array = ['|','$','!'];
 
         $eq_array=['>','>=','<','<='];
@@ -39,9 +35,19 @@ trait AdvWhere{
             return $model->where($key,$val);
         }
 
+
+
+        //由于之前是key$=name的形式.这里变更下
+        $mode = mb_substr($key,-1,'utf-8');
+        //如果在匹配的mode里
+        if(!in_array($mode,$mode_array)){
+            return $model;
+        }
         //真实的key名字
-        $real_key = substr($key,0,-1);
-        $mode =substr($key,-1);
+        $real_key = $key;
+        $key = $key.$model;
+        $val = substr($val,0,-1);//处理为之前的模式
+
 
 //        //如果字段中存在| 代表多字段.就or的关系
         if(stripos($key,'|')!==false && stripos($key,'|')!= strlen($key)-1){
