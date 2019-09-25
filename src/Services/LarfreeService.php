@@ -13,6 +13,7 @@ use Larfree\Repositories\LarfreeRepository;
 
 class LarfreeService
 {
+
     public $repository;
     protected $link = false;
 
@@ -51,9 +52,7 @@ class LarfreeService
 
             $this->repository->link($this->link);
 
-            $this->repository = $this->parseRequest($request, $this->repository);//解析请求,处理where ordery等
-
-            return $this->repository->paginate($pageSize);
+            return $this->repository->parseRequest($request->all())->paginate($pageSize);
 
             //改查询为统计
 //        $chart = $request->get('@chart');
@@ -103,51 +102,6 @@ class LarfreeService
         }
     }
 
-
-    /**
-     *
-     * 同一个字段及多个字段组合查询
-     * 示例: http://laravel.dev/api/min?id=1&search_id=2&gt_key=2&egt_key=2&lt_key=2&elt_key=3
-     * @param $request
-     * @return array
-     */
-    public function parseRequest($request, LarfreeRepository $repository)
-    {
-        $query = $request->all();
-        /**
-         * 后期需要完全独立到repository
-         * @author Blues
-         */
-        $repository->scopeQuery(function ($model) use ($query) {
-
-            if (!$query)
-                return $model;
-//        $columns = $this->model->getColumns();
-
-//        DB::enableQueryLog();
-            foreach ($query as $key => $val) {
-
-                //如果存在点.说明是链表的
-//            if(stripos($val,'.')){
-//                //链表
-//            }
-                //新模式
-                $model->AdvWhere($key, $val);
-            }
-
-            if (@$query['@sort']) {
-                $sort = explode('.', @$query['@sort']);
-                $model->orderBy($sort[0], $sort[1]);
-            } else {
-                $model->orderBy('id', 'desc');
-            }
-
-            return $model;
-        });
-
-        return $repository;
-
-    }
 
     /**
      * 标准新增

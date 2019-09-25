@@ -23,42 +23,43 @@ trait AdvWhere{
      * @throws \Larfree\Exceptions\ApiException
      */
     public function scopeAdvWhere(&$model,$key,$val){
+
         $mode_array = ['|','$','!'];
 
         $eq_array=['>','>=','<','<='];
 
-
-
-        $columns = $this->getColumns();
-        //如果直接存在这个字段.(不带$和|)那就直接相等
-        if(in_array($key,$columns)) {
-            return $model->where($key,$val);
-        }
-
-
+        if(!$val)
+            return $model;
 
         //由于之前是key$=name的形式.这里变更下
-        $mode = mb_substr($key,-1,'utf-8');
+        $mode = mb_substr($val,0,1,'utf-8');
         //如果在匹配的mode里
         if(!in_array($mode,$mode_array)){
-            return $model;
+            //如果直接存在这个字段.(不带$和|)那就直接相等
+            $columns = $this->getColumns();
+            if(in_array($key,$columns)) {
+                return $model->where($key,$val);
+            }else{
+                return $model;
+            }
         }
+
+
         //真实的key名字
         $real_key = $key;
-        $key = $key.$model;
-        $val = substr($val,0,-1);//处理为之前的模式
-
+        $key = $key.$mode;
+        $val = substr($val,1);//处理为之前的模式
 
 //        //如果字段中存在| 代表多字段.就or的关系
         if(stripos($key,'|')!==false && stripos($key,'|')!= strlen($key)-1){
             if(!in_array($mode,$mode_array))
-                apiError('复杂筛选模式必须$,|,!结尾,如id|title$');
+                apiError('复杂筛选模式必须$,|,!开头,如id|title$');
             $multi = explode('|',$real_key);
 
             $model->where(function ($query)use($val,$mode,$multi){
                 foreach($multi as $k){
                     $query->orWhere(function($query)use($k,$val,$mode){
-                        $query->advWhere($k.$mode,$val,$query);
+                        $query->advWhere($k,$mode.$val,$query);
                     });
                 }
             });
@@ -73,15 +74,15 @@ trait AdvWhere{
             $multi = explode(':',$real_key);
             if($mode=='|'){
                 $model->orWhereHas($multi[0],function($query)use($multi,$val,$mode){
-                    $query->advWhere($multi[1].$mode,$val,$query);
+                    $query->advWhere($multi[1],$mode.$val,$query);
                 });
             }elseif($mode=='$'){
                 $model->whereHas($multi[0],function($query)use($multi,$val,$mode){
-                    $query->advWhere($multi[1].$mode,$val,$query);
+                    $query->advWhere($multi[1],$mode.$val,$query);
                 });
             }elseif($mode=='!'){
                 $model->whereDoesntHave($multi[0],function($query)use($multi,$val,$mode){
-                    $query->advWhere($multi[1].$mode,$val,$query);
+                    $query->advWhere($multi[1],$mode.$val,$query);
                 });
             }
             return $model;
@@ -100,7 +101,7 @@ trait AdvWhere{
                     $multi = explode(',',$val);
                     $model->Where(function($query)use($real_key,$multi,$val,$mode){
                         foreach($multi as $k){
-                            $query->advWhere($real_key.'$',$k);
+                            $query->advWhere($real_key,'$'.$k);
                         }
                     });
                     return $model;
@@ -111,7 +112,7 @@ trait AdvWhere{
                     $multi = explode('|',$val);
                     $model->Where(function($query)use($real_key,$multi,$val,$mode){
                         foreach($multi as $k){
-                            $query->advWhere($real_key.'|',$k);
+                            $query->advWhere($real_key,'|'.$k);
                         }
                     });
                     return $model;
@@ -155,7 +156,7 @@ trait AdvWhere{
                     $multi = explode(',',$val);
                     $model->orWhere(function($query)use($real_key,$multi,$val,$mode){
                         foreach($multi as $k){
-                            $query->advWhere($real_key.'$',$k);
+                            $query->advWhere($real_key,'$'.$k);
                         }
                     });
                     return $model;
@@ -166,7 +167,7 @@ trait AdvWhere{
                     $multi = explode('|',$val);
                     $model->orWhere(function($query)use($real_key,$multi,$val,$mode){
                         foreach($multi as $k){
-                            $query->advWhere($real_key.'|',$k);
+                            $query->advWhere($real_key,'|'.$k);
                         }
                     });
                     return $model;
