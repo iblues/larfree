@@ -7,17 +7,25 @@ use Larfree\Events\ModelSaving;
 use Illuminate\Database\Eloquent\Model;
 use Larfree\Libs\Schemas;
 use Larfree\Libs\Table;
+use Venturecraft\Revisionable\RevisionableTrait; //日志
 use Watson\Rememberable\Rememberable;
 
 class Api extends Model
 {
-    use AdvWhere, Chart, Rememberable, Log;
+    use AdvWhere, Chart, Rememberable ,RevisionableTrait;
+
+    // 日志相关
+    protected $revisionEnabled = true; //是否开启日志记录
+    protected $dontKeepRevisionOf=['deleted_at','created_at','updated_at'];//这3个字段不写日志
+    protected $revisionCreationsEnabled = false;//创建是否监控
+
 
     protected $_modelName = '';
     protected $_schemas = '';
     protected $casts = [];
     protected $guarded = [];
     protected $appends = [];
+
     protected $_link = [];//link的列表
     protected $_doLink = [];//真正查询Link的
     protected $_doLinkCount = [];//统计link的数字
@@ -410,34 +418,6 @@ class Api extends Model
     }
 }
 
-trait Log
-{
-
-    protected $_log = false;//是否开启日志记录
-
-    /**
-     * 是否需要日志记录
-     */
-    public function isLog()
-    {
-        return $this->_log;
-    }
-
-    /**
-     * 是否需要开启日志记录
-     */
-    public function startLog()
-    {
-        $this->_log = true;
-        return $this;
-    }
-
-    public function scopeStartLog($query)
-    {
-        $query->_log = true;
-        return $query;
-    }
-}
 
 /**
  * 统计组建

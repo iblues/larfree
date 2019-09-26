@@ -20,7 +20,8 @@
         "watson/rememberable": "^2.0",
         "zircote/swagger-php": "^3.0",
         "zgldh/qiniu-laravel-storage": "^0.10.0",
-        "prettus/l5-repository": "^2.6"
+        "prettus/l5-repository": "^2.6",
+        "venturecraft/revisionable": "1.*"
     },
     "extra": {
         "laravel": {

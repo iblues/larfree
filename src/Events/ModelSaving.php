@@ -25,34 +25,11 @@ class ModelSaving
     {
         //过滤掉数据库没有的列,避免报错
         $columns = $data->getColumns();
-        //日志记录
-        if($data->isLog()){
-            $this->logAction($data);
-        }
-
         $data->beforeSave($data);
         foreach ($data->toArray() as $key =>$val) {
             if(!in_array($key,$columns)){
                 $data->setTmpSave($key,$data->$key);
                 unset($data->$key);
-            }
-        }
-    }
-
-    /**
-     * 获取修改前和之后的数据
-     * @param Api $data
-     */
-    public function logAction(Api $data){
-        if(class_exists('App\Events\Log\ModelChange')){
-
-            //有主键Id是修改
-            if($data->id){
-                $oldData = (new $data)->find($data->id);
-                event(new \App\Events\Log\ModelChange($oldData,$data));
-                //否则是新增
-            }else{
-                event(new \App\Events\Log\ModelChange(null,$data));
             }
         }
     }
