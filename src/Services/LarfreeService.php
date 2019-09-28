@@ -14,11 +14,23 @@ class LarfreeService
 {
 
     public $repository;
+    protected $admin = false;
     protected $link = false;
 
     public function __construct()
     {
 
+    }
+
+    /**
+     * 后台模式
+     * @author Blues
+     * @param bool $flag
+     * @return $this;
+     */
+    public function setAdmin($flag=true){
+        $this->admin = $flag;
+        return $this;
     }
 
     /**

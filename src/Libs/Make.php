@@ -90,7 +90,7 @@ class {$name}Controller extends Controller
     public function __construct({$folder}{$nameSpace}Repository \$repository, {$folder}{$nameSpace}Service \$service )
     {
         \$this->repository = \$repository;
-        \$this->service = \$service;
+        \$this->service = \$service->setAdmin();
         parent::__construct();
     }
 }
