@@ -9,6 +9,7 @@ use Larfree\Libs\Schemas;
 use Larfree\Libs\Table;
 use Venturecraft\Revisionable\RevisionableTrait; //日志
 use Watson\Rememberable\Rememberable;
+use Illuminate\Support\Facades\DB;
 
 class Api extends Model
 {
@@ -353,16 +354,16 @@ class Api extends Model
         }
     }
 
-    public function create($data)
-    {
-        foreach ($data as $k => $v) {
-            $this->$k = $v;
-        }
-        if ($this->save())
-            return $this;
-        else
-            return false;
-    }
+//    public function create($data)
+//    {
+//        foreach ($data as $k => $v) {
+//            $this->$k = $v;
+//        }
+//        if ($this->save())
+//            return $this;
+//        else
+//            return false;
+//    }
 
     /**
      * saving事件中,用来临时存储下列以外的数据
