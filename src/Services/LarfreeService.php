@@ -26,7 +26,7 @@ class LarfreeService
      * 后台模式
      * @author Blues
      * @param bool $flag
-     * @return $this;
+     * @return LarfreeService;
      */
     public function setAdmin($flag=true){
         $this->admin = $flag;

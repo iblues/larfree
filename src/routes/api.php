@@ -38,9 +38,6 @@ Route::group(['middleware' => 'api.auth', 'prefix' => 'api'], function () {
         Route::redirect('/', '/manager/', 302)->name('root');
 
 
-        Route::get('/admin/nav/tree', $path . 'Admin\\NavController@tree');
-        Route::resource('/admin/nav', $path . 'Admin\\NavController');
-
         //上传相关
         Route::any('/upload/images', $path . 'Common\\UploadController@images')->name('upload.images');
         Route::any('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
