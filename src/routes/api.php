@@ -43,7 +43,7 @@ Route::group(['middleware' => 'api.auth', 'prefix' => 'api'], function () {
         Route::any('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
 
         //配置接口
-        Route::resource('config', $path . 'System\ConfigController');
+//        Route::resource('config', $path . 'System\ConfigController');
         //component获取
         Route::any('/system/component/{key}/{action}', $path . 'System\ComponentController@module');
         //系统预定义的组建 end

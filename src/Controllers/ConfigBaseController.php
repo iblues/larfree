@@ -3,19 +3,24 @@
  * Larfree Api类
  * @author blues
  */
-namespace Larfree\Controllers\Admin\Api\System;
+
+namespace Larfree\Controllers;
 
 use Larfree\Repositories\SystemConfigRepository;
 use Illuminate\Http\Request;
 use ApiController as Controller;
 use App\Models\System\SystemConfig;
 use Larfree\Libs\Schemas;
+use Larfree\Services\SystemConfigService;
+
 class ConfigController extends Controller
 {
     public $repository;
-    public function __construct(SystemConfig $model,SystemConfigRepository $repository )
+    public $service;
+
+    public function __construct(SystemConfigRepository $repository, SystemConfigService $service)
     {
-        $this->model = $model;
+        $this->service = $service;
         $this->repository = $repository;
         parent::__construct();
     }
@@ -34,27 +39,26 @@ class ConfigController extends Controller
      */
     public function show($cat, Request $request)
     {
-        return $this->repository->getAllByCat($request->cat);
+        return $this->service->getAllByCat($request->cat);
     }
 
     /**
      * 更新
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @param  string $cat 分类名
      * @return mixed
      */
     public function update(Request $request, $cat)
     {
-        $data = $request->all();
-        foreach($data as $k=>$v){
-            if($v) {
-                $this->model->updateOrCreate(
-                    ['key' => $k, 'cat' => $cat],
-                    ['value' => $v]
-                );
-            }
-        }
+        return $this->service->updateConfigByCat($request->all(), $cat);
+    }
+
+    public function store(Request $request){
+        ApiError('Forbidden!',[],'403');
+    }
+
+    public function deleted($id,Request $request){
+        ApiError('Forbidden!',[],'403');
     }
 
 }

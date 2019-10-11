@@ -40,4 +40,22 @@ class SystemConfigRepository extends LarfreeRepository
         return $data->plick('key','value');
     }
 
+    /**
+     * 批量赋值
+     * @author Blues
+     * @param array $data
+     * @param $cat
+     */
+    public function updateConfigByCat(array $data, $cat)
+    {
+        foreach($data as $k=>$v){
+            if($v) {
+                $this->model->updateOrCreate(
+                    ['key' => $k, 'cat' => $cat],
+                    ['value' => $v]
+                );
+            }
+        }
+    }
+
 }

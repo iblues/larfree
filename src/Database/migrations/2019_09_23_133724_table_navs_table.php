@@ -15,7 +15,7 @@ class TableNavsTable extends Migration
     {
         Schema::table('admin_nav', function (Blueprint $table) {
             $table->string('component')->default('')->comment('vue对应的key');
-            $table->text('param')->comment('额外参数');
+            $table->text('param')->nullable()->comment('额外参数');
             $table->boolean('visible')->default(1)->comment('icon');
             $table->string('icon')->default('')->comment('是否可见');
         });
