@@ -73,7 +73,7 @@ class ApisController extends BaseController
      */
     public function index(Request $request)
     {
-        return $this->service->link()->paginate($request, $request->get('@columns'), $request->get('pageSize'));
+        return $this->service->link()->paginate($request->toArray(), $request->get('@columns'), $request->get('pageSize'));
     }
 
     /**
@@ -97,7 +97,7 @@ class ApisController extends BaseController
      */
     public function show($id, Request $request)
     {
-        return $this->service->link()->detail($id, $request, $request->get('@columns'));
+        return $this->service->link()->detail($id, $request->toArray(), $request->get('@columns'));
     }
 
     /**

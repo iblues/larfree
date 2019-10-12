@@ -49,13 +49,13 @@ class LarfreeService
      * 获取标准模型的分页.
      * 通用接口在使用
      * @author Blues
-     * @param Request $request
+     * @param array $request
      * @param array|null $field
      * @param int $pageSize
      * @throws $e
      * @return mixed
      */
-    public function paginate(Request $request, array $field = null, $pageSize = 10)
+    public function paginate(array $request, array $field = null, $pageSize = 10)
     {
         try {
             if ($field)
@@ -63,7 +63,7 @@ class LarfreeService
 
             $this->repository->link($this->link);
 
-            return $this->repository->parseRequest($request->all())->paginate($pageSize);
+            return $this->repository->parseRequest($request)->paginate($pageSize);
 
             //改查询为统计
 //        $chart = $request->get('@chart');
@@ -97,12 +97,12 @@ class LarfreeService
      * 通用接口在使用
      * @author Blues
      * @param $id
-     * @param Request $request
+     * @param array $request
      * @param array|null $field
      * @throws \Exception
      * @return model
      */
-    public function detail($id, Request $request, array $field = null)
+    public function detail($id, $request, array $field = null)
     {
         try {
             if ($field)
