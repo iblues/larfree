@@ -2,6 +2,7 @@
 
 namespace Larfree\Models;
 
+use Illuminate\Support\Arr;
 use Larfree\Events\ModelSaved;
 use Larfree\Events\ModelSaving;
 use Illuminate\Database\Eloquent\Model;
@@ -13,11 +14,11 @@ use Illuminate\Support\Facades\DB;
 
 class Api extends Model
 {
-    use AdvWhere, Chart, Rememberable ,RevisionableTrait;
+    use AdvWhere, Chart, Rememberable, RevisionableTrait;
 
     // 日志相关
     protected $revisionEnabled = true; //是否开启日志记录
-    protected $dontKeepRevisionOf=['deleted_at','created_at','updated_at'];//这3个字段不写日志
+    protected $dontKeepRevisionOf = ['deleted_at', 'created_at', 'updated_at'];//这3个字段不写日志
     protected $revisionCreationsEnabled = false;//创建是否监控
 
 
@@ -84,7 +85,7 @@ class Api extends Model
      * @param $field
      * @return mixed
      */
-    public function scopeField($model, $field='')
+    public function scopeField($model, $field = '')
     {
         if (!$field)
             return $model;
@@ -308,7 +309,7 @@ class Api extends Model
 
     public function setAttribute($key, $value)
     {
-        if(isset($this->_schemas[$key])) {
+        if (isset($this->_schemas[$key])) {
             $this->callComponent($this->_schemas[$key], 'setAttribute', $value);
         }
         return parent::setAttribute($key, $value);
@@ -325,14 +326,23 @@ class Api extends Model
     {
 
         //常用的就不用去找了
-        $blackType = ['text', 'number', 'text'];
-        $type = array_get($config, 'type', 'text');
+        $blackType = ['text', 'number'];
+        $type = Arr::get($config, 'type', 'text');
+
+
+        //规范返回类型
+        $sqlType = Arr::get($config, 'sql_type', '');
+        //数字化
+        if (  stripos($sqlType, 'int') !== false && isset($data[$config['key']]) ) {
+            $data[$config['key']] = $data[$config['key']] * 1;
+        }
+
         //常用的可以不用去判断了 除非指定了component字段.
         if (in_array($type, $blackType)) {
             return '';
         }
         //如果有指定component字段, 用component的
-        $component = ucfirst(array_get($config, 'component', $type));
+        $component = ucfirst(Arr::get($config, 'component', $type));
         //扩展包内的
         $larfreeClass = 'Larfree\Components\Field\\' . $component;
         //程序内的
