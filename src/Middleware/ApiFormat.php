@@ -61,7 +61,7 @@ class ApiFormat
     }
 
     protected function appCode($request,$response){
-        if($request->headers->get('device') == 'app'){
+        if($request->headers->get('device') == 'app' && $response->getStatusCode()<500){
             $this->setHttpCode(200,$response);
         }
     }
