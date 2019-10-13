@@ -28,6 +28,7 @@ class Api extends Model
     protected $guarded = [];
     protected $appends = [];
 
+    protected $hidden=['deleted_at'];
     protected $_link = [];//link的列表
     protected $_doLink = [];//真正查询Link的
     protected $_doLinkCount = [];//统计link的数字

@@ -4,6 +4,8 @@ namespace Larfree\Middleware;
 
 use Closure;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+
 class ApiFormat
 {
     /**
@@ -31,12 +33,14 @@ class ApiFormat
         if(method_exists($response,'setEncodingOptions')){
             $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
-        
+
 //dd($content);
         $json=json_decode($response->getContent(),true);
 
         if(isset($json['code'])){
-            $response->setStatusCode($json['code']);
+            $this->setHttpCode($json['code'],$response);
+            $this->appCode($request,$response);
+
             return $response;
         }
         //没数据的时候
@@ -51,7 +55,27 @@ class ApiFormat
 
         //对分页进行再处理
         $page = $this->FormatPage($content);
-        return $response = $this->FormatJson($response,$content,$page,$code);
+        $response = $this->FormatJson($response,$content,$page,$code);
+        $this->appCode($request,$response);
+        return $response;
+    }
+
+    protected function appCode($request,$response){
+        if($request->headers->get('device') == 'app'){
+            $this->setHttpCode(200,$response);
+        }
+    }
+
+    protected function setHttpCode($code,$response){
+        if($code>10000){
+            $code =  intval($code/100 );
+        }
+
+        if($code>=600){
+            $code = 412;
+        }
+
+        $response->setStatusCode($code);
     }
 
     /**

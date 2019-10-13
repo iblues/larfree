@@ -23,9 +23,6 @@ class ApiException extends Exception
         $msg = $this->getMessage();
         $code = $this->getCode();
         $status = 0;
-        if($code=='401'){
-            $status=-10;
-        }
         return (new ApiResource(  collect($this->data)  ))
              ->additional(['code' =>$code,'status'=>$status,'msg'=>$msg]);
     }
