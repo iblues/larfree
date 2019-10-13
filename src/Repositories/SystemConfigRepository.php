@@ -37,7 +37,7 @@ class SystemConfigRepository extends LarfreeRepository
 //        $data = Schemas::getSchemas('Config.'.$category);
 
         $data = $this->model->link()->where('cat',$category)->get();
-        return $data->plick('key','value');
+        return $data->pluck('value','key');
     }
 
     /**
