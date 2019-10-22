@@ -209,7 +209,7 @@ if (!function_exists('getThumb')) {
                     return $disk->imagePreviewUrl($filename, "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
                 }
             case 'oss':
-                $filename = $filename . '?x-oss-process=image/resize,l_' . $width;
+                $filename = config('public.url') . $filename . '?x-oss-process=image/resize,l_' . $width;
                 return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 break;
             default:
