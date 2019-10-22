@@ -17,6 +17,7 @@ class Image extends Components
      * @param $array
      */
     static public function getAttribute($config,&$array){
+
         if(@$config['multi']){
             if(!is_array($array[$config['key']])){
                 $array[$config['key']] = json_decode($array[$config['key']],1);
@@ -30,8 +31,8 @@ class Image extends Components
             //上面的慢慢淘汰
             $array[$config['key'].'_link']=[
                 'small'=> getArrayThumb($value, '200', '200'),
-                'origin'=>getArrayThumb($value,'0','0',-1),
-                'big'=>getArrayThumb($value,'0','0',-1),
+                'origin'=>getArrayThumb($value,'','0',-1),
+                'big'=>getArrayThumb($value,'1000','1000'),
             ];
         }else{
 //            $array[$config['key'] . '_small'] = getThumb($value, '200', '200');
@@ -41,7 +42,7 @@ class Image extends Components
             $array[$config['key'].'_link']=[
                 'small'=> getThumb($value, '200', '200'),
                 'origin'=>getThumb($value,'0','0',-1),
-                'big'=>getThumb($value,'0','0',-1),
+                'big'=>getThumb($value,'1000','1000'),
             ];
 
         }

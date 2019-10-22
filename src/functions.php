@@ -191,7 +191,7 @@ if (!function_exists('getThumb')) {
  * @param $filename
  * @param $width
  * @param $height
- * @param int $mode
+ * @param int $mode -1 不裁剪
  * @return mixed
  */
 if (!function_exists('getThumb')) {
@@ -209,8 +209,13 @@ if (!function_exists('getThumb')) {
                     return $disk->imagePreviewUrl($filename, "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
                 }
             case 'oss':
-                $filename = config('public.url') . $filename . '?x-oss-process=image/resize,l_' . $width;
-                return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
+                if($mode==-1){
+                    return $filename = config('public.url') . $filename;
+                }else{
+                    $filename = config('public.url') . $filename . '?x-oss-process=image/resize,l_' . $width;
+                    return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
+                }
+
                 break;
             default:
                 return config('public.url') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
