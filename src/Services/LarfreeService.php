@@ -9,10 +9,14 @@
 namespace Larfree\Services;
 
 use Illuminate\Http\Request;
+use Larfree\Repositories\LarfreeRepository;
 
 class LarfreeService
 {
 
+    /**
+     * @var LarfreeRepository
+     */
     public $repository;
     protected $admin = false;
     protected $link = false;
@@ -170,5 +174,14 @@ class LarfreeService
             throw $e;
         }
 
+    }
+
+
+    /**
+     * @author Blues
+     * @return $this
+     */
+    static function new(){
+        return app(static::class);
     }
 }

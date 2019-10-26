@@ -85,4 +85,11 @@ abstract class LarfreeRepository extends BaseRepository
 
     }
 
+    /**
+     * @author Blues
+     * @return $this
+     */
+    static function new(){
+        return app(static::class);
+    }
 }

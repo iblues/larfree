@@ -7,6 +7,9 @@
  * @param int $mode
  * @return mixed
  */
+
+use Illuminate\Support\Arr;
+
 if (!function_exists('getArrayThumb')) {
     function getArrayThumb($array, $width, $height, $mode = 0)
     {
@@ -32,7 +35,7 @@ if (!function_exists('conf')) {
         if (!$name) {
             $data = \App\Models\Config::select(['key', 'value'])->where('cat', $cat)->get();
             $data = $data->toArray();
-            return array_pluck($data, 'value', 'key');
+            return Arr::pluck($data, 'value', 'key');
         } else {
             $data = \App\Models\Config::select(['key', 'value'])->where('cat', $cat)->where('key', $name)->first();
             return $data->value;
@@ -158,7 +161,7 @@ if (!function_exists('apiError')) {
  * @param string $level level标记字段
  * @return array
  */
-if (!function_exists('getThumb')) {
+if (!function_exists('listToTree')) {
     function listToTree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
     {
         // 创建Tree
