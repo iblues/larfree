@@ -63,9 +63,14 @@ class Api extends Model
         }
 
         //静态化此变量,避免多次读取
-        static $schemas;
-        $schemas = $schemas ?? Schemas::getSchemas($this->_modelName);
+        static $schemasCache;
+        if(!isset($schemasCache[$this->_modelName])){
+            $schemas = Schemas::getSchemas($this->_modelName);
+        }else{
+            $schemas = $schemasCache[$this->_modelName];
+        }
         $this->_schemas = $schemas;
+
 
 //        if ($this->_schemas === false) {
 //            throw new \Exception('找不到schemas配置:' . $this->_modelName);
