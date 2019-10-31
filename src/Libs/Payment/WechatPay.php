@@ -13,12 +13,8 @@ class WechatPay implements Pay
         $this->app = app('wechat.payment');
     }
 
-    public function pay(CommonPay $Pay)
+    public function pay(CommonPay $Pay,$param=[])
     {
-        $user_id = getLoginUserID();
-        $user = CommonUser::find($user_id);
-        if(!$user->openid)
-            throw \Exception('找不到用户的Openid');
         $result = $this->app->order->unify([
             'body' => $Pay->title,
             'out_trade_no' => time() . '-' . $Pay->id,//订单号
@@ -26,13 +22,14 @@ class WechatPay implements Pay
             'notify_url' => URL('api/common/pay/notify/wechatpay'), // 支付结果通知网址，如果不设置则会使用配置里的默认地址
             'trade_type' => 'JSAPI',
             'sign_type' => 'MD5',
-            'openid' => $user->openid,//当前用户的openid
+            'openid' => $param['openid'],//当前用户的openid
         ]);
         $code = $this->app->jssdk->bridgeConfig($result['prepay_id'], false);
         if ($code) {
             return $code;
         }
     }
+
 
     public function refund(CommonPay $Pay)
     {
