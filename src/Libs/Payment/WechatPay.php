@@ -3,6 +3,7 @@ namespace Larfree\Libs\Payment;
 use App\Models\Common\CommonPay;
 use App\Models\Common\CommonUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Larfree\Libs\Payment\Pay;
 class WechatPay implements Pay
@@ -19,11 +20,14 @@ class WechatPay implements Pay
             'body' => $Pay->title,
             'out_trade_no' => time() . '-' . $Pay->id,//订单号
             'total_fee' => $Pay->price * 100,//价格
-            'notify_url' => URL('api/common/pay/notify/wechatpay'), // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+            'notify_url' => config('larfree.wechat_notify',URL('api/common/pay/notify/wechat')), // 支付结果通知网址，如果不设置则会使用配置里的默认地址
             'trade_type' => 'JSAPI',
             'sign_type' => 'MD5',
             'openid' => $param['openid'],//当前用户的openid
         ]);
+        if(Arr::get($result,'result_code')==='FAIL'){
+            apiError($result['err_code_des']);
+        }
         $code = $this->app->jssdk->bridgeConfig($result['prepay_id'], false);
         if ($code) {
             return $code;
@@ -54,8 +58,8 @@ class WechatPay implements Pay
         DB::beginTransaction();
         try{
             $pay->status=1;
-            $order = new $pay->model();
-            $order->complete($pay->order_id);
+            $order = app($pay->target_type);
+            $order->complete($pay->target_id);
             $pay->save();
             DB::commit();
         } catch (\Exception $e){
