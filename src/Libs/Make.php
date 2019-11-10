@@ -83,13 +83,15 @@ namespace App\Http\Controllers\Admin\\{$folder};
 
 use Illuminate\Http\Request;
 use Larfree\Controllers\AdminApisController as Controller;
-use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
 use App\Services\\{$folder}\\{$folder}{$nameSpace}Service;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace}Repository \$repository, {$folder}{$nameSpace}Service \$service )
+    /**
+     * @var {$folder}{$nameSpace}Service; 
+     */
+    public \$service;
+    public function __construct({$folder}{$nameSpace}Service \$service )
     {
-        \$this->repository = \$repository;
         \$this->service = \$service;
         \$this->service->setAdmin();
         parent::__construct();
@@ -105,13 +107,15 @@ MODEL;
 namespace App\Http\Controllers\Api\\{$folder};
 use Illuminate\Http\Request;
 use Larfree\Controllers\ApisController as Controller;
-use App\Repositories\\{$folder}\\{$folder}{$nameSpace}Repository;
 use App\Services\\{$folder}\\{$folder}{$nameSpace}Service;
 class {$name}Controller extends Controller
 {
-    public function __construct({$folder}{$nameSpace}Repository \$repository ,{$folder}{$nameSpace}Service \$service)
+    /**
+     * @var {$folder}{$nameSpace}Service; 
+     */
+    public \$service;
+    public function __construct({$folder}{$nameSpace}Service \$service)
     {
-        \$this->repository = \$repository;
         \$this->service = \$service;
         parent::__construct();
     }
