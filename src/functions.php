@@ -216,8 +216,8 @@ if (!function_exists('getThumb')) {
                     $filename = config('public.url') .'/'. $filename;
                     return $filename = str_replace('//','/',$filename);
                 }else{
-                    $filename = config('public.url') . $filename . '?x-oss-process=image/resize,l_' . $width;
-                    $filename = str_replace('//','/',$filename);
+                    $filename = config('public.url') . '/' . $filename . '?x-oss-process=image/resize,l_' . $width;
+                    $filename = str_replace('//', '/', $filename);
                     return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 }
 
