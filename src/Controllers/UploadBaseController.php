@@ -19,20 +19,21 @@ class UploadBaseController extends ApisController
     public function images(Request $request)
     {
         $type = config('filesystems.file_type', 'local');
+        $module = $request->get('module', 'images');
         switch ($type) {
             case 'qiniu':
                 $disk = \Storage::disk('qiniu'); //使用七牛云上传
-                $time = 'images/' . date('Y-m-d');//上传目录
+                $time = $module . '/' . date('Y-m-d');//上传目录
                 $filename = $disk->put($time, $request->file('file'));//上传
                 break;
             case 'oss':
                 $disk = \Storage::disk('oss'); //使用oss
-                $time = 'file/' . date('Y-m-d');//上传目录
+                $time = $module . '/' . date('Y-m-d');//上传目录
                 $filename = $disk->put($time, $request->file('file'));//上传
                 break;
             default :
                 $disk = \Storage::disk('public');
-                $time = 'images/' . date('Y-m-d');
+                $time = $module . '/' . date('Y-m-d');
                 $filename = $disk->putFile($time, $request->file('file'), 'public');
                 break;
         }
@@ -54,20 +55,21 @@ class UploadBaseController extends ApisController
     public function files(Request $request)
     {
         $type = config('filesystems.default', 'file');
+        $module = $request->get('module', 'files');
         switch ($type) {
             case 'qiniu':
                 $disk = \Storage::disk('qiniu'); //使用七牛云上传
-                $time = 'file/' . date('Y-m-d');//上传目录
+                $time = $module . '/' . date('Y-m-d');//上传目录
                 $filename = $disk->put($time, $request->file('file'));//上传    case 'qiniu':
                 break;
             case 'oss':
                 $disk = \Storage::disk('oss'); //使用oss
-                $time = 'file/' . date('Y-m-d');//上传目录
+                $time = $module . '/' . date('Y-m-d');//上传目录
                 $filename = $disk->put($time, $request->file('file'));//上传
                 break;
             default :
                 $disk = \Storage::disk('public');
-                $time = 'file/' . date('Y-m-d');
+                $time = $module . '/' . date('Y-m-d');
                 $filename = $disk->putFile($time, $request->file('file'), 'public');
                 break;
         }
