@@ -220,7 +220,6 @@ if (!function_exists('getThumb')) {
                     $filename = str_replace('//', '/', $filename);
                     return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 }
-
                 break;
             default:
                 return config('public.url') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
