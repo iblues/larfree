@@ -212,13 +212,11 @@ if (!function_exists('getThumb')) {
                     return $disk->imagePreviewUrl($filename, "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
                 }
             case 'oss':
-                if($mode==-1){
-                    $filename = config('public.url') .'/'. $filename;
-                    return $filename = str_replace('//','/',$filename);
-                }else{
-                    $filename = config('public.url') . '/' . $filename . '?x-oss-process=image/resize,l_' . $width;
-                    $filename = str_replace('//', '/', $filename);
-                    return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
+                if ($mode == -1) {
+                    return Storage::url($filename);
+                } else {
+                    $filename = Storage::url($filename);
+                    return $filename . '?x-oss-process=image/resize,l_' . $width . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 }
                 break;
             default:
