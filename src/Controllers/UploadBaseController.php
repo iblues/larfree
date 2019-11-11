@@ -18,7 +18,7 @@ class UploadBaseController extends ApisController
      */
     public function images(Request $request)
     {
-        $type = config('filesystems.default', 'file');
+        $type = config('filesystems.file_type', 'local');
         switch ($type) {
             case 'qiniu':
                 $disk = \Storage::disk('qiniu'); //使用七牛云上传

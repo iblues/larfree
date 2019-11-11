@@ -202,10 +202,10 @@ if (!function_exists('getThumb')) {
     {
         if (!$filename)
             return '';
-        $type = config('filesystems.default', 'file');
+        $type = config('filesystems.file_type', 'file');
         switch ($type) {
             case 'qiniu':
-                $disk = \Storage::disk('qiniu'); //使用七牛云上传
+                $disk = \Storage::disk('local'); //使用七牛云上传
                 if ($mode == '-1') {
                     return $disk->downloadUrl($filename)->__toString();//裁剪
                 } else {
