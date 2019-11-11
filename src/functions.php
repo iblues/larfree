@@ -213,9 +213,11 @@ if (!function_exists('getThumb')) {
                 }
             case 'oss':
                 if($mode==-1){
-                    return $filename = config('public.url') . $filename;
+                    $filename = config('public.url') .'/'. $filename;
+                    return $filename = str_replace('//','/',$filename);
                 }else{
                     $filename = config('public.url') . $filename . '?x-oss-process=image/resize,l_' . $width;
+                    $filename = str_replace('//','/',$filename);
                     return $filename . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
                 }
 
