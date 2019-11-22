@@ -32,7 +32,7 @@ class Image extends Components
             $array[$config['key'].'_link']=[
                 'small'=> getArrayThumb($value, '200', '200'),
                 'origin'=>getArrayThumb($value,'','0',-1),
-                'large'=>getArrayThumb($value,'1000','1000'),
+                'large'=>getArrayThumb($value,'1500','1500'),
             ];
         }else{
 //            $array[$config['key'] . '_small'] = getThumb($value, '200', '200');
@@ -42,7 +42,7 @@ class Image extends Components
             $array[$config['key'].'_link']=[
                 'small'=> getThumb($value, '200', '200'),
                 'origin'=>getThumb($value,'0','0',-1),
-                'large'=>getThumb($value,'1000','1000'),
+                'large'=>getThumb($value,'1500','1500'),
             ];
 
         }
