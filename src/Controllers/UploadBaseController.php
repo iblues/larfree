@@ -54,7 +54,7 @@ class UploadBaseController extends ApisController
      */
     public function files(Request $request)
     {
-        $type = config('filesystems.default', 'file');
+        $type = config('filesystems.file_type', 'local');
         $module = $request->get('module', 'files');
         switch ($type) {
             case 'qiniu':
