@@ -10,11 +10,13 @@ namespace Larfree\Exports;
 
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Shared\Font;
 
-class LarfreeExport implements FromCollection, WithHeadings, WithMapping
+class LarfreeExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
 {
 
     public $data;
@@ -22,6 +24,8 @@ class LarfreeExport implements FromCollection, WithHeadings, WithMapping
 
     public function __construct($data, $schema)
     {
+        Font::setTrueTypeFontPath(storage_path() .'/fonts/');
+        Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
         $this->data = $data;
         $this->schema = $schema;
     }

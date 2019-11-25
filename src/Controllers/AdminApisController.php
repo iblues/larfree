@@ -22,7 +22,7 @@ class AdminApisController extends ApisController
         //批量导出
         $file = $request->post('file');
         if ($file) {
-            return $this->service->link()->export($module, $file);
+            return $this->service->link()->import($this->modelName,$module, $file);
         } else {
             apiError('file文件不存在');
         }

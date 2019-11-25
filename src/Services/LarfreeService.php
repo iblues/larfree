@@ -8,11 +8,17 @@
 
 namespace Larfree\Services;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
+use Larfree\Imports\LarfreeImport;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Files\Disk;
+
 class LarfreeService
 {
 
@@ -34,7 +40,8 @@ class LarfreeService
      * @param bool $flag
      * @return LarfreeService;
      */
-    public function setAdmin($flag=true){
+    public function setAdmin($flag = true)
+    {
         $this->admin = $flag;
         return $this;
     }
@@ -148,10 +155,11 @@ class LarfreeService
      * @return mixed
      * @throws \Exception
      */
-    public function delete($id){
-        try{
+    public function delete($id)
+    {
+        try {
             return $this->repository->delete($id);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             throw $e;
         }
 
@@ -162,16 +170,17 @@ class LarfreeService
      * @author Blues
      * @return $this
      */
-    static function new(){
+    static function new()
+    {
         return app(static::class);
     }
 
-    public function chart($chart,$request)
+    public function chart($chart, $request)
     {
 
         $this->repository->link($this->link);
         //处理筛选条件,排序重置为空
-        $request['@sort']='';
+        $request['@sort'] = '';
         $this->repository->parseRequest($request);
 
         list($schemas, $action) = explode('|', $chart);
@@ -180,17 +189,19 @@ class LarfreeService
     }
 
     /**
+     * 基于配置的导出
      * @author Blues
      * @param $model = test.test_detail
      * @param $module = export
      * @param $request
      * @throws \Exception
+     * @return string;
      */
-    public function export($model,$module='export',$request=[])
+    public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
         $list = $this->repository->parseRequest($request)->limit(5)->get();
-        return Excel::download(new LarfreeExport($list,$schemas), 'users.xlsx');
+        return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
 //            foreach ($schemas['component_fields'] as $schema) {
@@ -199,5 +210,35 @@ class LarfreeService
 //            return $excel;
 //        });
         return $file;
+    }
+
+    /**
+     * 基于配置的导入
+     * @author Blues
+     * @param $model = test.test
+     * @param string $module
+     * @param $urlFile http://xxxx 远程文件
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Larfree\Exceptions\ApiException
+     */
+    public function import($model, $module = 'import', $urlFile)
+    {
+        $schemas = ComponentSchemas::getComponentConfig($model, $module);
+        $client = new Client();
+        try {
+            $res = $client->request('GET', $urlFile);
+            $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
+            if (Storage::put($fileName, $res->getBody())) {
+                Excel::import(new LarfreeImport($schemas, $this->repository), $fileName);
+            }
+            //导入完成后,删除本地缓存
+            Storage::delete($fileName);
+        } catch (ClientException $e) {
+            apiError('下载文件失败');
+        } catch (\Exception $e) {
+            //导入失败,删除本地缓存
+            Storage::delete($fileName);
+            apiError('导入失败');
+        }
     }
 }
