@@ -9,8 +9,10 @@
 namespace Larfree\Services;
 
 use Illuminate\Http\Request;
+use Larfree\Exports\LarfreeExport;
+use Larfree\Libs\ComponentSchemas;
 use Larfree\Repositories\LarfreeRepository;
-
+use Maatwebsite\Excel\Facades\Excel;
 class LarfreeService
 {
 
@@ -68,27 +70,6 @@ class LarfreeService
             $this->repository->link($this->link);
 
             return $this->repository->parseRequest($request)->paginate($pageSize);
-
-            //改查询为统计
-//        $chart = $request->get('@chart');
-//        if($chart){
-//            list( $schemas,$action) = explode('|',$chart);
-//            $config = ComponentSchemas::getComponentConfig($schemas,$action);
-//            return $data = $this->model->timeChart($config['y'],$config['x']['field'],$config['x']['format']);
-//        }
-
-            //批量导出
-//        if($request->get('@export')){
-//            list( $schemas,$action) = explode('|',$request->get('@export'));
-//            $schemas = ComponentSchemas::getComponentConfig($schemas,$action);
-//            $file =  (new FastExcel($model->take(5000)->get()))->download('file.xlsx',function ($data)use($schemas) {
-//                $excel =[];
-//                foreach ($schemas['component_fields'] as $schema){
-//                    $excel[$schema['name']] = $data[$schema['key']];
-//                }
-//                return $excel;
-//            });
-//        }
 
         } catch (\Exception $e) {
             throw  $e;
@@ -183,5 +164,40 @@ class LarfreeService
      */
     static function new(){
         return app(static::class);
+    }
+
+    public function chart($chart,$request)
+    {
+
+        $this->repository->link($this->link);
+        //处理筛选条件,排序重置为空
+        $request['@sort']='';
+        $this->repository->parseRequest($request);
+
+        list($schemas, $action) = explode('|', $chart);
+        $config = ComponentSchemas::getComponentConfig($schemas, $action);
+        return $this->repository->timeChart($config['y'], $config['x']['field'], $config['x']['format']);
+    }
+
+    /**
+     * @author Blues
+     * @param $model = test.test_detail
+     * @param $module = export
+     * @param $request
+     * @throws \Exception
+     */
+    public function export($model,$module='export',$request=[])
+    {
+        $schemas = ComponentSchemas::getComponentConfig($model, $module);
+        $list = $this->repository->parseRequest($request)->limit(5)->get();
+        return Excel::download(new LarfreeExport($list,$schemas), 'users.xlsx');
+//        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
+//            $excel = [];
+//            foreach ($schemas['component_fields'] as $schema) {
+//                $excel[$schema['name']] = $data[$schema['key']];
+//            }
+//            return $excel;
+//        });
+        return $file;
     }
 }

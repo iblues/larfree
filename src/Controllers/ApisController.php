@@ -22,6 +22,7 @@ use Larfree\Resources\ApiResource;
 use Illuminate\Support\Facades\DB;
 use Crypt;
 use Larfree\Services\LarfreeService;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApisController extends BaseController
 {
@@ -233,6 +234,10 @@ class ApisController extends BaseController
         if ($return instanceof Resource) {
             return $return;
         }
+        if ($return instanceof BinaryFileResponse) {
+            return $return;
+        }
+
 
         //如果是单文字
         if (is_string($return)) {

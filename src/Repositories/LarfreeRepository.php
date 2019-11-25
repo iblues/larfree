@@ -2,6 +2,7 @@
 
 namespace Larfree\Repositories;
 
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -72,9 +73,11 @@ abstract class LarfreeRepository extends BaseRepository
                 $model->AdvWhere($key, $val);
         }
 
-        if (@$query['@sort']) {
-            $sort = explode('.', @$query['@sort']);
-            $model->orderBy($sort[0], $sort[1]);
+        if (isset($query['@sort'])) {
+            if($query['@sort']) {
+                $sort = explode('.', @$query['@sort']);
+                $model->orderBy($sort[0], $sort[1]);
+            }
         } else {
             $model->orderBy('id', 'desc');
         }
@@ -91,5 +94,43 @@ abstract class LarfreeRepository extends BaseRepository
      */
     static function new(){
         return app(static::class);
+    }
+
+    /**
+     * 基于时间的线状统计
+     * @author Blues
+     * @param $query
+     * @param array $y 配置中的y结构 参考chart.line
+     * @param string $xField
+     * @param string $xFormat
+     * @return array
+     */
+    function TimeChart( array $y, string $xField = 'create_at', $xFormat = '%Y-%m-%d %H:%M:%S')
+    {
+//        $ySql="({$ySql})";//方便实现字段之见的 操作
+//        $query2 = clone $query;
+
+        $field = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
+        $model = $this->model->groupBy('x')->orderBy("x", "asc");
+        $countData = [];
+
+        foreach ($y as $k => $q) {
+            $queryField = $field;
+            $newQuery = clone $model;
+            $queryField[] = DB::raw('(' . $q['sql']['field'] . ') as y');
+            $count = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
+            foreach ($count as $v) {
+                $countData[$v->x][$k] = $v->y;
+            }
+
+        }
+        $this->resetModel();
+//        $date = array_keys($countData);
+
+//        $minDate = min($date);
+//        $maxDate = date('Y-m-d');
+
+        return $countData;
+
     }
 }

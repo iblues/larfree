@@ -91,6 +91,7 @@ class ComponentSchemas extends Schemas
                 if($advSearch)
                     $Schemas['adv_search']= $advSearch;
             }
+            $Schemas = array_filter($Schemas);
             return $Schemas;
 
         }else{
@@ -123,6 +124,7 @@ class ComponentSchemas extends Schemas
 
         $target = explode('.',$action);
         //根据chart.line.chart  chart.line  chart 3种不同模式,进行解析
+
         switch (count($target)){
             case 1:
                 $config = ComponentSchemas::getSchemasConfig($schemas,$target[0]);
@@ -136,6 +138,9 @@ class ComponentSchemas extends Schemas
                 $action = implode('.',array_slice($target,0,2));
                 $config = ComponentSchemas::getComponetDefConfig($action,$config,$target[2]);
                 break;
+            default:
+                throw new \Exception('参数格式错误');
+
         }
         return $config;
     }
