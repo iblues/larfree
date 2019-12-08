@@ -24,8 +24,8 @@ class LarfreeExport implements FromCollection, WithHeadings, WithMapping, Should
 
     public function __construct($data, $schema)
     {
-        Font::setTrueTypeFontPath(storage_path() .'/fonts/');
-        Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
+//        Font::setTrueTypeFontPath(storage_path() .'/fonts/');
+//        Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
         $this->data = $data;
         $this->schema = $schema;
     }
