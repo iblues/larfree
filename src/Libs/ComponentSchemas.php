@@ -8,6 +8,8 @@
 namespace Larfree\Libs;
 
 
+use Illuminate\Support\Arr;
+
 class ComponentSchemas extends Schemas
 {
 
