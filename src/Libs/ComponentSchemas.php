@@ -11,13 +11,6 @@ namespace Larfree\Libs;
 class ComponentSchemas extends Schemas
 {
 
-
-    /**
-     * 获取蓝图的组建字段
-     * @param $name
-     * @param $target
-     * @return array
-     */
     static function getSchemasConfig($name,$target)
     {
         $target = strtolower($target);
@@ -40,14 +33,14 @@ class ComponentSchemas extends Schemas
                     if (!isset($f['group_children'])) {
                         $filter_field[$key] = '';//用来筛选字段
                         if ($f) {
-                            $GlobalSchemas[$key] = $f + $GlobalSchemas[$key];
+                            $GlobalSchemas[$key] = $f + Arr::get($GlobalSchemas,$key,[]);
                         }
                     } else {
                         //是分组的,循环一次,合并结构
                         foreach ($f['group_children'] as $group_key => $group_field) {
                             if (is_array($group_field)) {
                                 $filter_field[$group_key] = '';
-                                $GlobalSchemas[$group_key] = $group_field + $GlobalSchemas[$group_key];
+                                $GlobalSchemas[$group_key] = $group_field + Arr::get($GlobalSchemas,$group_key,[]);
                             } else {
                                 $filter_field[$group_field] = '';
                             }

@@ -200,7 +200,7 @@ class LarfreeService
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list = $this->repository->parseRequest($request)->limit(5)->get();
+        $list = $this->repository->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
