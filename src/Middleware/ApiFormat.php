@@ -4,6 +4,8 @@ namespace Larfree\Middleware;
 
 use Closure;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class ApiFormat
 {
     /**
@@ -20,6 +22,10 @@ class ApiFormat
 
 //        dd($request->headers);s
         $response = $next($request);
+
+        if($response instanceof BinaryFileResponse){
+            return $response;
+        }
         //跨域
         $response->header('Access-Control-Allow-Origin','*');
         $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization, Cookie, Accept');
@@ -31,7 +37,7 @@ class ApiFormat
         if(method_exists($response,'setEncodingOptions')){
             $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
-        
+
 //dd($content);
         $json=json_decode($response->getContent(),true);
 
