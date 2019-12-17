@@ -3,13 +3,13 @@
 namespace Larfree\Events;
 
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Larfree\Models\Api;
 
 class ModelSaved
 {
@@ -20,7 +20,7 @@ class ModelSaved
      *
      * @return void
      */
-    public function __construct(Api $data)
+    public function __construct(Model $data)
     {
 
         $schemas = $data->getSchemas();
@@ -37,6 +37,7 @@ class ModelSaved
             }
         }
         $data->afterSave($data);
+//        event()
         //
     }
 

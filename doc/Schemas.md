@@ -18,8 +18,12 @@
                         'province_id',
                         'id',
                     ],
-                    'select'=>['id','name'],
+                    //'select'=>['id','name'],
                     'field'=>['id','name'],
+                ],
+                'component_param'=>[
+                    'key'=>'id',
+                    'name'=>'{{name}} ({{phone}})'
                 ],
             ],
     注:link中为联表查询 ,'model'为关联表的方式,名称和字段,'select'查询的字段,'field'为
@@ -29,7 +33,7 @@
               belongsToMany',
               'App\\Models\\Address\\AddressCity',
          ],
-         'select'=>['id','name'],
+         'select'=>['id','name'],//作废.会临时兼容
          'field'=>['id','name'],
     ],
     注:多对多查询只需要写好联表方式和联表的model,就会自动生成关联表,其他就和一对多一样
@@ -38,6 +42,49 @@
     1.其中包括table,add,edit,detail.
     2.如果不想在后台中显示其中一个字段,就不
     
-            
+
 
     
+    
+    
+#1.4常用几种配置
+```php
+//图片裁剪
+'upload'=>[
+    'name'=>'upload',
+    'tip'=>'',
+    'type'=>'image',
+    'componentParam'=>[
+        'type'=>'cropper',    //如果要裁剪,必填
+        'fixed'=>true, //固定比例, 非必填
+        'width'=>400, //非必填
+        'height'=>400, //非必填
+    ],
+],
+
+//用户
+'user_id' => [
+    'name' => '绑定用户',
+    'tip' => '',
+    'type' => 'select',
+    'link' => [
+        'model' => [
+            'belongsTo',
+            'App\\Models\\Common\\CommonUser',
+            'user_id',
+            'id',
+        ],
+        'field' => ['id', 'name'],
+        //'select' => ['id', 'name'], 之前的,作废
+        //'init'=>false    默认是否with.默认要
+    ],
+    //控制组件显示
+    'component_param'=>[
+        'key'=>'id',
+        'name'=>'{{name}}'
+    ],
+],
+```    
+    
+            
+

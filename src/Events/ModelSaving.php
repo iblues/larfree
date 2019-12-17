@@ -4,13 +4,14 @@ namespace Larfree\Events;
 
 use App\Models\User\UserActionLog;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Larfree\Models\Api;
+//use Larfree\Models\Api;
 
 class ModelSaving
 {
@@ -21,7 +22,7 @@ class ModelSaving
      *
      * @return void
      */
-    public function __construct(Api $data)
+    public function __construct(Model $data)
     {
         //过滤掉数据库没有的列,避免报错
         $columns = $data->getColumns();

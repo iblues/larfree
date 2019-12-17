@@ -1,6 +1,6 @@
 <?php
 
-namespace Larfree\Models;
+namespace Larfree\Models\Traits;
 
 /**
  * 高级筛选,不耦合
