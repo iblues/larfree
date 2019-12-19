@@ -61,21 +61,21 @@ class UploadBaseController extends ApisController
                 $disk = \Storage::disk('qiniu'); //使用七牛云上传
                 $time = $module . '/' . date('Y-m-d');//上传目录
                 $file = $request->file('file');
-                $name = time().'-'.$file->getClientOriginalName();
+                $name = time().'.'.$file->getClientOriginalExtension();
                 $filename = $disk->putFileAs($time, $file,$name);//上传
                 break;
             case 'oss':
                 $disk = \Storage::disk('oss'); //使用oss
                 $time = $module . '/' . date('Y-m-d');//上传目录
                 $file = $request->file('file');
-                $name = time().'-'.$file->getClientOriginalName();
+                $name = time().'.'.$file->getClientOriginalExtension();
                 $filename = $disk->putFileAs($time, $file,$name);//上传
                 break;
             default :
                 $disk = \Storage::disk('public');
                 $time = $module . '/' . date('Y-m-d');//上传目录
                 $file = $request->file('file');
-                $name = time().'-'.$file->getClientOriginalName();
+                $name = time().'.'.$file->getClientOriginalExtension();
                 $filename = $disk->putFileAs($time, $file,$name);//上传
                 break;
         }
