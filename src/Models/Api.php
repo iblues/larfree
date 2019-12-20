@@ -2,16 +2,14 @@
 
 namespace Larfree\Models;
 
-use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
-use Larfree\Models\Traits\AdvWhere;
 use Larfree\Models\Traits\Base;
 use Larfree\Models\Traits\Chart;
 use Watson\Rememberable\Rememberable;
 
 class Api extends Model
 {
-    use Base, AdvWhere, Chart, Rememberable;
+    use Base, Chart, Rememberable;
 
     protected $guarded = [];
 

@@ -11,6 +11,8 @@ use Larfree\Libs\Table;
 
 trait Base
 {
+    use AdvWhere;
+
     protected $_modelName = '';
     protected $_schemas = '';
 
@@ -68,8 +70,8 @@ trait Base
 
 
         //保存相关事件
-        $this->dispatchesEvents['saved'] = ModelSaved::class ;
-        $this->dispatchesEvents['saving'] = ModelSaving::class ;
+        $this->dispatchesEvents['saved'] = ModelSaved::class;
+        $this->dispatchesEvents['saving'] = ModelSaving::class;
 
         parent::__construct($attributes);
 
