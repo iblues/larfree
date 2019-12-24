@@ -54,23 +54,55 @@ class ComponentController extends Controller
         return $config;
     }
 
+    /**
+     * 把link转换下 让前端可以识别的配置
+     * @author Blues
+     * @param $value
+     * @return mixed
+     * @throws \Larfree\Exceptions\ApiException
+     */
     public function linkToUrl(&$value)
     {
-        if (isset($value['link']) && !@$value['link']['url']) {
-            $model = $value['link']['model'];
-            $model = substr($model[1], stripos($model[1], '\Models\\') + 8);
-            $model = explode('\\', $model);
-            if (@$model[1]) {
-                $url = humpToLine($model[0]) . '/' . humpToLine(substr($model[1], strlen($model[0])));
-                $show = humpToLine($model[0]) . '.' . humpToLine(substr($model[1], strlen($model[0])));
-            } else {
-                $url = humpToLine($model[0]);
-                $show = humpToLine($model[0]);
-            }
-
-            $value['link']['url'] = route('admin.api.root') . '/' . $url . '?pageSize=30';
-            $value['link']['show'] = 'edit/' . $show . '/{{id}}';
+        //没有link的不用管了
+        if (!isset($value['link'])) {
+            return $value;
         }
+
+        //设置了link,model 但是没有设置component_param.api的
+        if (isset($value['link']) && isset($value['link']['model'])) {
+
+            $model = $value['link']['model'];
+            if ($model) {
+                $model = substr($model[1], stripos($model[1], '\Models\\') + 8);
+                $model = explode('\\', $model);
+                if (@$model[1]) {
+                    $url = humpToLine($model[0]) . '/' . humpToLine(substr($model[1], strlen($model[0])));
+                    $show = humpToLine($model[0]) . '.' . humpToLine(substr($model[1], strlen($model[0])));
+                } else {
+                    $url = humpToLine($model[0]);
+                    $show = humpToLine($model[0]);
+                }
+
+                // 这个是用于前端读取后端列表用的. 基本上是必填.
+                if (!isset($value['component_param']['api'])) {
+                    $value['link']['url'] = '/' . $url . '?pageSize=30'; //以后逐步废弃
+                    $value['component_param']['api'] = '/' . $url . '?pageSize=30';  //代替link中的url
+                }
+
+                // 用于前端调跳转到配置用.
+                if (!isset($value['component_param']['show'])) {
+                    $value['component_param']['show'] = 'edit/' . $show . '/{{id}}'; //代替link
+                    $value['link']['show'] = 'edit/' . $show . '/{{id}}'; //以后逐步废弃
+                }
+            }
+        }
+
+
+        if (!isset($value['component_param']['api'])) {
+            apiError("当link.model为空时,schemas.{$value['key']}.component_param.api必填");
+        }
+
+
     }
 
 

@@ -190,24 +190,24 @@ trait Base
         }
         if (isset($schemas['link'])) {
             $link = $schemas['link'];
-
+            //默认as是key本身
+            $as = $key;
             //如果有关联模式
             if (isset($link['model'])) {
                 switch ($link['model'][0]) {
                     case 'belongsToMany':
                     case 'hasMany':
-                        $as = isset($link['as']) ? $schemas['link']['as'] : $key;
+                        $as = isset($link['as']) ? @$schemas['link']['as'] : $key;
                         break;
                     default:
-                        $as = isset($link['as']) ? $schemas['link']['as'] : $key . '_link';
+                        $as = isset($link['as']) ? @$schemas['link']['as'] : $key . '_link';
                         break;
                 }
-                $this->_link[$key] = $as;//添加到link里面.否则无法识别
-
-                //不初始化
-                if (!isset($link['init']) || $link['init'] == true)
-                    $this->_doLink[$key] = $as;
             }
+            $this->_link[$key] = $as;//添加到link里面.否则无法识别
+            //不初始化
+            if (!isset($link['init']) || $link['init'] == true)
+                $this->_doLink[$key] = $as;
         }
         //doLink是实际执行
         //_link是保存个原始的方便恢复原状
@@ -226,7 +226,7 @@ trait Base
         $link = array_flip($this->_link);
         $field = $link[$field];
         $schema = $this->_schemas[$field];
-        if (isset($schema['link'])) {
+        if (isset($schema['link']) && isset($schema['link']['model'])) {
             $parm = $schema['link']['model'];
             $method = $parm[0];
 
@@ -360,7 +360,7 @@ trait Base
 
     public function __call($method, $parameters)
     {
-        if (in_array($method, $this->_link)) {
+        if (!method_exists($this,$method) && in_array($method, $this->_link)) {
             return $this->callLink($method);
         } else {
             return parent::__call($method, $parameters);
