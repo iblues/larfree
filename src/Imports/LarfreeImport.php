@@ -9,6 +9,7 @@
 namespace Larfree\Imports;
 
 
+use Illuminate\Database\Eloquent\Model;
 use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -19,13 +20,13 @@ class LarfreeImport implements ToModel, WithHeadingRow
 
     public $schema;
     /**
-     * @var LarfreeRepository
+     * @var Model
      */
-    public $repository;
+    public $model;
 
-    public function __construct($schema, $repository)
+    public function __construct($schema, Model $model)
     {
-        $this->repository = $repository;
+        $this->model = $model;
         $this->schema = $schema;
         //去掉过滤器, 才能识别中文
         HeadingRowFormatter::default('none');
@@ -47,9 +48,9 @@ class LarfreeImport implements ToModel, WithHeadingRow
             $row[$key] = $data[$field['name']] ?? '';
         }
         if($pk){
-            $this->repository->updateOrCreate([$pk=>$row[$pk]],$row);
+            $this->model->updateOrCreate([$pk=>$row[$pk]],$row);
         }else{
-            $this->repository->create($row);
+            $this->model->create($row);
         }
 
 

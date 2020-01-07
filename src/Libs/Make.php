@@ -25,7 +25,7 @@ class Make
         if ($model) {
             $this->makeModel($model);
         }
-        $this->makeRepository($model);
+//        $this->makeRepository($model);
         $this->makeService($model);
 //        $this->makeConfig($tableName);
 
@@ -318,7 +318,7 @@ class {$modelName}Repository extends LarfreeRepository
     /**
      * @var {$modelName}
      */
-    public \$model;
+    protected \$model;
     
     /**
      * 可以指定为其他的model
@@ -367,17 +367,17 @@ MODEL;
  * @author blues
  */
 namespace App\Services{$nameSpace};
-use Larfree\Services\LarfreeService;
-use App\Repositories{$nameSpace}\\{$modelName}Repository;
-class {$modelName}Service extends LarfreeService
+use Larfree\Services\SimpleLarfreeService;
+use App\{$nameSpace}\\{$modelName};
+class {$modelName}Service extends SimpleLarfreeService
 {
     /**
-     * @var {$modelName}Repository
+     * @var {$modelName}
      */
-    public \$repository;
-    public function __construct({$modelName}Repository \$repository )
+    protected \$model;
+    public function __construct({$modelName} \$model )
     {
-        \$this->repository = \$repository;
+        \$this->model = \$model;
         parent::__construct();
     }
 }

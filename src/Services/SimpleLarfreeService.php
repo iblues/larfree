@@ -18,7 +18,7 @@ use Larfree\Libs\ComponentSchemas;
 use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
 
-class SempleLarfreeService
+class SimpleLarfreeService
 {
 
     /**
@@ -37,7 +37,7 @@ class SempleLarfreeService
      * 后台模式
      * @author Blues
      * @param bool $flag
-     * @return SempleLarfreeService;
+     * @return LarfreeService;
      */
     public function setAdmin($flag = true)
     {
