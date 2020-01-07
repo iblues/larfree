@@ -73,7 +73,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $path.'/Copy/tests/' => dirname(app_path('')).'/tests/',
         ],'larfree');
 
-        $this->loadRoutesFrom($path . '/routes/api.php');
+        $this->loadRoutesFrom($path . '/Routes/api.php');
 
         //数据库
         $this->loadMigrationsFrom(dirname(__DIR__).'/src/Database/migrations');

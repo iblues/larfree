@@ -19,6 +19,7 @@ abstract class LarfreeRepository extends BaseRepository
      * []代表所有,null不允许
      */
     public $advFieldSearch = ['*'];
+    protected $model;
 
     /**
      * 加载link相关的参数
@@ -91,8 +92,17 @@ abstract class LarfreeRepository extends BaseRepository
     /**
      * @author Blues
      * @return $this
+     * @deprecated
      */
     static function new(){
+        return app(static::class);
+    }
+
+    /**
+     * @author Blues
+     * @return $this
+     */
+    static function make(){
         return app(static::class);
     }
 

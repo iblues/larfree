@@ -25,7 +25,7 @@ class LarfreeService
     /**
      * @var LarfreeRepository
      */
-    public $repository;
+    protected $repository;
     protected $admin = false;
     protected $link = false;
 
@@ -169,11 +169,21 @@ class LarfreeService
     /**
      * @author Blues
      * @return $this
+     * @deprecated
      */
     static function new()
     {
         return app(static::class);
     }
+
+    /**
+     * @author Blues
+     * @return $this
+     */
+    static function make(){
+        return app(static::class);
+    }
+
 
     public function chart($chart, $request)
     {
