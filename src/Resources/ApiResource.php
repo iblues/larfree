@@ -26,6 +26,7 @@ class ApiResource extends Resource
     {
         //如果是分页类
         if( $this->resource instanceof AbstractPaginator){
+//            $this->setCollection($this->getCollection()->linkMission());
 //            $request = $this->getDoc($request);//自动文档
             $return = parent::toArray($request);
             $link = $this->paginationLinks($return);

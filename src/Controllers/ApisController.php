@@ -234,6 +234,7 @@ class ApisController extends BaseController
         if ($return instanceof Resource) {
             return $return;
         }
+        //二进制文件方法
         if ($return instanceof BinaryFileResponse) {
             return $return;
         }

@@ -2,6 +2,9 @@
 
 namespace Larfree\Models\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * 高级筛选,不耦合
  * Trait AdvWhere
@@ -10,6 +13,44 @@ namespace Larfree\Models\Traits;
  */
 trait AdvWhere
 {
+
+
+    /**
+     *
+     * 同一个字段及多个字段组合查询
+     * 示例: http://laravel.dev/api/min?id=1&search_id=2&gt_key=2&egt_key=2&lt_key=2&elt_key=3
+     * @param Builder $model
+     * @param $request
+     * @return array
+     */
+    public function scopeParseRequest(Builder $model,$request){
+
+        $query = $request;
+//        $where = [];
+        if(!$query)
+            return $model;
+//        $columns = $this->model->getColumns();
+
+        foreach($query as $key=>$val){
+
+            //如果存在点.说明是链表的
+//            if(stripos($val,'.')){
+//                //链表
+//            }
+            //新模式
+            $model->AdvWhere($key,$val);
+        }
+
+        if($request->get('@sort')){
+            $sort= explode('.',$request->get('@sort'));
+            $model->orderBy($sort[0],$sort[1]);
+        }else{
+            $model->orderBy('id','desc');
+        }
+
+        return $model;
+    }
+
     /**
      * 多种筛选方式,具体参考doc/url.md
      * name=$%123%

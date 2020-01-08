@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
 use Larfree\Imports\LarfreeImport;
 use Larfree\Libs\ComponentSchemas;
-use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SimpleLarfreeService
@@ -26,11 +25,10 @@ class SimpleLarfreeService
      */
     protected $model;
     protected $admin = false;
-    protected $link = false;
+    protected $link = [];
 
     public function __construct()
     {
-
     }
 
     /**
@@ -71,11 +69,9 @@ class SimpleLarfreeService
     {
         try {
             if ($field)
-                $this->model->field($field);
+                $this->model = $this->model->field($field);
 
-            $this->model->link($this->link);
-
-            return $this->model->parseRequest($request)->paginate($pageSize);
+            return $this->model->link($this->link)->parseRequest($request)->paginate($pageSize);
 
         } catch (\Exception $e) {
             throw  $e;
@@ -97,8 +93,8 @@ class SimpleLarfreeService
     {
         try {
             if ($field)
-                $this->model->field($field);
-            return $this->model->link($this->link)->find($id);
+                $this->model = $this->model->field($field);
+            return $this->model->find($id);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -116,7 +112,7 @@ class SimpleLarfreeService
     public function addOne($data)
     {
         try {
-            $row = $this->model->create($data);
+            $row = $this->model->link($this->link)->create($data);
             //返回带完整格式的
             return $this->model->link($this->link)->find($row['id']);
         } catch (\Exception $e) {
@@ -136,7 +132,7 @@ class SimpleLarfreeService
     public function updateOne($data, $id)
     {
         try {
-            $this->model->update($data, $id);
+            $this->model->link($this->link)->update($data, $id);
             //返回带完整格式的
             return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {
@@ -187,7 +183,6 @@ class SimpleLarfreeService
     public function chart($chart, $request)
     {
 
-        $this->model->link($this->link);
         //处理筛选条件,排序重置为空
         $request['@sort'] = '';
         $this->model->parseRequest($request);
@@ -209,7 +204,7 @@ class SimpleLarfreeService
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list = $this->model->parseRequest($request)->limit(2000)->get();
+        $list = $this->model->link($this->link)->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
@@ -238,7 +233,7 @@ class SimpleLarfreeService
             $res = $client->request('GET', $urlFile);
             $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
             if (Storage::put($fileName, $res->getBody())) {
-                Excel::import(new LarfreeImport($schemas, $this->model), $fileName);
+                Excel::import(new LarfreeImport($schemas, $this->model->link($this->link)), $fileName);
             }
             //导入完成后,删除本地缓存
             Storage::delete($fileName);

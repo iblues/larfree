@@ -2,6 +2,7 @@
 
 namespace Larfree\Repositories;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -70,7 +71,7 @@ abstract class LarfreeRepository extends BaseRepository
 
         foreach ($query as $key => $val) {
             //高级搜索模式
-            if (array_get($advFieldSearch, 0, '*') == '*' || in_array($key, $advFieldSearch))
+            if (Arr::get($advFieldSearch, 0, '*') == '*' || in_array($key, $advFieldSearch))
                 $model->AdvWhere($key, $val);
         }
 

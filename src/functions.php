@@ -140,7 +140,7 @@ if (!function_exists('getLoginUser')) {
 }
 
 /**
- * api中报错,跑出异常
+ * api中报错,抛出异常
  * @param string $msg
  * @param array $data
  * @param int $code
@@ -152,6 +152,24 @@ if (!function_exists('apiError')) {
         throw new Larfree\Exceptions\ApiException($msg, $data, $code);
     }
 }
+
+
+
+/**
+ * 请求参数错误导致的异常
+ * @param string $msg
+ * @param array $data
+ * @param int $code
+ * @throws \Larfree\Exceptions\ApiException
+ */
+if (!function_exists('requestError')) {
+    function requestError($msg = '', $data = [], $code = 422)
+    {
+        throw new Larfree\Exceptions\RequestException($msg, $data, $code);
+    }
+}
+
+
 
 /**
  * 把返回的数据集转换成Tree

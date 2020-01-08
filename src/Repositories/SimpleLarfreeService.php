@@ -10,22 +10,21 @@ namespace Larfree\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
 use Larfree\Imports\LarfreeImport;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Files\Disk;
 
-class LarfreeService
+class SimpleLarfreeService
 {
 
     /**
-     * @var LarfreeRepository
+     * @var Model
      */
-    protected $repository;
+    protected $model;
     protected $admin = false;
     protected $link = false;
 
@@ -72,11 +71,11 @@ class LarfreeService
     {
         try {
             if ($field)
-                $this->repository->field($field);
+                $this->model->field($field);
 
-            $this->repository->link($this->link);
+            $this->model->link($this->link);
 
-            return $this->repository->parseRequest($request)->paginate($pageSize);
+            return $this->model->parseRequest($request)->paginate($pageSize);
 
         } catch (\Exception $e) {
             throw  $e;
@@ -98,8 +97,8 @@ class LarfreeService
     {
         try {
             if ($field)
-                $this->repository->field($field);
-            return $this->repository->link($this->link)->find($id);
+                $this->model->field($field);
+            return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -117,9 +116,9 @@ class LarfreeService
     public function addOne($data)
     {
         try {
-            $row = $this->repository->create($data);
+            $row = $this->model->create($data);
             //返回带完整格式的
-            return $this->repository->link($this->link)->find($row['id']);
+            return $this->model->link($this->link)->find($row['id']);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -137,9 +136,9 @@ class LarfreeService
     public function updateOne($data, $id)
     {
         try {
-            $this->repository->update($data, $id);
+            $this->model->update($data, $id);
             //返回带完整格式的
-            return $this->repository->link($this->link)->find($id);
+            return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -158,7 +157,7 @@ class LarfreeService
     public function delete($id)
     {
         try {
-            return $this->repository->delete($id);
+            return $this->model->delete($id);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -188,10 +187,10 @@ class LarfreeService
     public function chart($chart, $request)
     {
 
-        $this->repository->link($this->link);
+        $this->model->link($this->link);
         //处理筛选条件,排序重置为空
         $request['@sort'] = '';
-        $this->repository->parseRequest($request);
+        $this->model->parseRequest($request);
 
         list($schemas, $action) = explode('|', $chart);
         $config = ComponentSchemas::getComponentConfig($schemas, $action);
@@ -210,7 +209,7 @@ class LarfreeService
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list = $this->repository->parseRequest($request)->limit(2000)->get();
+        $list = $this->model->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
@@ -239,7 +238,7 @@ class LarfreeService
             $res = $client->request('GET', $urlFile);
             $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
             if (Storage::put($fileName, $res->getBody())) {
-                Excel::import(new LarfreeImport($schemas, $this->repository), $fileName);
+                Excel::import(new LarfreeImport($schemas, $this->model), $fileName);
             }
             //导入完成后,删除本地缓存
             Storage::delete($fileName);
