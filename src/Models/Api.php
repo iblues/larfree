@@ -197,13 +197,28 @@ class Api extends Model
     public function getRelationValue($key)
     {
         $return = parent::getRelationValue($key);
+        //如果已经有结果了直接返回.
+        if($return){
+            return $return;
+        }
 
-        //新增的
-        if (!$return && in_array($key, $this->_link)) {
+        //动态查询的时候 自动去link查下有没有定义关联关系
+        if (in_array($key, $this->_link)) {
             return $this->getRelationshipFromMethod($key);
         }
 
-        return $return;
+        //处理 xx_link , created_at_timestamp 等加工属性
+        if(stripos($key,'_')!==false) {
+            $schemasKey = explode('_', $key);
+            array_pop($schemasKey);
+            $schemasKey = implode('_', $schemasKey);
+            //读取component拼接 输出link的字段.
+            if ($schemasKey && $schemas = $this->getSchemas($schemasKey)) {
+                $this->callComponent($schemas, 'getAttribute', $this);
+                return $this->attributes[$key];
+            }
+        }
+
     }
 
 
