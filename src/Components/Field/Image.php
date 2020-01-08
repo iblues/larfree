@@ -7,6 +7,7 @@
  */
 
 namespace Larfree\Components\Field;
+use Illuminate\Support\Arr;
 use Larfree\Components\Components;
 
 class Image extends Components
@@ -48,7 +49,7 @@ class Image extends Components
         }
     }
     static public function config($config){
-        if(array_get($config,'multi',false))
+        if( Arr::get($config,'multi',false))
             $config['cast']='array';
         return $config;
     }

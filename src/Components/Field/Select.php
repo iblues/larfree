@@ -60,9 +60,9 @@ class Select extends Components
 
 
     static public function getAttribute($config,&$array){
-        if(@$config['option']){
+        if(isset($config['option'])){
             $value  = $array[$config['key']];
-            $array[$config['key'].'_link'] = @$config['option'][$value];
+            return $array[$config['key'].'_link'] = @$config['option'][$value];
         }
     }
 

@@ -13,30 +13,25 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Auth;
 use Larfree\Libs\ApiSchemas;
-use Larfree\Libs\ComponentSchemas;
-use Larfree\Libs\Schemas;
 use Larfree\Repositories\LarfreeRepository;
 use Larfree\Resources\ApiResource;
-use Illuminate\Support\Facades\DB;
-use Crypt;
-use Larfree\Services\LarfreeService;
+use Larfree\Services\SimpleLarfreeService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApisController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public $model;
+    protected $model;
     /**
      * @var LarfreeRepository
      */
-    public $repository;
+    protected $repository;
     /**
-     * @var LarfreeService
+     * @var SimpleLarfreeService
      */
-    public $service;
+    protected $service;
     public $uid;
     protected $log = false;
     protected $msg = '';
