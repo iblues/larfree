@@ -94,7 +94,7 @@ class SimpleLarfreeService
         try {
             if ($field)
                 $this->model = $this->model->field($field);
-            return $this->model->find($id);
+            return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {
             throw $e;
         }
