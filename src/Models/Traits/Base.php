@@ -121,11 +121,41 @@ trait Base
     }
 
     /**
-     * 配置的链表
+     * 获取到对象后,想要对应的值
+     * @author Blues
      * @param $model
+     * @param array $field
      * @return mixed
      */
-    public function scopeLink($model, array $field = [])
+    public function linkMissing($field = [])
+    {
+        $model = $this;
+        foreach ($this->_doLink as $k => $name) {
+            if ($field && !in_array($name, $field)) {
+                continue;
+            }
+            //多对多关系
+            if ($name)
+                $model = $model->loadMissing($name);
+        }
+        foreach ($this->_doLinkCount as $k => $name) {
+            if ($field && !in_array($name, $field)) {
+                continue;
+            }
+            //多对多关系
+            if ($name)
+                $model = $model->loadCount($name);
+        }
+        return $model;
+    }
+
+    /**
+     * 提前返回完整对象的配置的链表
+     * @param $model
+     * @param $field = []
+     * @return mixed
+     */
+    public function scopeLink($model, $field = [])
     {
         foreach ($this->_doLink as $k => $name) {
             if ($field && !in_array($name, $field)) {
@@ -144,6 +174,25 @@ trait Base
                 $model = $model->withCount($name);
         }
         return $model;
+    }
+
+
+    /**
+     * 将动态link的能力赋进去
+     * @author Blues
+     * @param $key
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        $return = parent::getRelationValue($key);
+
+        //新增的
+        if (!$return && in_array($key, $this->_link)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+
+        return $return;
     }
 
 
