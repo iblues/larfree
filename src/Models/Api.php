@@ -188,6 +188,23 @@ class Api extends Model
         return $schemas;
     }
 
+    /**
+     * 将动态link的能力赋进去
+     * @author Blues
+     * @param $key
+     * @return mixed
+     */
+    public function getRelationValue($key)
+    {
+        $return = parent::getRelationValue($key);
+
+        //新增的
+        if (!$return && in_array($key, $this->_link)) {
+            return $this->getRelationshipFromMethod($key);
+        }
+
+        return $return;
+    }
 
 
     /**
