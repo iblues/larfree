@@ -62,7 +62,7 @@
     ],
 ],
 
-//用户
+//默认方式
 'user_id' => [
     'name' => '绑定用户',
     'tip' => '',
@@ -82,8 +82,35 @@
     'component_param'=>[
         'key'=>'id',
         'name'=>'{{name}}'
+        //'api'=>'/xxx/'  //默认可以不写,会从link.model生成默认url
     ],
 ],
+
+
+
+//自定义关联关系方式
+'user_id' => [
+    'name' => '绑定用户',
+    'tip' => '',
+    'type' => 'select',
+    'link'=>[],//只有有link,但是具体关系在model定义. 这种情况.link()会自动调用
+    //'link' => [
+    //    'as'=>'users' //仅代表有链表.需要处理
+    //], 
+    //控制组件显示
+    'component_param'=>[
+        'key'=>'id',
+        'name'=>'{{name}}'
+        'api'=>'/xxx/'  //默认可以不写,会从link.model生成默认url
+    ],
+],
+```    
+    
+            
+
+
+
+
 ```    
     
             
