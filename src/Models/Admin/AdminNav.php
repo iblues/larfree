@@ -2,9 +2,11 @@
 
 namespace Larfree\Models\Admin;
 
+use App\Models\Test\TestTest;
 use Larfree\Models\Api;
 use DB;//载入DB类
 class AdminNav extends Api{
+
 
     public function getNavsTree(){
         $where['id'] = 2;
@@ -26,6 +28,7 @@ class AdminNav extends Api{
             $model->where('status',1);
 
         $nav = $model->orderBy('ranking','desc')->get();
+
         $nav = $nav->toArray();
 //        $return  = event(new FilterNavEvent($nav,$model::class));
         if(!$tree)

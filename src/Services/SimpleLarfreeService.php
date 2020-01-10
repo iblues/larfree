@@ -112,9 +112,7 @@ class SimpleLarfreeService
     public function addOne($data)
     {
         try {
-            $row = $this->model->link($this->link)->create($data);
-            //返回带完整格式的
-            return $this->model->link($this->link)->find($row['id']);
+            return $row = $this->model->link($this->link)->create($data);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -132,7 +130,10 @@ class SimpleLarfreeService
     public function updateOne($data, $id)
     {
         try {
-            $this->model->link($this->link)->update($data, $id);
+            $flag = $this->model->link($this->link)->update($data, $id);
+            if(!$flag){
+                apiError('保存失败',null,500);
+            }
             //返回带完整格式的
             return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {

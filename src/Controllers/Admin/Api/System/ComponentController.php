@@ -85,14 +85,14 @@ class ComponentController extends Controller
 
                 // 这个是用于前端读取后端列表用的. 基本上是必填.
                 if (!isset($value['component_param']['api'])) {
-                    $value['link']['url'] = '/' . $url . '?pageSize=30'; //以后逐步废弃
+                    $value['link']['url'] = '/' . $url . '?pageSize=30'; //以后 逐步废弃
                     $value['component_param']['api'] = '/' . $url . '?pageSize=30';  //代替link中的url
                 }
 
                 // 用于前端调跳转到配置用.
                 if (!isset($value['component_param']['show'])) {
                     $value['component_param']['show'] = 'edit/' . $show . '/{{id}}'; //代替link
-                    $value['link']['show'] = 'edit/' . $show . '/{{id}}'; //以后逐步废弃
+                    $value['link']['show'] = 'edit/' . $show . '/{{id}}'; //以后 逐步废弃
                 }
             }
         }

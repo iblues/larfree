@@ -2,10 +2,12 @@
 
 namespace Larfree\Models\Traits;
 
+use Doctrine\Common\Annotations\Annotation\Target;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Larfree\Events\ModelSaved;
 use Larfree\Events\ModelSaving;
+use Larfree\Exceptions\SchemasException;
 use Larfree\Libs\Schemas;
 use Larfree\Libs\Table;
 
@@ -73,8 +75,28 @@ trait Base
         $this->dispatchesEvents['saved'] = ModelSaved::class;
         $this->dispatchesEvents['saving'] = ModelSaving::class;
 
+        //检查关联关系和config中的是不是有冲突. 如果有冲突.需要在method中加上@override.表示确实是要覆盖
+        $this->checkLinkOverride($this->_link);
+
         parent::__construct($attributes);
 
+    }
+
+    protected function checkLinkOverride($schemas){
+        //非debug环境. 如果method有值,就直接用.
+        if(!config('app.debug'))
+            return ;
+        foreach ($schemas as $as){
+            if(method_exists($this,$as)){
+               $class = new \ReflectionClass($this);
+               $method = $class->getMethod($as);
+               if(!stripos($method->getDocComment(),'@override')){
+                   $lang  = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \r\n";
+                   $lang  .= static ::class." schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc";
+                   throw  new SchemasException($lang);
+               }
+            }
+        }
     }
 
     /**
@@ -264,19 +286,7 @@ trait Base
         if (isset($schemas['link'])) {
             $link = $schemas['link'];
             //默认as是key本身
-            $as = $key;
-            //如果有关联模式
-            if (isset($link['model'])) {
-                switch ($link['model'][0]) {
-                    case 'belongsToMany':
-                    case 'hasMany':
-                        $as = isset($link['as']) ? @$schemas['link']['as'] : $key;
-                        break;
-                    default:
-                        $as = isset($link['as']) ? @$schemas['link']['as'] : $key . '_link';
-                        break;
-                }
-            }
+            $as = $schemas['link']['as']??$key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
             //不初始化
             if (!isset($link['init']) || $link['init'] == true)
@@ -434,7 +444,7 @@ trait Base
     public function __call($method, $parameters)
     {
         if (!method_exists($this,$method) && in_array($method, $this->_link)) {
-            return $this->callLink($method);
+                return $this->callLink($method);
         } else {
             return parent::__call($method, $parameters);
         }

@@ -74,7 +74,7 @@ class ApiSchemas extends Schemas
         //当主文件不存在的时候,$param
         if($schemas!==false) {
             //如果有传入自定义参数,合并
-            if (count($param) > 0) {
+            if ($param && count($param) > 0) {
                 $param = self::formatFields($param);
 //               print_r($param);
                 $schemas = self::getFilterField($schemas, $param);

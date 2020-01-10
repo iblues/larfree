@@ -8,6 +8,8 @@
 namespace Larfree\Libs;
 
 
+use Larfree\Exceptions\SchemasException;
+
 class Schemas
 {
     /**
@@ -31,16 +33,15 @@ class Schemas
         foreach($data['detail'] as $k=>$v){
             $data['detail'][$k]['key']=$k;
         }
-        array_walk($data['detail'],array('self','loadComponentConfg'));
+        array_walk($data['detail'],array('self','loadLinkConfig'));
         return $data['detail'];
     }
 
 
     /**
-     * componet那边可能对config会进行额外处理.
-     * 会调用对于的config方法
+     * 处理Link相关的数据
      */
-    static public function loadComponentConfg(&$config){
+    static public function loadLinkConfig(&$config){
         //自动设置Multi
         if(!isset($config['multi']) && isset($config['link']) && isset($config['link']['model']) ){
             switch ($config['link']['model'][0]){
@@ -54,19 +55,37 @@ class Schemas
                     break;
             }
         }
-        //自动设置as字段
-        if(isset($config['link']) && !isset($config['link']['as'])  && isset($config['link']['model'])) {
-            switch ($config['link']['model'][0]) {
-                case 'hasMany':
-                case 'belongsToMany':
-                    //这2个链表的不用管
-                    break;
-                default:
-                    if( substr($config['key'],-3) == '_id')
-                        $config['link']['as'] = substr($config['key'],0,-3);
-                    break;
+        //自动设置as字段, 如果没有设置as
+        if(isset($config['link']) && !isset($config['link']['as']) ) {
+
+            //如果没有设置model. key就是as
+            if(!isset($config['link']['model'])){
+                if(!is_array($config['link'])){
+                    throw new SchemasException(json_encode($config,JSON_UNESCAPED_UNICODE).'link字段应为数字');
+                }
+                $config['link']['as'] = $config['key'];
+            }else {
+                //如果设置了model 需要判断下
+                switch ($config['link']['model'][0]) {
+                    case 'hasMany':
+                    case 'belongsToMany':
+                        //这2个链表 表名就是自己
+                        $config['link']['as'] = $config['key'];
+                        break;
+                    default:
+                        //判断下如果是_id结尾的.智能处理下 去掉_id  user_id=user
+                        if (substr($config['key'], -3) == '_id')
+                            $config['link']['as'] = substr($config['key'], 0, -3);
+                        else {
+                            //否则自动加link 避免跟当前字段同名
+                            $config['link']['as'] = $config['key'] . '_link';
+                        }
+                        break;
+                }
             }
         }
+
+        //再读取下Components相关. 看有没有需要处理的
         $class='App\Components\Field\\'.ucfirst($config['type']);
         if(method_exists($class,'config')){
             $config = $class::config($config);

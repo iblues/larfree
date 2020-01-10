@@ -39,10 +39,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
 
 
-        Route::macro('larfreeResource',function ($prefix, $controller){
-            Route::post($prefix.'/import{module?}', $controller.'@import')->name($prefix.'import');
-            Route::get($prefix.'/export{module?}', $controller.'@export')->name($prefix.'export');
-            Route::get($prefix.'/chart/{module?}', $controller.'@chart')->name($prefix.'chart');
+        Route::macro('apiResource',function ($prefix, $controller,$option=[]){
+            if(isset($option['larfree']) && $option['larfree']) {
+                Route::post($prefix . '/import{module?}', $controller . '@import')->name($prefix . 'import');
+                Route::get($prefix . '/export{module?}', $controller . '@export')->name($prefix . 'export');
+                Route::get($prefix . '/chart/{module?}', $controller . '@chart')->name($prefix . 'chart');
+            }
             Route::apiResource($prefix, $controller);
         });
 
