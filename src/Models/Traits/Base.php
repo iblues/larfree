@@ -79,10 +79,10 @@ trait Base
 
     /**
      * 类似select函数. 但是他可以动态排除filed和link的字段
-     * @author Blues
      * @param $model
      * @param $field
      * @return mixed
+     * @author Blues
      */
     public function scopeField($model, $field = '')
     {
@@ -123,12 +123,13 @@ trait Base
     /**
      * 配置的链表
      * @param $model
+     * @param array $field
      * @return mixed
      */
-    public function scopeLink($model, array $field = [])
+    public function scopeLink($model, $field = [])
     {
         foreach ($this->_doLink as $k => $name) {
-            if ($field && !in_array($name, $field)) {
+            if ($field !== true && $field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
@@ -136,7 +137,7 @@ trait Base
                 $model = $model->with($name);
         }
         foreach ($this->_doLinkCount as $k => $name) {
-            if ($field && !in_array($name, $field)) {
+            if ($field !== true && $field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
@@ -360,7 +361,7 @@ trait Base
 
     public function __call($method, $parameters)
     {
-        if (!method_exists($this,$method) && in_array($method, $this->_link)) {
+        if (!method_exists($this, $method) && in_array($method, $this->_link)) {
             return $this->callLink($method);
         } else {
             return parent::__call($method, $parameters);

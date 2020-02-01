@@ -17,7 +17,6 @@ use Auth;
 use Larfree\Libs\ApiSchemas;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Libs\Schemas;
-use Larfree\Repositories\LarfreeRepository;
 use Larfree\Resources\ApiResource;
 use Illuminate\Support\Facades\DB;
 use Crypt;
@@ -30,13 +29,9 @@ class ApisController extends BaseController
 
     public $model;
     /**
-     * @var LarfreeRepository
-     */
-    public $repository;
-    /**
      * @var LarfreeService
      */
-    public $service;
+    protected $service;
     public $uid;
     protected $log = false;
     protected $msg = '';
