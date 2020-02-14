@@ -105,6 +105,7 @@ trait Base
      * @param $model
      * @param $field
      * @return mixed
+     * @author Blues
      */
     public function scopeField($model, $field = '')
     {
@@ -174,13 +175,13 @@ trait Base
     /**
      * 提前返回完整对象的配置的链表
      * @param $model
-     * @param $field = []
+     * @param array $field
      * @return mixed
      */
     public function scopeLink($model, $field = [])
     {
         foreach ($this->_doLink as $k => $name) {
-            if ($field && !in_array($name, $field)) {
+            if ($field !== true && $field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
@@ -188,7 +189,7 @@ trait Base
                 $model = $model->with($name);
         }
         foreach ($this->_doLinkCount as $k => $name) {
-            if ($field && !in_array($name, $field)) {
+            if ($field !== true && $field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系

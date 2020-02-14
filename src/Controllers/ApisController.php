@@ -6,6 +6,7 @@
 namespace Larfree\Controllers;
 
 
+use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Resources\Json\Resource;
@@ -13,23 +14,23 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Auth;
 use Larfree\Libs\ApiSchemas;
-use Larfree\Repositories\LarfreeRepository;
+use Larfree\Libs\ComponentSchemas;
+use Larfree\Libs\Schemas;
 use Larfree\Resources\ApiResource;
-use Larfree\Services\SimpleLarfreeService;
+use Illuminate\Support\Facades\DB;
+use Crypt;
+use Larfree\Services\LarfreeService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApisController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $model;
+    public $model;
     /**
-     * @var LarfreeRepository
-     */
-    protected $repository;
-    /**
-     * @var SimpleLarfreeService
+     * @var LarfreeService
      */
     protected $service;
     public $uid;
@@ -66,6 +67,7 @@ class ApisController extends BaseController
      * @param Request $request
      * @return mixed
      * @throws \Exception
+     * @ATU\Api()
      */
     public function index(Request $request)
     {
@@ -74,9 +76,11 @@ class ApisController extends BaseController
 
     /**
      * 添加
-     * @author Blues
      * @param Request $request
+     * @return mixed
      * @throws \Exception
+     * @author Blues
+     * @ATU\Api()
      */
     public function store(Request $request)
     {
@@ -86,10 +90,12 @@ class ApisController extends BaseController
 
     /**
      * 详情
-     * @author Blues
      * @param $id
      * @param Request $request
+     * @return \Larfree\Services\model
      * @throws \Exception
+     * @author Blues
+     * @ATU\Api()
      */
     public function show($id, Request $request)
     {
@@ -103,6 +109,7 @@ class ApisController extends BaseController
      * @param $id
      * @return mixed
      * @throws \Exception
+     * @ATU\Api()
      */
     public function update(Request $request, $id)
     {
@@ -117,6 +124,7 @@ class ApisController extends BaseController
      * @param Request $request
      * @return string|void
      * @throws \Exception
+     * @ATU\Api()
      */
     public function destroy($id, Request $request)
     {
@@ -129,7 +137,7 @@ class ApisController extends BaseController
      * @author Blues
      * @param string $title
      */
-    public function setMsg(string $title)
+    protected function setMsg(string $title)
     {
         $this->msg = $title;
     }
@@ -137,6 +145,7 @@ class ApisController extends BaseController
 
     /**
      * 获取验证规则. put的时候 会自动加上sometimes
+     * 接口文档那边要用 所以暂时设置为public
      * @author Blues
      * @param $method 函数名
      * @param string $httpMethod http方法
@@ -161,6 +170,7 @@ class ApisController extends BaseController
 
     /**
      * $in的定义
+     * 接口文档可能会用,所以public
      * @author Blues
      * @param $method
      * @param string $group
@@ -229,7 +239,6 @@ class ApisController extends BaseController
         if ($return instanceof Resource) {
             return $return;
         }
-        //二进制文件方法
         if ($return instanceof BinaryFileResponse) {
             return $return;
         }
