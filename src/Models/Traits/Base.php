@@ -91,8 +91,8 @@ trait Base
                $class = new \ReflectionClass($this);
                $method = $class->getMethod($as);
                if(!stripos($method->getDocComment(),'@override')){
-                   $lang  = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \r\n";
-                   $lang  .= static ::class." schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc";
+                   $lang  = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
+                   $lang  .= static ::class." schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc \n";
                    throw  new SchemasException($lang);
                }
             }
