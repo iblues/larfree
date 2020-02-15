@@ -8,7 +8,12 @@ use Larfree\Models\Admin\AdminNav;
 use Larfree\Models\Api;
 class TestTest extends Api
 {
-    public function users(){
-        return $this->hasOne(AdminNav::class,'id','user_id');
-    }
+    /**
+     * @return mixed
+     * @author Blues
+     * @override 测试覆盖用
+     */
+//    public function users(){
+//        return $this->hasOne(AdminNav::class,'id','user_id');
+//    }
 }
