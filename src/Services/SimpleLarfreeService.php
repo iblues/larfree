@@ -33,9 +33,9 @@ class SimpleLarfreeService
 
     /**
      * 后台模式
-     * @author Blues
      * @param bool $flag
      * @return LarfreeService;
+     * @author Blues
      */
     public function setAdmin($flag = true)
     {
@@ -45,9 +45,9 @@ class SimpleLarfreeService
 
     /**
      * 整个模型是不是待link关联
-     * @author Blues
      * @param array $link
      * @return $this
+     * @author Blues
      */
     public function link($link = [])
     {
@@ -58,12 +58,12 @@ class SimpleLarfreeService
     /**
      * 获取标准模型的分页.
      * 通用接口在使用
-     * @author Blues
      * @param array $request
      * @param array|null $field
      * @param int $pageSize
-     * @throws $e
      * @return mixed
+     * @throws $e
+     * @author Blues
      */
     public function paginate(array $request, array $field = null, $pageSize = 10)
     {
@@ -82,19 +82,26 @@ class SimpleLarfreeService
     /**
      * 标准详情
      * 通用接口在使用
-     * @author Blues
-     * @param $id
+     * @param $id = 0 的时候 最倒叙第一条
      * @param array $request
      * @param array|null $field
-     * @throws \Exception
      * @return model
+     * @throws \Exception
+     * @author Blues
      */
     public function detail($id, $request, array $field = null)
     {
         try {
+
             if ($field)
                 $this->model = $this->model->field($field);
-            return $this->model->link($this->link)->find($id);
+
+            //如果id为0 就取最新的一条.
+            if ($id !== 0) {
+                return $this->model->link($this->link)->find($id);
+            } else {
+                return $this->model->link($this->link)->orderBy('id', 'desc')->first();
+            }
         } catch (\Exception $e) {
             throw $e;
         }
@@ -104,10 +111,10 @@ class SimpleLarfreeService
     /**
      * 标准新增
      * 通用接口在使用
-     * @author Blues
      * @param $data
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function addOne($data)
     {
@@ -121,18 +128,28 @@ class SimpleLarfreeService
     /**
      * 标准更新
      * 通用接口在使用
-     * @author Blues
      * @param $data
      * @param $id
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function updateOne($data, $id)
     {
         try {
+
+            //如果id为0 就取最新的一条.
+            if ($id === 0) {
+                $row = $this->model->orderBy('id', 'desc')->first('id');
+                $id = $row->getAttribute('id', 0);
+                if ($id === 0) {
+                    apiError("id : {$id} 不存在");
+                }
+            }
+
             $flag = $this->model->link($this->link)->update($data, $id);
-            if(!$flag){
-                apiError('保存失败',null,500);
+            if (!$flag) {
+                apiError('保存失败', null, 500);
             }
             //返回带完整格式的
             return $this->model->link($this->link)->find($id);
@@ -146,10 +163,10 @@ class SimpleLarfreeService
      * 标准删除
      * 通用接口在使用
      * 如果$id是数组,那么支持批量
-     * @author Blues
      * @param $id
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function delete($id)
     {
@@ -163,8 +180,8 @@ class SimpleLarfreeService
 
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      * @deprecated
      */
     static function new()
@@ -173,10 +190,11 @@ class SimpleLarfreeService
     }
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      */
-    static function make(){
+    static function make()
+    {
         return app(static::class);
     }
 
@@ -195,12 +213,12 @@ class SimpleLarfreeService
 
     /**
      * 基于配置的导出
-     * @author Blues
      * @param $model = test.test_detail
      * @param $module = export
      * @param $request
-     * @throws \Exception
      * @return string;
+     * @throws \Exception
+     * @author Blues
      */
     public function export($model, $module = 'export', $request = [])
     {
@@ -219,12 +237,12 @@ class SimpleLarfreeService
 
     /**
      * 基于配置的导入
-     * @author Blues
      * @param $model = test.test
      * @param string $module
      * @param $urlFile http://xxxx 远程文件
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Larfree\Exceptions\ApiException
+     * @author Blues
      */
     public function import($model, $module = 'import', $urlFile)
     {
