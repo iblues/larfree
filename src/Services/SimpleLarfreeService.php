@@ -139,15 +139,14 @@ class SimpleLarfreeService
         try {
 
             //如果id为0 就取最新的一条.
-            if ($id === 0) {
+            if ($id == 0) {
                 $row = $this->model->orderBy('id', 'desc')->first('id');
                 $id = $row->getAttribute('id', 0);
-                if ($id === 0) {
+                if ($id == 0) {
                     apiError("id : {$id} 不存在");
                 }
             }
-
-            $flag = $this->model->link($this->link)->update($data, $id);
+            $flag = $this->model->link($this->link)->where('id',$id)->update($data);
             if (!$flag) {
                 apiError('保存失败', null, 500);
             }
