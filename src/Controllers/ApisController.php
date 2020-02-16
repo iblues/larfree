@@ -16,12 +16,10 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Auth;
 use Larfree\Libs\ApiSchemas;
-use Larfree\Libs\ComponentSchemas;
-use Larfree\Libs\Schemas;
 use Larfree\Resources\ApiResource;
 use Illuminate\Support\Facades\DB;
 use Crypt;
-use Larfree\Services\LarfreeService;
+use Larfree\Services\SimpleLarfreeService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApisController extends BaseController
@@ -30,7 +28,7 @@ class ApisController extends BaseController
 
     public $model;
     /**
-     * @var LarfreeService
+     * @var SimpleLarfreeService
      */
     protected $service;
     public $uid;
@@ -67,7 +65,9 @@ class ApisController extends BaseController
      * @param Request $request
      * @return mixed
      * @throws \Exception
-     * @ATU\Api()
+     * @ATU\Api(
+     *     @ATU\Debug()
+     * )
      */
     public function index(Request $request)
     {
@@ -80,7 +80,6 @@ class ApisController extends BaseController
      * @return mixed
      * @throws \Exception
      * @author Blues
-     * @ATU\Api()
      */
     public function store(Request $request)
     {
@@ -95,7 +94,9 @@ class ApisController extends BaseController
      * @return \Larfree\Services\model
      * @throws \Exception
      * @author Blues
-     * @ATU\Api()
+     * @ATU\Api(
+     *     path=0,
+     * )
      */
     public function show($id, Request $request)
     {
@@ -109,7 +110,9 @@ class ApisController extends BaseController
      * @param $id
      * @return mixed
      * @throws \Exception
-     * @ATU\Api()
+     *  @ATU\Api(
+     *     path=0,
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -124,7 +127,6 @@ class ApisController extends BaseController
      * @param Request $request
      * @return string|void
      * @throws \Exception
-     * @ATU\Api()
      */
     public function destroy($id, Request $request)
     {
