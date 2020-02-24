@@ -66,7 +66,6 @@ class ApisController extends BaseController
      * @return mixed
      * @throws \Exception
      * @ATU\Api(
-     *     @ATU\Debug()
      * )
      */
     public function index(Request $request)
@@ -110,9 +109,6 @@ class ApisController extends BaseController
      * @param $id
      * @return mixed
      * @throws \Exception
-     *  @ATU\Api(
-     *     path=0,
-     * )
      */
     public function update(Request $request, $id)
     {
@@ -130,7 +126,7 @@ class ApisController extends BaseController
      */
     public function destroy($id, Request $request)
     {
-        $this->service->delete($id);
+        return $this->service->delete($id);
     }
 
 

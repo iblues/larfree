@@ -141,9 +141,9 @@ class SimpleLarfreeService
             //如果id为0 就取最新的一条.
             if ($id == 0) {
                 $row = $this->model->orderBy('id', 'desc')->first('id');
-                $id = $row->getAttribute('id', 0);
+                $row && $id = $row->getAttribute('id', 0);
                 if ($id == 0) {
-                    apiError("id : {$id} 不存在");
+                    apiError("无数据");
                 }
             }
             $flag = $this->model->link($this->link)->where('id',$id)->update($data);
@@ -170,7 +170,7 @@ class SimpleLarfreeService
     public function delete($id)
     {
         try {
-            return $this->model->delete($id);
+            return $this->model->where('id',$id)->delete();
         } catch (\Exception $e) {
             throw $e;
         }

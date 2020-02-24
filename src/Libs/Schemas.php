@@ -61,7 +61,7 @@ class Schemas
             //如果没有设置model. key就是as
             if(!isset($config['link']['model'])){
                 if(!is_array($config['link'])){
-                    throw new SchemasException(json_encode($config,JSON_UNESCAPED_UNICODE).'link字段应为数字');
+                    throw new SchemasException(json_encode($config,JSON_UNESCAPED_UNICODE).'link字段应为array');
                 }
                 $config['link']['as'] = $config['key'];
             }else {
