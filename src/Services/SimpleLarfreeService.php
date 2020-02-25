@@ -96,12 +96,14 @@ class SimpleLarfreeService
             if ($field)
                 $this->model = $this->model->field($field);
 
-            //如果id为0 就取最新的一条.
-            if ($id !== 0) {
+            if($id === 'latest'){
+                return $this->model->link($this->link)->latest()->first();
+            }elseif($id ==='oldest'){
+                return $this->model->link($this->link)->oldest()->first();
+            }else{
                 return $this->model->link($this->link)->find($id);
-            } else {
-                return $this->model->link($this->link)->orderBy('id', 'desc')->first();
             }
+
         } catch (\Exception $e) {
             throw $e;
         }
@@ -139,13 +141,17 @@ class SimpleLarfreeService
         try {
 
             //如果id为0 就取最新的一条.
-            if ($id == 0) {
-                $row = $this->model->orderBy('id', 'desc')->first('id');
-                $row && $id = $row->getAttribute('id', 0);
-                if ($id == 0) {
-                    apiError("无数据");
-                }
+            if($id === 'latest'){
+                $row = $this->model->link($this->link)->latest()->first();
+                $id = $row->getAttribute('id', 0);
+            }elseif($id ==='oldest'){
+                $row = $this->model->link($this->link)->oldest()->first();
+                $id = $row->getAttribute('id', 0);
             }
+            if ($id == 0) {
+                apiError('Not Found Record',null,404);
+            }
+
             $flag = $this->model->link($this->link)->where('id',$id)->update($data);
             if (!$flag) {
                 apiError('保存失败', null, 500);

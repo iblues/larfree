@@ -64,3 +64,11 @@ praiseUserIdList-
 
 
 "@column":"toId:parentId"  等于as
+
+
+
+##默认规则 
+show和update都支持该规则
+
+/test/test/latest 最新
+/test/test/oldest 最老

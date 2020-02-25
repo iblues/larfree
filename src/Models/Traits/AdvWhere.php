@@ -4,6 +4,7 @@ namespace Larfree\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 /**
  * 高级筛选,不耦合
@@ -23,29 +24,31 @@ trait AdvWhere
      * @param $request
      * @return array
      */
-    public function scopeParseRequest(Builder $model,$request){
+    public function scopeParseRequest(Builder $model, $request)
+    {
 
         $query = $request;
 //        $where = [];
-        if(!$query)
+        if (!$query)
             return $model;
 //        $columns = $this->model->getColumns();
 
-        foreach($query as $key=>$val){
+        foreach ($query as $key => $val) {
 
             //如果存在点.说明是链表的
 //            if(stripos($val,'.')){
 //                //链表
 //            }
             //新模式
-            $model->AdvWhere($key,$val);
+            $model->AdvWhere($key, $val);
         }
 
-        if($request->get('@sort')){
-            $sort= explode('.',$request->get('@sort'));
-            $model->orderBy($sort[0],$sort[1]);
-        }else{
-            $model->orderBy('id','desc');
+
+        if (Arr::get($request, '@sort', null)) {
+            $sort = explode('.', $request->get('@sort'));
+            $model->orderBy($sort[0], $sort[1]);
+        } else {
+            $model->orderBy('id', 'desc');
         }
 
         return $model;
