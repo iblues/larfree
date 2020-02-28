@@ -4,6 +4,7 @@ namespace Larfree\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -24,21 +25,22 @@ class ModelSaved
     {
 
         $schemas = $data->getSchemas();
-        if($data->getTmpSave()) {
+        if ($data->getTmpSave()) {
             foreach ($data->getTmpSave() as $key => $val) {
                 //如果是配置中的
                 if (isset($schemas[$key])) {
                     $schema = $schemas[$key];
-                    if (isset($schema['link']) && $schema['link']['model'][0] == 'belongsToMany') {
+                    $method = $schema['key'];
+                    if (isset($schema['link'])) {
                         $method = $schema['key'];
-                        $data->$method()->sync($val);
+                        if ($data->$method() instanceof BelongsToMany) {
+                            $data->$method()->sync($val);
+                        }
                     }
                 }
             }
         }
         $data->afterSave($data);
-//        event()
-        //
     }
 
     /**

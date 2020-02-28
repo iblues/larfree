@@ -82,29 +82,36 @@ trait Base
 
     }
 
-    protected function checkLinkOverride($schemas){
+    protected function checkLinkOverride($schemas)
+    {
         //非debug环境. 如果method有值,就直接用.
-        if(!config('app.debug'))
-            return ;
-        foreach ($schemas as $as){
-            if(method_exists($this,$as)){
-               $class = new \ReflectionClass($this);
-               $method = $class->getMethod($as);
-               if(!stripos($method->getDocComment(),'@override')){
-                   $lang  = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
-                   $lang  .= static ::class." schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc \n";
-                   throw  new SchemasException($lang);
-               }
+        if (!config('app.debug'))
+            return;
+        foreach ($schemas as $as) {
+
+            if (method_exists($this, $as)) {
+                $schema = $this->_schemas[$as];
+                //如果没有设置Link. 那说明在model中有可能设置过了
+                if(!isset($schema['model'])){
+                    return ;
+                }
+                $class = new \ReflectionClass($this);
+                $method = $class->getMethod($as);
+                if (!stripos($method->getDocComment(), '@override')) {
+                    $lang = static ::class . " 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
+                    $lang .= static ::class . " schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc \n";
+                    throw  new SchemasException($lang);
+                }
             }
         }
     }
 
     /**
      * 类似select函数. 但是他可以动态排除filed和link的字段
-     * @author Blues
      * @param $model
      * @param $field
      * @return mixed
+     * @author Blues
      * @author Blues
      */
     public function scopeField($model, $field = '')
@@ -145,10 +152,10 @@ trait Base
 
     /**
      * 获取到对象后,想要对应的值
-     * @author Blues
      * @param $model
      * @param array $field
      * @return mixed
+     * @author Blues
      */
     public function linkMissing($field = [])
     {
@@ -202,15 +209,15 @@ trait Base
 
     /**
      * 将动态link的能力赋进去
-     * @author Blues
      * @param $key
      * @return mixed
+     * @author Blues
      */
     public function getRelationValue($key)
     {
         $return = parent::getRelationValue($key);
         //如果已经有结果了直接返回.
-        if($return){
+        if ($return) {
             return $return;
         }
 
@@ -220,7 +227,7 @@ trait Base
         }
 
         //处理 xx_link , created_at_timestamp 等加工属性
-        if(stripos($key,'_')!==false) {
+        if (stripos($key, '_') !== false) {
             $schemasKey = explode('_', $key);
             array_pop($schemasKey);
             $schemasKey = implode('_', $schemasKey);
@@ -248,16 +255,16 @@ trait Base
 
     /**
      * 获取配置项
-     * @author Blues
      * @param string $key ='' 空为全部
      * @return array|string
+     * @author Blues
      */
-    public function getSchemas($key='')
+    public function getSchemas($key = '')
     {
-        if(!$key)
+        if (!$key)
             return $this->_schemas;
         else
-            return isset($this->_schemas[$key])?$this->_schemas[$key]:null;
+            return isset($this->_schemas[$key]) ? $this->_schemas[$key] : null;
     }
 
     public function getModelName()
@@ -287,7 +294,7 @@ trait Base
         if (isset($schemas['link'])) {
             $link = $schemas['link'];
             //默认as是key本身
-            $as = $schemas['link']['as']??$key;
+            $as = $schemas['link']['as'] ?? $key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
             //不初始化
             if (!isset($link['init']) || $link['init'] == true)
@@ -444,8 +451,8 @@ trait Base
 
     public function __call($method, $parameters)
     {
-        if (!method_exists($this,$method) && in_array($method, $this->_link)) {
-                return $this->callLink($method);
+        if (!method_exists($this, $method) && in_array($method, $this->_link)) {
+            return $this->callLink($method);
         } else {
             return parent::__call($method, $parameters);
         }

@@ -121,7 +121,8 @@ class SimpleLarfreeService
     public function addOne($data)
     {
         try {
-            return $row = $this->model->link($this->link)->create($data);
+            $row = $this->model->link($this->link)->create($data);
+            return $row->link($this->link)->find($row->id);
         } catch (\Exception $e) {
             throw $e;
         }
@@ -152,7 +153,13 @@ class SimpleLarfreeService
                 apiError('Not Found Record',null,404);
             }
 
-            $flag = $this->model->link($this->link)->where('id',$id)->update($data);
+            //update不会触发一些函数. 用save代替
+            $row = $this->model->link($this->link)->where('id',$id)->first();
+            foreach ($data as $key=>$val){
+                $row->setAttribute($key,$val);
+            }
+            $flag = $row->save();
+
             if (!$flag) {
                 apiError('保存失败', null, 500);
             }
