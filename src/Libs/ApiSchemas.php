@@ -8,6 +8,8 @@
 namespace Larfree\Libs;
 
 
+use Illuminate\Support\Arr;
+
 class ApiSchemas extends Schemas
 {
 
@@ -162,9 +164,9 @@ class ApiSchemas extends Schemas
             }
 
 
-            $name = array_get($name,$key);
+            $name = Arr::get($name,$key);
             if(!$name)
-                $name = array_get($name,$key)['name'];
+                $name = Arr::get($name,$key)['name'];
             self::replaceLocalValidateMsg($rule,$key,$name,$messages);
 
             $rule = implode('|',$rule);

@@ -66,6 +66,7 @@ class ApisController extends BaseController
      * @return mixed
      * @throws \Exception
      * @ATU\Api(
+     *     @ATU\RouteIgnore()
      * )
      */
     public function index(Request $request)
@@ -95,6 +96,7 @@ class ApisController extends BaseController
      * @author Blues
      * @ATU\Api(
      *     path=0,
+     *     @ATU\RouteIgnore()
      * )
      */
     public function show($id, Request $request)

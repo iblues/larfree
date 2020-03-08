@@ -17,7 +17,7 @@
         "laravel/framework": "^6.0",
         "watson/rememberable": "^3.0",
         "zircote/swagger-php": "^3.0",
-        "zgldh/qiniu-laravel-storage": "^0.10.0",
+        "zgldh/qiniu-laravel-storage": "^0.10",
         "prettus/l5-repository": "^2.6",
         "venturecraft/revisionable": "1.*",
         "maatwebsite/excel": "^3.1",
@@ -33,5 +33,8 @@
                 "AdminApiController": "Larfree\\Controllers\\AdminApisController"
             }
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=7.0"
     }
 }

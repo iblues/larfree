@@ -94,6 +94,14 @@ class ComponentController extends Controller
                     $value['component_param']['show'] = 'edit/' . $show . '/{{id}}'; //代替link
                     $value['link']['show'] = 'edit/' . $show . '/{{id}}'; //以后 逐步废弃
                 }
+
+                // 设置了select 但是没有设置name的. 先过渡下
+                if ( isset($value['link']['select']) && !isset($value['component_param']['name'])) {
+                    $value['component_param']['key']=$value['link']['select'][0];
+                    $value['component_param']['name'] = '{{'.$value['link']['select'][1].'}}';  //代替link中的url
+                }
+
+
             }
         }
 
