@@ -10,28 +10,36 @@ namespace Larfree\Libs;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Admin\AdminNav;
+use Larfree\Models\Admin\AdminNav;
 
 class Make
 {
-    function __construct($tableName, $controller, $model)
-    {
-        //先读取数据库 生成配置
-        $this->makeConfig($tableName);
-//
-        if ($controller) {
-            $this->makeControoler($controller);
-        }
-        if ($model) {
-            $this->makeModel($model);
-        }
-//        $this->makeRepository($model);
-        $this->makeService($model);
-//        $this->makeConfig($tableName);
+    protected $tableName = '';
 
-        $this->makeRoute($tableName);
-        $this->makeAdminMenu($tableName);
-        $this->makeTest($tableName);
+    function __construct($tableName)
+    {
+        $this->tableName = $tableName;
+        //先读取数据库 生成配置
+//        $this->makeConfig($tableName);
+//        if ($option['c']) {
+//            $this->makeControoler($tableName);
+//        }
+//        if ($option['m']) {
+//            $this->makeModel($tableName);
+//        }
+////        $this->makeRepository($model);
+//        if ($option['s']) {
+//            $this->makeService($tableName);
+//        }
+////        $this->makeConfig($tableName);
+//
+//        if ($option['r']) {
+//            $this->makeRoute($tableName);
+//        }
+//        if ($option['a']) {
+//            $this->makeAdminMenu($tableName);
+//        }
+//        $this->makeTest($tableName);
     }
 
     /**
@@ -39,7 +47,7 @@ class Make
      * @param $file
      * @return string
      */
-    static protected function fomartName($file)
+    protected function formatName($file)
     {
         if (stripos($file, '.')) {
             $file = str_ireplace('.', '/', $file);
@@ -56,9 +64,15 @@ class Make
         return [$fullname, $name, $modelName];
     }
 
-    function makeAdminMenu($name)
+    /**
+     * 插入后台NAV
+     * @author Blues
+     *
+     */
+    function makeAdminMenu()
     {
-        list($fullName, $name, $modelName) = $this->fomartName($name);
+        $name = $this->tableName;
+        list($fullName, $name, $modelName) = $this->formatName($name);
 //        $fullName = strtolower($fullName);
         $fullName = strtr($fullName, '/', '.');
         $fullName = humpToLine($fullName);
@@ -69,11 +83,17 @@ class Make
         ]);
     }
 
-    function makeControoler($name)
+    /**
+     * 生成控制起
+     * @param string $type = all
+     * @author Blues
+     */
+    function makeController($type = 'all')
     {
+        $name = $this->tableName;
         $fullNames = [];
         $name = lineToHump($name);
-        list($fullName, $name) = $this->fomartName($name);
+        list($fullName, $name) = $this->formatName($name);
         $fullNames = explode('/', $fullName);
         $folder = $fullNames[0];
         $fullName = $fullNames[1];
@@ -128,170 +148,37 @@ class {$name}Controller extends Controller
 MODEL;
         $apiPath = base_path() . '/app/Http/Controllers/Api/' . $folder . '/' . $fullName . 'Controller.php';
         $adminApiPath = base_path() . '/app/Http/Controllers/Admin/' . $folder . '/' . $fullName . 'Controller.php';
-        if (file_exists($apiPath)) {
-            echo $apiPath . "已经存在.\r\n";
-        } else {
-            $this->file_force_contents($apiPath, $api);
-            echo $apiPath . "生成.\r\n";
+
+        if ($type == 'home' || $type == 'all') {
+            if (file_exists($apiPath)) {
+                echo $apiPath . "已经存在.\r\n";
+            } else {
+                $this->file_force_contents($apiPath, $api);
+                echo $apiPath . "生成.\r\n";
+            }
         }
-        if (file_exists($adminApiPath)) {
-            echo $adminApiPath . "已经存在.\r\n";
-        } else {
-            $this->file_force_contents($adminApiPath, $adminApi);
-            echo $adminApiPath . "生成.\r\n";
-        }
-    }
-
-
-    /**
-     * 生成测试用例
-     * @param $name
-     */
-    function makeTest($name)
-    {
-        $name = lineToHump($name);
-        list($fullName, $name, $modelName) = $this->fomartName($name);
-        $nameSpace = dirname($fullName);
-        $nameSpace = str_ireplace('/', '\\', $nameSpace);
-        if ($nameSpace)
-            $nameSpace = '\\' . $nameSpace;
-
-        $Name = ucfirst($name);
-//        $Name = lineToHump($Name);
-
-        $tmp = explode('/', $fullName);
-        if (@$tmp[1]) {
-            $fullName = $tmp[0] . '/' . $tmp[1];
-        }
-
-        $apiUrl = str_replace('/_', '/', humpToLine($fullName));
-
-        $content = <<<MODEL
-<?php
-/**
- * 基础API测试
- * @author blues
- */
-
-namespace Tests\Feature\Api;
-use Tests\TestCase;
-
-class {$name}Test extends TestCase
-{
-    /**
-     * 一个基础的功能测试示例。
-     *
-     * @return void
-     */
-    public function testBasicExample()
-    {
-        \$response = \$this->json('GET', '/api/{$apiUrl}');
-        \$response
-            ->assertStatus(200)
-            ->assertJson([
-                'code' => true,
-            ]);
-    }
-}
-MODEL;
-
-        $path = base_path() . '/tests/Feature/Api/' . $fullName . 'Test.php';
-        if (file_exists($path)) {
-            echo $path . "已经存在.\r\n";
-        } else {
-            $this->file_force_contents($path, $content);
-            echo $path . "生成.\r\n";
-        }
-
-        $content = <<<MODEL
-<?php
-/**
- * 基础API测试
- * @author blues
- */
-
-namespace Tests\Feature\Admin;
-use Tests\TestCase;
-
-class {$name}Test extends TestCase
-{
-    /**
-     * 一个基础的功能测试示例。
-     *
-     * @return void
-     */
-    public function testBasicExample()
-    {
-        \$response = \$this->json('GET', '/api/admin/{$apiUrl}');
-        \$response
-            ->assertStatus(200)
-            ->assertJson([
-                'code' => true,
-            ]);
-    }
-}
-MODEL;
-
-        $path = base_path() . '/tests/Feature/Admin/' . $fullName . 'Test.php';
-        if (file_exists($path)) {
-            echo $path . "已经存在.\r\n";
-        } else {
-            $this->file_force_contents($path, $content);
-            echo $path . "生成.\r\n";
-        }
-
-
-    }
-
-
-    function makeModel($name)
-    {
-
-        $name = lineToHump($name);
-        list($fullName, $name, $modelName) = $this->fomartName($name);
-        $nameSpace = dirname($fullName);
-        $nameSpace = str_ireplace('/', '\\', $nameSpace);
-        if ($nameSpace)
-            $nameSpace = '\\' . $nameSpace;
-
-        $Name = ucfirst($name);
-        $Name = lineToHump($Name);
-
-        $tmp = explode('/', $fullName);
-        if (@$tmp[1]) {
-            $fullName = $tmp[0] . '/' . $tmp[0] . $tmp[1];
-        }
-        $content = <<<MODEL
-<?php
-/**
- * 没有任何逻辑的Model类
- * @author blues
- */
-namespace App\Models{$nameSpace};
-use Larfree\Models\Api;
-class {$modelName} extends Api
-{
-}
-MODEL;
-        $path = base_path() . '/app/Models/' . $fullName . '.php';
-        if (file_exists($path)) {
-            echo $path . "已经存在.\r\n";
-        } else {
-            $this->file_force_contents($path, $content);
-            echo $path . "生成.\r\n";
+        if ($type == 'admin' || $type == 'all') {
+            if (file_exists($adminApiPath)) {
+                echo $adminApiPath . "已经存在.\r\n";
+            } else {
+                $this->file_force_contents($adminApiPath, $adminApi);
+                echo $adminApiPath . "生成.\r\n";
+            }
         }
     }
+
 
     /**
      * 生成仓库
-     * @author Blues
      * @param $name
+     * @deprecated
+     * @author Blues
      */
-    function makeRepository($name)
+    function makeRepository()
     {
-
+        $name = $this->tableName;
         $name = lineToHump($name);
-        list($fullName, $name, $modelName) = $this->fomartName($name);
+        list($fullName, $name, $modelName) = $this->formatName($name);
         $nameSpace = dirname($fullName);
         $nameSpace = str_ireplace('/', '\\', $nameSpace);
         if ($nameSpace)
@@ -319,7 +206,7 @@ class {$modelName}Repository extends LarfreeRepository
      * @var {$modelName}
      */
     protected \$model;
-    
+
     /**
      * 可以指定为其他的model
      * @return string
@@ -342,12 +229,12 @@ MODEL;
     /**
      * 生成服务
      * @author Blues
-     * @param $name
      */
-    function makeService($name)
+    function makeService()
     {
+        $name = $this->tableName;
         $name = lineToHump($name);
-        list($fullName, $name, $modelName) = $this->fomartName($name);
+        list($fullName, $name, $modelName) = $this->formatName($name);
         $nameSpace = dirname($fullName);
         $nameSpace = str_ireplace('/', '\\', $nameSpace);
         if ($nameSpace)
@@ -368,7 +255,7 @@ MODEL;
  */
 namespace App\Services{$nameSpace};
 use Larfree\Services\SimpleLarfreeService;
-use App\{$nameSpace}\\{$modelName};
+use App\Models{$nameSpace}\\{$modelName};
 class {$modelName}Service extends SimpleLarfreeService
 {
     /**
@@ -391,8 +278,9 @@ MODEL;
         }
     }
 
-    function makeConfig($table)
+    function makeConfig()
     {
+        $table = $this->tableName;
         $this->makeSchemas($table);
         $this->makeComponent($table);
 //        $this->makeAPi($table);
@@ -402,7 +290,7 @@ MODEL;
     {
 
 
-        list($fullName, $name, $modelName) = $this->fomartName($table);
+        list($fullName, $name, $modelName) = $this->formatName($table);
 
         $tableName = humpToLine($modelName);
         $columns = DB::select("SHOW FULL COLUMNS FROM `{$tableName}`");
@@ -432,18 +320,18 @@ MODEL;
 
             $type = $this->fieldType($column['Type']);
             $fields .= "
-            '{$column['Field']}'=>[
-                'name'=>'{$name}',
-                'tip'=>'',
-                'type'=>'{$type}',
-                'sql_type'=>'{$column['Type']}',
+            '{$column['Field']}' => [
+                'name' => '{$name}',
+                'tip' => '',
+                'type' => '{$type}',
+                'sql_type' => '{$column['Type']}',
             ],";
         }
 
         $content = <<<CONTENT
 <?php
 return [
-    'detail'=>[
+    'detail' => [
         {$fields}
     ],
 ];
@@ -489,7 +377,7 @@ CONTENT;
     {
 
 
-        list($fullName, $name, $modelName) = $this->fomartName($table);
+        list($fullName, $name, $modelName) = $this->formatName($table);
         $tableName = humpToLine($modelName);
 
         $columns = Schema::getColumnListing($tableName);
@@ -500,11 +388,11 @@ CONTENT;
         $actionFields = $this->delByValue($actionFields, 'created_at');
         $actionFields = $this->delByValue($actionFields, 'deleted_at');
 
-        $actionFields = implode("',\r\n            '", $actionFields);
+        $actionFields = implode("',\r\n                '", $actionFields);
         $actionFields = "'" . $actionFields . "'";
 
         //所有字段
-        $fields = implode("',\r\n            '", $columns);
+        $fields = implode("',\r\n                '", $columns);
         $fields = "'" . $fields . "'";
 
 
@@ -515,24 +403,24 @@ CONTENT;
  * 也可以自己指定
  */
 return [
-    'detail'=>[
-        'table'=>[
-            'fields'=>[
+    'detail' => [
+        'table' => [
+            'fields' => [
                 {$fields}
-             ],
+            ],
         ],
-        'add'=>[
-            'fields'=>[
-                {$actionFields}
-             ],
-        ],
-        'edit'=>[
-            'fields'=>[
+        'add' => [
+            'fields' => [
                 {$actionFields}
             ],
         ],
-        'detail'=>[
-            'fields'=>[
+        'edit' => [
+            'fields' => [
+                {$actionFields}
+            ],
+        ],
+        'detail' => [
+            'fields' => [
                 {$fields}
             ],
         ],
@@ -549,9 +437,16 @@ CONTENT;
         }
     }
 
-    protected function makeRoute($table)
+    /**
+     * 生成路由
+     * @param string $type = all
+     * @author Blues
+     *
+     */
+    public function makeRoute($type = 'all')
     {
-        list($fullName, $name) = $this->fomartName($table);
+        $table = $this->tableName;
+        list($fullName, $name) = $this->formatName($table);
         $tableName = humpToLine($name);
         $apiPath = humpToLine($fullName);
         $apiPath = str_ireplace('/_', '/', $apiPath);
@@ -559,22 +454,83 @@ CONTENT;
 
 
         $path = base_path() . '/routes/api.php';
-        $adminPath = base_path() . '/routes/api.php';
-        $route = "\r\nRoute::resource('{$apiPath}', 'Api\\{$fullName}Controller');//自动添加-API";
-        $adminRoute = "\r\nRoute::resource('admin/{$apiPath}', 'Admin\\{$fullName}Controller');//自动添加-ADMIN";
+        $adminPath = base_path() . '/routes/apiAdmin.php';
+        $route = "\r\nRoute::apiResource('{$apiPath}', 'Api\\{$fullName}Controller');//自动添加-API";
+        $adminRoute = "\r\nRoute::apiResource('admin/{$apiPath}', 'Admin\\{$fullName}Controller',['adv'=>true]);//自动添加-ADMIN";
 
 
-        $pathContent = file_get_contents($path);
-        if (!stripos($pathContent, $route)) {
-            file_put_contents($path, $route, 8);
+        if ($type == 'home' || $type == 'all') {
+            $pathContent = file_get_contents($path);
+
+            echo "Router:";
+            if (!stripos($pathContent, $route)) {
+                file_put_contents($path, $route, 8);
+                echo $route . " 写入成功.\r\n";
+            }else{
+                echo $route . " 已经存在.\r\n";
+            }
         }
 
-        $pathContent = file_get_contents($adminPath);
-        if (!stripos($pathContent, $adminRoute)) {
-            file_put_contents($adminPath, $adminRoute, 8);
+        if ($type == 'admin' || $type == 'all') {
+            //如果apiAdmin存在. 就写入这个
+            if(!file_exists($adminPath)){
+                $adminPath = $path;
+            }
+            $pathContent = file_get_contents($adminPath);
+            echo "router:";
+            if (!stripos($pathContent, $adminRoute)) {
+                file_put_contents($adminPath, $adminRoute, 8);
+                echo $adminRoute . " 写入成功.\r\n";
+            }else{
+                echo $adminRoute . " 已经存在.\r\n";
+            }
         }
 
     }
+
+
+    /**
+     * @author Blues
+     *
+     */
+    public function makeModel()
+    {
+        $name = $this->tableName;
+        $name = lineToHump($name);
+        list($fullName, $name, $modelName) = $this->formatName($name);
+        $nameSpace = dirname($fullName);
+        $nameSpace = str_ireplace('/', '\\', $nameSpace);
+        if ($nameSpace)
+            $nameSpace = '\\' . $nameSpace;
+
+        $Name = ucfirst($name);
+        $Name = lineToHump($Name);
+
+        $tmp = explode('/', $fullName);
+        if (@$tmp[1]) {
+            $fullName = $tmp[0] . '/' . $tmp[0] . $tmp[1];
+        }
+        $content = <<<MODEL
+<?php
+/**
+ * 没有任何逻辑的Model类
+ * @author blues
+ */
+namespace App\Models{$nameSpace};
+use Larfree\Models\Api;
+class {$modelName} extends Api
+{
+}
+MODEL;
+        $path = base_path() . '/app/Models/' . $fullName . '.php';
+        if (file_exists($path)) {
+            echo $path . "已经存在.\r\n";
+        } else {
+            $this->file_force_contents($path, $content);
+            echo $path . "生成.\r\n";
+        }
+    }
+
 
     protected function delByValue($arr, $value)
     {
@@ -590,6 +546,14 @@ CONTENT;
     }
 
 
+    /**
+     * 强制生成
+     * @param $dir
+     * @param $contents
+     * @return false|int
+     * @author Blues
+     *
+     */
     protected static function file_force_contents($dir, $contents)
     {
         $parts = explode('/', $dir);

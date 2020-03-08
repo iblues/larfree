@@ -7,7 +7,11 @@ use Larfree\Libs\Make;
 
 class LarfreeMake extends Command
 {
-    protected $signature = 'larfree:make {table} {controller=y} {model=y}';
+    /**
+     *
+     * @var string
+     */
+    protected $signature = 'larfree:make {table} {mode=false}';
 
     /**
      * The console command description.
@@ -35,11 +39,62 @@ class LarfreeMake extends Command
     {
         $arguments = $this->arguments();
         $table = $arguments['table'];
-        $controller = $arguments['controller'];
-        $model = $arguments['model'];
-        $controller = $this->ParmOrYN($controller, $table);
-        $model = $this->ParmOrYN($model, $table);
-        $make = new Make($table, $controller, $model);
+        $mode = $arguments['mode'];
+        $modeChoice = [
+            'cancel',
+            'all:(Schemas,Model,Service,Router,Controller,AdminNav)',
+            'Schemas',
+            'Schemas,Model',
+            'Schemas,Model,Service',
+            'Schemas,Model,Service,前台Api:Controller,前台路由:Router',
+            'Schemas,Model,Service,后台Api:Controller,后台路由:Router,AdminNav',
+        ];
+
+        if ($mode == 'false' || !key_exists($mode, $modeChoice)) {
+            $choice = $this->choice('选择哪种生成模式?', $modeChoice, 0);
+            $mode = @array_flip($modeChoice)[$choice];
+        }
+
+        $make = new Make($table);
+        switch ($mode) {
+            case 1:
+                $make->makeConfig();
+                $make->makeController();
+                $make->makeModel();
+                $make->makeService();
+                $make->makeRoute();
+                $make->makeAdminMenu();
+                break;
+            case 2;
+                $make->makeConfig();
+                break;
+            case 3;
+                $make->makeConfig();
+                $make->makeModel();
+                break;
+            case 4;
+                $make->makeConfig();
+                $make->makeModel();
+                $make->makeService();
+                break;
+            case 5;
+                $make->makeConfig();
+                $make->makeController('home');
+                $make->makeModel();
+                $make->makeService();
+                $make->makeRoute('home');
+                break;
+            case 6;
+                $make->makeConfig();
+                $make->makeController('admin');
+                $make->makeModel();
+                $make->makeService();
+                $make->makeRoute('admin');
+                $make->makeAdminMenu();
+                break;
+        }
+
+//        $make = new Make($table, $controller, $model);
 
 
     }
