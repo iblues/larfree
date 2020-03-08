@@ -56,10 +56,10 @@ class ComponentController extends Controller
 
     /**
      * 把link转换下 让前端可以识别的配置
-     * @author Blues
      * @param $value
      * @return mixed
      * @throws \Larfree\Exceptions\ApiException
+     * @author Blues
      */
     public function linkToUrl(&$value)
     {
@@ -96,9 +96,15 @@ class ComponentController extends Controller
                 }
 
                 // 设置了select 但是没有设置name的. 先过渡下
-                if ( isset($value['link']['select']) && !isset($value['component_param']['name'])) {
-                    $value['component_param']['key']=$value['link']['select'][0];
-                    $value['component_param']['name'] = '{{'.$value['link']['select'][1].'}}';  //代替link中的url
+                if (isset($value['link']['select']) && !isset($value['component_param']['name'])) {
+                    $value['component_param']['key'] = $value['link']['select'][0];
+                    $name = '';
+                    foreach ($value['link']['select'] as $k => $t) {
+                        if ($k > 0) {
+                            $t .= "{{$t}} ";
+                        }
+                    }
+                    $value['component_param']['name'] = $t;  //代替link中的url
                 }
 
 
