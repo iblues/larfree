@@ -5,7 +5,7 @@ return function($data,$component,$target) {
         'class' => '',
         'style' => '',
         'config' => [
-            'api' => '/{$COMPONENT_API}',
+            'api' => 'POST:///{$COMPONENT_API}',
         ]
     ];
     return array_merges($def,$data);

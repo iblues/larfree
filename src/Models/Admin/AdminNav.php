@@ -11,6 +11,7 @@ class AdminNav extends Api
 {
 
 
+
     public function getNavsTree()
     {
         $where['id'] = 2;
@@ -34,9 +35,9 @@ class AdminNav extends Api
 
         $nav = $model->orderBy('ranking', 'desc')->get();
 
-        $nav = $nav->toArray();
-        $return = Event::dispatch('permission.filter_nav',['nav'=>$nav,'model'=>static::class]);
+        $return = Event::dispatch('permission.filter_nav',['nav'=>$nav]);
         $nav = $return[0]??$nav;
+        $nav = $nav->toArray();
         if (!$tree)
             return $nav;
         return listToTree($nav, 'id', 'parent_id', 'children');

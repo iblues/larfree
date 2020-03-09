@@ -34,7 +34,7 @@ class ModelSaved
                     if (isset($schema['link'])) {
                         $method = $schema['key'];
                         if ($data->$method() instanceof BelongsToMany) {
-                            $data->$method()->sync($val);
+                            $data->$method()->advSync($val);
                         }
                     }
                 }

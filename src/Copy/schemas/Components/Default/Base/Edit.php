@@ -5,8 +5,8 @@ return function($data,$component,$target) {
         'class' => '',
         'style' => '',
         'config' => [
-            'readApi' => '/{$COMPONENT_API}/{{id}}',
-            'api' => '/{$COMPONENT_API}/{{id}}',
+            'readApi' => 'GET:///{$COMPONENT_API}/{{id}}',
+            'api' => 'PUT:///{$COMPONENT_API}/{{id}}',
         ]
     ];
     return array_merges($def,$data);

@@ -8,9 +8,8 @@
 
 namespace Iblues\Larfree;
 
-
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Route;
 use Larfree\Console\Commands\AddressMake;
 use Larfree\Console\Commands\LarfreeDictionary;
@@ -38,7 +37,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
 
+        // 解决sync会删除其他的问题
+        BelongsToMany::macro('advSync',function ($ids){
+            $return = $this->select('id')->get();
+            $this->detach($return->pluck('id')->toArray());
+            return $this->syncWithoutDetaching($ids);
+        });
 
+        // 扩展apiResource
         Route::macro('apiResource',function ($prefix, $controller,$option=[]){
             if(isset($option['larfree']) && $option['larfree']) {
                 Route::post($prefix . '/import{module?}', $controller . '@import')->name($prefix . 'import');
