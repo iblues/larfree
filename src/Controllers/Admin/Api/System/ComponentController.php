@@ -7,9 +7,11 @@
 namespace Larfree\Controllers\Admin\Api\System;
 
 use App\Models\System\SystemComponent;
+use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Illuminate\Http\Request;
 use ApiController as Controller;
 use App\Models\Component;
+use Illuminate\Support\Facades\Event;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Libs\Schemas;
 
@@ -26,6 +28,18 @@ class ComponentController extends Controller
 //        return $this->model->where('key',$id)->first();
     }
 
+    /**
+     * @param $module
+     * @param $action
+     * @param Request $request
+     * @return array|false|mixed|string|string[]
+     * @throws \Exception
+     * @author Blues
+     * @ATU\Api(
+     *     path={"common.user","base.table"},
+     * )
+     *
+     */
     public function module($module, $action, Request $request)
     {
         //根据test.test|chart.line.line的格式获取参数
@@ -51,6 +65,10 @@ class ComponentController extends Controller
             array_walk($config['component_fields'], [$this, 'linkToUrl']);
         if (@$config['adv_search'])
             array_walk($config['adv_search'], [$this, 'linkToUrl']);
+
+//        return $config
+        $return = Event::dispatch('permission.filter_schemas_api',['schemas'=>$config]);
+        $config = $return[0]??$config;
         return $config;
     }
 
