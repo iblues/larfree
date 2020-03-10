@@ -90,7 +90,10 @@ trait Base
         foreach ($schemas as $as) {
 
             if (method_exists($this, $as)) {
-                $schema = $this->_schemas[$as];
+                //如果没配置过,直接跳过
+                if(!isset($this->_schemas[$as])){
+                    return '';
+                }
                 //如果没有设置Link. 那说明在model中有可能设置过了
                 if(!isset($schema['model'])){
                     return ;
