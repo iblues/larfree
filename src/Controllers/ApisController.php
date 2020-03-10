@@ -95,7 +95,7 @@ class ApisController extends BaseController
      * @throws \Exception
      * @author Blues
      * @ATU\Api(
-     *     path=0,
+     *     path="latest",
      *     @ATU\RouteIgnore()
      * )
      */

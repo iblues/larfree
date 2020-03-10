@@ -99,7 +99,13 @@ class LarfreeService
         try {
             if ($field)
                 $this->repository->field($field);
-            return $this->repository->link($this->link)->find($id);
+            if($id === 'latest'){
+                return $this->repository->link($this->link)->latest()->first();
+            }elseif($id ==='oldest'){
+                return $this->repository->link($this->link)->oldest()->first();
+            }else{
+                return $this->repository->link($this->link)->find($id);
+            }
         } catch (\Exception $e) {
             throw $e;
         }
@@ -137,6 +143,16 @@ class LarfreeService
     public function updateOne($data, $id)
     {
         try {
+            if($id === 'latest'){
+                $row = $this->repository->link($this->link)->latest()->first();
+                $id = $row->getAttribute('id', 0);
+            }elseif($id ==='oldest'){
+                $row = $this->repository->link($this->link)->oldest()->first();
+                $id = $row->getAttribute('id', 0);
+            }
+            if ($id == 0) {
+                apiError('Not Found Record',null,404);
+            }
             $this->repository->update($data, $id);
             //返回带完整格式的
             return $this->repository->link($this->link)->find($id);
