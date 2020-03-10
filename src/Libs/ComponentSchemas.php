@@ -70,9 +70,7 @@ class ComponentSchemas extends Schemas
                 });
             }
             //带有分组和其他结构的
-            $Schemas['component_fields'] = $field;
-            //转成1维数组的
-            $Schemas['fields'] = $filter_field;
+            $Schemas['fields'] = $field;
             //搜索的结构
             if (@$search) {
                 foreach ($search as $key => $f) {
@@ -92,7 +90,7 @@ class ComponentSchemas extends Schemas
 
         } else {
             $field = self::getSchemas($name);
-            $Schemas = ['fields' => $field, 'component_fields' => $field];//主结构
+            $Schemas = ['fields' => $field];//主结构
         }
         if (!$field) {
             apiError("{$name}配置不存在", ['target' => $name], 500);
