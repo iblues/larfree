@@ -25,7 +25,7 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
-Route::group(['middleware' => ['api.auth','api'], 'prefix' => 'api'], function () {
+Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function () {
 
     //图片压缩
 //    Route::get('images/{date}/{img}', 'System\\Api\\ImgController@images');
@@ -46,6 +46,11 @@ Route::group(['middleware' => ['api.auth','api'], 'prefix' => 'api'], function (
 //        Route::resource('config', $path . 'System\ConfigController');
         //component获取
         Route::get('/system/component/{key}/{action}', $path . 'System\ComponentController@module');
+
+        //后台菜单导航
+        Route::get('admin/nav/tree', $path . 'Admin\NavController@tree');//树桩导航
+        Route::apiResource('admin/nav', $path . 'Admin\NavController', ['adv' => true]);//导航管理
+
         //系统预定义的组建 end
 
     });
