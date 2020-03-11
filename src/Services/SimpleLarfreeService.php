@@ -17,7 +17,7 @@ use Larfree\Imports\LarfreeImport;
 use Larfree\Libs\ComponentSchemas;
 use Maatwebsite\Excel\Facades\Excel;
 
-class SimpleLarfreeService
+class SimpleLarfreeService implements BaseServiceInterface
 {
 
     /**

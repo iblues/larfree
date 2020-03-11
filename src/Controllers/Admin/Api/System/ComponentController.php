@@ -119,10 +119,10 @@ class ComponentController extends Controller
                     $name = '';
                     foreach ($value['link']['select'] as $k => $t) {
                         if ($k > 0) {
-                            $t .= "{{$t}} ";
+                            $name .= "{{{$t}}} ";
                         }
                     }
-                    $value['component_param']['name'] = $t;  //代替link中的url
+                    $value['component_param']['name'] = $name;  //代替link中的url
                 }
 
 

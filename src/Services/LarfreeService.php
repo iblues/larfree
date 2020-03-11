@@ -19,7 +19,7 @@ use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Files\Disk;
 
-class LarfreeService
+class LarfreeService implements BaseServiceInterface
 {
 
     /**
