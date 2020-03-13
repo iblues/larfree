@@ -57,3 +57,18 @@ LarfreeRepository
     name=![1,2,3]          name not in [1,2,3] or id =1 
     name=|[1,2,3]&id=|1    name in [1,2,3] or id =1 
     
+
+```shell script
+    docker run -d -p 3000:3000 --name metabase metabase/metabase
+or
+    docker run  -p 3000:3000 \
+    --cpus=1 \
+    -e "MB_DB_TYPE=mysql" \
+    -e "MB_DB_DBNAME=metabase" \
+    -e "MB_DB_PORT=3306" \
+    -e "MB_DB_USER=parrot_demo_54bl" \
+    -e "MB_DB_PASS=MByXbdmn6kWs8xH5" \
+    -e "MB_DB_HOST=rm-2ze5s9bc2ocin3k52ko.mysql.rds.aliyuncs.com" \
+    --name metabase metabase/metabase
+
+```

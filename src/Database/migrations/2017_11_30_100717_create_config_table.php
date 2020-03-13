@@ -17,8 +17,9 @@ class CreateConfigTable extends Migration
             $table->increments('id');
             $table->string('key')->comment('key')->index();
             $table->string('cat')->comment('分类')->index();
-            $table->string('type')->comment('类型');
-            $table->text('value')->comment('分类');
+            $table->string('type')->comment('类型')->default('');
+            $table->text('value')->comment('内容');
+            $table->unique(['key','cat']);
             $table->timestamps();
         });
     }

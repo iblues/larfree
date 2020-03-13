@@ -4,7 +4,6 @@ namespace Larfree\Repositories;
 
 use Larfree\Libs\Schemas;
 use Larfree\Models\System\SystemConfig;
-use Larfree\Repositories\LarfreeRepository;
 
 /**
  * Class TestRepositoryEloquent.
@@ -35,7 +34,6 @@ class SystemConfigRepository extends LarfreeRepository
     public function getAllByCat($category){
         //获取对应的配置文件 , 还需要进一步处理
 //        $data = Schemas::getSchemas('Config.'.$category);
-
         $data = $this->model->link()->where('cat',$category)->get();
         return $data->pluck('value','key');
     }
@@ -49,10 +47,11 @@ class SystemConfigRepository extends LarfreeRepository
     public function updateConfigByCat(array $data, $cat)
     {
         foreach($data as $k=>$v){
+
             if($v) {
                 $this->model->updateOrCreate(
                     ['key' => $k, 'cat' => $cat],
-                    ['value' => $v]
+                    ['value' => $v , 'type'=>'json']
                 );
             }
         }

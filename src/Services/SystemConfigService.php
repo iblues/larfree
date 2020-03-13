@@ -24,36 +24,41 @@ class SystemConfigService
         $this->repository = $repository;
     }
 
-    public function setAdmin($flag = true){
+    public function setAdmin($flag = true)
+    {
         $this->admin = true;
         return $this;
     }
 
     /**
      * 批量更新
-     * @author Blues
      * @param array $data
      * @param $cat
+     * @author Blues
      */
     public function updateConfigByCat(array $data, $cat)
     {
         try {
             DB::beginTransaction();
-            return $this->repository->updateConfigByCat($data, $cat);
-        }catch (\Exception $e){
+            $this->repository->updateConfigByCat($data, $cat);
+        } catch (\Exception $e) {
             DB::rollBack();
+            apiError($e->getMessage(), null, 500);
         }
+
         DB::commit();
+        return $this->repository->getAllByCat($cat);
     }
 
 
     /**
      * 批量读取
-     * @author Blues
      * @param $cat
      * @return mixed
+     * @author Blues
      */
-    public function getAllByCat($cat){
+    public function getAllByCat($cat)
+    {
         return $this->repository->getAllByCat($cat);
     }
 }

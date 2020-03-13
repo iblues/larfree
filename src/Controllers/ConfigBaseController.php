@@ -6,6 +6,7 @@
 
 namespace Larfree\Controllers;
 
+use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Larfree\Repositories\SystemConfigRepository;
 use Illuminate\Http\Request;
 use ApiController as Controller;
@@ -13,15 +14,14 @@ use App\Models\System\SystemConfig;
 use Larfree\Libs\Schemas;
 use Larfree\Services\SystemConfigService;
 
-class ConfigController extends Controller
+class ConfigBaseController extends Controller
 {
     public $repository;
     public $service;
 
-    public function __construct(SystemConfigRepository $repository, SystemConfigService $service)
+    public function __construct(SystemConfigService $service)
     {
         $this->service = $service;
-        $this->repository = $repository;
         parent::__construct();
     }
 
@@ -36,6 +36,9 @@ class ConfigController extends Controller
      * @param $cat
      * @param Request $request
      * @return mixed
+     * @ATU\Api(
+     *     path="plane"
+     * )
      */
     public function show($cat, Request $request)
     {
@@ -47,6 +50,10 @@ class ConfigController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @param  string $cat 分类名
      * @return mixed
+     * @ATU\Api(
+     *     path="plane",
+     *     @ATU\Request({"home":{"key":1}})
+     * )
      */
     public function update(Request $request, $cat)
     {
