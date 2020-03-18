@@ -57,8 +57,8 @@ class SystemConfigService
      * @return mixed
      * @author Blues
      */
-    public function getAllByCat($cat)
+    public function getAllByCat($cat,$key)
     {
-        return $this->repository->getAllByCat($cat);
+        return $this->repository->getAllByCat($cat,$key);
     }
 }

@@ -32,23 +32,23 @@ class ConfigBaseController extends Controller
 
     /**
      * 获取配置 按 分类
-     * @author Blues
      * @param $cat
      * @param Request $request
      * @return mixed
      * @ATU\Api(
-     *     path="plane"
+     *     path={"plane","home"},
      * )
+     * @author Blues
      */
-    public function show($cat, Request $request)
+    public function show($cat, Request $request, $key='')
     {
-        return $this->service->getAllByCat($request->cat);
+        return $this->service->getAllByCat($request->cat, $key);
     }
 
     /**
      * 更新
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $cat 分类名
+     * @param \Illuminate\Http\Request $request
+     * @param string $cat 分类名
      * @return mixed
      * @ATU\Api(
      *     path="plane",
@@ -60,12 +60,14 @@ class ConfigBaseController extends Controller
         return $this->service->updateConfigByCat($request->all(), $cat);
     }
 
-    public function store(Request $request){
-        ApiError('Forbidden!',[],'403');
+    public function store(Request $request)
+    {
+        ApiError('Forbidden!', [], '403');
     }
 
-    public function deleted($id,Request $request){
-        ApiError('Forbidden!',[],'403');
+    public function deleted($id, Request $request)
+    {
+        ApiError('Forbidden!', [], '403');
     }
 
 }

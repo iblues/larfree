@@ -50,7 +50,8 @@ Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function 
         //后台菜单导航
         Route::get('admin/nav/tree', $path . 'Admin\NavController@tree');//树桩导航
         Route::apiResource('admin/nav', $path . 'Admin\NavController', ['adv' => true]);//导航管理
-        Route::apiResource('system/config', $path . 'System\ConfigController', ['adv' => true]);//导航管理
+        Route::get('system/config/{cat}/{key?}', $path . 'System\ConfigController@show');//配置
+        Route::Put('system/config/{cat}', $path . 'System\ConfigController@update');//配置
 
         //系统预定义的组建 end
 

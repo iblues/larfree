@@ -31,27 +31,41 @@ class SystemConfigRepository extends LarfreeRepository
 //        $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function getAllByCat($category){
+    public function getAllByCat($category, $key = '')
+    {
         //获取对应的配置文件 , 还需要进一步处理
 //        $data = Schemas::getSchemas('Config.'.$category);
-        $data = $this->model->link()->where('cat',$category)->get();
-        return $data->pluck('value','key');
+        if ($key) {
+            $data = $this->model->where('key', $key)->first();
+            if (!$data) {
+                apiError('配置文件不存在');
+            }
+            return $data->value;
+
+        } else {
+            $data = $this->model->link()->where('cat', $category)->get();
+            if (!$data) {
+                apiError('配置文件不存在');
+            }
+            return $data->pluck('value', 'key');
+        }
+
     }
 
     /**
      * 批量赋值
-     * @author Blues
      * @param array $data
      * @param $cat
+     * @author Blues
      */
     public function updateConfigByCat(array $data, $cat)
     {
-        foreach($data as $k=>$v){
+        foreach ($data as $k => $v) {
 
-            if($v) {
+            if ($v) {
                 $this->model->updateOrCreate(
                     ['key' => $k, 'cat' => $cat],
-                    ['value' => $v , 'type'=>'json']
+                    ['value' => $v, 'type' => 'json']
                 );
             }
         }
