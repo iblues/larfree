@@ -19,7 +19,6 @@ trait AdvWhere
     /**
      *
      * 同一个字段及多个字段组合查询
-     * 示例: http://laravel.dev/api/min?id=1&search_id=2&gt_key=2&egt_key=2&lt_key=2&elt_key=3
      * @param Builder $model
      * @param $request
      * @return array
@@ -34,15 +33,9 @@ trait AdvWhere
 //        $columns = $this->model->getColumns();
 
         foreach ($query as $key => $val) {
-
-            //如果存在点.说明是链表的
-//            if(stripos($val,'.')){
-//                //链表
-//            }
             //新模式
             $model->AdvWhere($key, $val);
         }
-
 
         if ($sort = Arr::get($request, '@sort', null)) {
 
@@ -53,8 +46,6 @@ trait AdvWhere
                 $model->orderBy($sort[0], $sort[1]);
             }
 
-
-//
         } else {
             $model->orderBy('id', 'desc');
         }
@@ -69,6 +60,7 @@ trait AdvWhere
      * name=>$123|<123     >123 or <123
      * name=$[1,2,3]
      * name=![1,2,3]
+     * user.name=![1,2,3]
      * @param $model
      * @param $key
      * @param $val
@@ -107,7 +99,7 @@ trait AdvWhere
 //        //如果字段中存在| 代表多字段.就or的关系
         if (stripos($key, '|') !== false && stripos($key, '|') != strlen($key) - 1) {
             if (!in_array($mode, $mode_array))
-                apiError('复杂筛选模式必须$,|,!开头,如id|title$');
+                apiError('复杂筛选模式必须$,|,!开头,如id|title');
             $multi = explode('|', $real_key);
 
             $model->where(function ($query) use ($val, $mode, $multi) {
@@ -121,10 +113,23 @@ trait AdvWhere
             return $model;
         }
 
+
+        //如果存在点.说明是链表的 进行链表处理
+        if(stripos($real_key,'.')){
+            $explode = explode('.',$real_key,2);
+            $model->whereHas($explode[0],function ($query)use($explode,$val){
+                $query->advWhere($explode[1],$val);
+            });
+            return $model;
+        }
+
+
+
+
         //&user:name$=123&user:id|=1
         if (stripos($key, ':') !== false) {
             if (!in_array($mode, $mode_array))
-                apiError('复杂筛选模式必须$,|,!结尾,如id|title$');
+                apiError('复杂筛选模式必须,|,!结尾,如id|title');
             $multi = explode(':', $real_key);
             if ($mode == '|') {
                 $model->orWhereHas($multi[0], function ($query) use ($multi, $val, $mode) {
