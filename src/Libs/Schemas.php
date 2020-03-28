@@ -8,6 +8,7 @@
 namespace Larfree\Libs;
 
 
+use Illuminate\Support\Arr;
 use Larfree\Exceptions\SchemasException;
 
 class Schemas
@@ -264,6 +265,22 @@ class Schemas
         $path = schemas_path('Schemas');
         $list = dirToArray($path);
         return $list;
+    }
+
+    /**
+     * 搜索有as等于key
+     * @param $key
+     * @param $Schemas
+     * @return mixed
+     * @author Blues
+     *
+     */
+    static function searchLinkAs($key,$Schemas){
+        foreach ($Schemas as $schema){
+            if( Arr::get($schema,'link.as') == $key){
+                return $schema;
+            }
+        }
     }
 
     /**

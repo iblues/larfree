@@ -11,6 +11,7 @@ namespace Larfree\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
 use Larfree\Imports\LarfreeImport;
@@ -127,6 +128,7 @@ class LarfreeService implements BaseServiceInterface
             //返回带完整格式的
             return $this->repository->link($this->link)->find($row['id']);
         } catch (\Exception $e) {
+            DB::rollBack();
             throw $e;
         }
     }
@@ -157,6 +159,7 @@ class LarfreeService implements BaseServiceInterface
             //返回带完整格式的
             return $this->repository->link($this->link)->find($id);
         } catch (\Exception $e) {
+            DB::rollBack();
             throw $e;
         }
 

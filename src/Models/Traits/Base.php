@@ -91,12 +91,12 @@ trait Base
 
             if (method_exists($this, $as)) {
                 //如果没配置过,直接跳过
-                if(!isset($this->_schemas[$as])){
+                if (!isset($this->_schemas[$as])) {
                     return '';
                 }
                 //如果没有设置Link. 那说明在model中有可能设置过了
-                if(!isset($schema['model'])){
-                    return ;
+                if (!isset($schema['model'])) {
+                    return;
                 }
                 $class = new \ReflectionClass($this);
                 $method = $class->getMethod($as);
@@ -299,6 +299,8 @@ trait Base
             //默认as是key本身
             $as = $schemas['link']['as'] ?? $key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
+
+            $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断
             //不初始化
             if (!isset($link['init']) || $link['init'] == true)
                 $this->_doLink[$key] = $as;

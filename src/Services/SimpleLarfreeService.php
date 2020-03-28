@@ -96,11 +96,11 @@ class SimpleLarfreeService implements BaseServiceInterface
             if ($field)
                 $this->model = $this->model->field($field);
 
-            if($id === 'latest'){
+            if ($id === 'latest') {
                 return $this->model->link($this->link)->latest()->first();
-            }elseif($id ==='oldest'){
+            } elseif ($id === 'oldest') {
                 return $this->model->link($this->link)->oldest()->first();
-            }else{
+            } else {
                 return $this->model->link($this->link)->find($id);
             }
 
@@ -121,9 +121,14 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function addOne($data)
     {
         try {
-            $row = $this->model->link($this->link)->create($data);
+            $row = $this->model;
+            foreach ($data as $key => $val) {
+                $row->setAttribute($key, $val);
+            }
+            $row->save();
             return $row->link($this->link)->find($row->id);
         } catch (\Exception $e) {
+            \DB::rollBack();
             throw $e;
         }
     }
@@ -142,21 +147,22 @@ class SimpleLarfreeService implements BaseServiceInterface
         try {
 
             //如果id为0 就取最新的一条.
-            if($id === 'latest'){
+            if ($id === 'latest') {
                 $row = $this->model->link($this->link)->latest()->first();
                 $id = $row->getAttribute('id', 0);
-            }elseif($id ==='oldest'){
+            } elseif ($id === 'oldest') {
                 $row = $this->model->link($this->link)->oldest()->first();
                 $id = $row->getAttribute('id', 0);
             }
             if ($id == 0) {
-                apiError('Not Found Record',null,404);
+                apiError('Not Found Record', null, 404);
             }
 
+
             //update不会触发一些函数. 用save代替
-            $row = $this->model->link($this->link)->where('id',$id)->first();
-            foreach ($data as $key=>$val){
-                $row->setAttribute($key,$val);
+            $row = $this->model->link($this->link)->where('id', $id)->first();
+            foreach ($data as $key => $val) {
+                $row->setAttribute($key, $val);
             }
             $flag = $row->save();
 
@@ -166,6 +172,7 @@ class SimpleLarfreeService implements BaseServiceInterface
             //返回带完整格式的
             return $this->model->link($this->link)->find($id);
         } catch (\Exception $e) {
+            \DB::rollBack();
             throw $e;
         }
 
@@ -183,7 +190,7 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function delete($id)
     {
         try {
-            return $this->model->where('id',$id)->delete();
+            return $this->model->where('id', $id)->delete();
         } catch (\Exception $e) {
             throw $e;
         }

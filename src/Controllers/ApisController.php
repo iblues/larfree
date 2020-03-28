@@ -197,7 +197,7 @@ class ApisController extends BaseController
         $ext = isset($this->in[$method]) ? $this->in[$method] : [];
         //字段过滤
         $fields = ApiSchemas::getApiAllowField($this->modelName, 'in', $method, $ext);
-        if ($fields != false) {
+        if ($fields != false && !array_key_exists('*',$fields)) {
             $data = array_diff_key($request->all(), array_flip(array_keys($fields)));
             foreach ($data as $k => $v) {
                 $request->offsetUnset($k);

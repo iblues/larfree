@@ -14,7 +14,7 @@ use Illuminate\Support\Arr;
  */
 trait AdvWhere
 {
-
+    use OrderByRelationship;
 
     /**
      *
@@ -44,9 +44,17 @@ trait AdvWhere
         }
 
 
-        if (Arr::get($request, '@sort', null)) {
-            $sort = explode('.', $request->get('@sort'));
-            $model->orderBy($sort[0], $sort[1]);
+        if ($sort = Arr::get($request, '@sort', null)) {
+
+            $sort = explode('.', $sort,3);
+            if(count($sort)>2){
+                $model->orderByRelationship($sort[0],$sort[1],$sort[2]);
+            }else{
+                $model->orderBy($sort[0], $sort[1]);
+            }
+
+
+//
         } else {
             $model->orderBy('id', 'desc');
         }
