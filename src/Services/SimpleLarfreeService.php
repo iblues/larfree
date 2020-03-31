@@ -11,6 +11,7 @@ namespace Larfree\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
 use Larfree\Imports\LarfreeImport;
@@ -126,6 +127,7 @@ class SimpleLarfreeService implements BaseServiceInterface
                 $row->setAttribute($key, $val);
             }
             $row->save();
+            Log::info(getLoginUserID().'新增管理员信息',$data);
             return $row->link($this->link)->find($row->id);
         } catch (\Exception $e) {
             \DB::rollBack();
