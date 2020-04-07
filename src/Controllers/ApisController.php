@@ -196,13 +196,11 @@ class ApisController extends BaseController
                         apiError('unique miss key example: unique:table_name,filed_key_name');
                     }
 
-                    //有忽略规则的才继续
-                    if ($id) {
-                        $value = Rule::unique('user_admin', $key['1'])->ignore($id, $ignoreKey);
-                    } else {
-                        $value = Rule::unique('user_admin', $key['1']);
-                    }
+                    //默认主键为key
+                    $id = $id ?? 'id';
 
+                    //有忽略规则的才继续
+                    $value = Rule::unique('user_admin', $key['1'])->ignore($id, $ignoreKey);
                 }
             });
         });
