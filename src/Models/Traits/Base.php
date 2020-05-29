@@ -154,7 +154,8 @@ trait Base
     }
 
     /**
-     * 获取到对象后,想要对应的值
+     * 获取到对象后,想要对应的值. 暂时没用
+     * @deprecated
      * @param $model
      * @param array $field
      * @return mixed
@@ -299,7 +300,6 @@ trait Base
             //默认as是key本身
             $as = $schemas['link']['as'] ?? $key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
-
             $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断
             //不初始化
             if (!isset($link['init']) || $link['init'] == true)
