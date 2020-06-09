@@ -25,6 +25,10 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
+//上传相关
+Route::post('/upload/images', $path . 'Common\\UploadController@images')->name('upload.images');
+Route::post('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
+
 Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function () {
 
     //图片压缩
@@ -38,9 +42,6 @@ Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function 
         Route::redirect('/', '/admin/', 302)->name('root');
 
 
-        //上传相关
-        Route::post('/upload/images', $path . 'Common\\UploadController@images')->name('upload.images');
-        Route::post('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
 
         //配置接口
 //        Route::resource('config', $path . 'System\ConfigController');
