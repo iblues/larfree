@@ -25,34 +25,30 @@ Route::group(['prefix' => 'swagger'], function () {
 });
 
 
-//上传相关
-Route::post('/upload/images', $path . 'Common\\UploadController@images')->name('upload.images');
-Route::post('/upload/files', $path . 'Common\\UploadController@files')->name('upload.files');
-
 Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function () {
-
     //图片压缩
 //    Route::get('images/{date}/{img}', 'System\\Api\\ImgController@images');
 
     Route::prefix('admin')->name('admin.api.')->group(function () {
-//            $_ENV['ADMIN']=true;
-        $path = 'Larfree\\Controllers\\Admin\\Api\\';
-
         //声明首页
         Route::redirect('/', '/admin/', 302)->name('root');
 
-
+        //上传相关.
+        $path = 'Larfree\\Controllers\\Admin\\Api\\';
+        Route::post('/admin/upload/images', $path.'Common\\UploadController@images')->name('upload.images');
+        Route::post('/admin/upload/files', $path.'Common\\UploadController@files')->name('upload.files');
 
         //配置接口
 //        Route::resource('config', $path . 'System\ConfigController');
         //component获取
-        Route::get('/system/component/{key}/{action}', $path . 'System\ComponentController@module');
+        Route::get('/system/component/{key}/{action}', $path.'System\ComponentController@module');
 
         //后台菜单导航
-        Route::get('admin/nav/tree', $path . 'Admin\NavController@tree');//树桩导航
-        Route::apiResource('admin/nav', $path . 'Admin\NavController', ['adv' => true]);//导航管理
-        Route::get('system/config/{cat}/{key?}', $path . 'System\ConfigController@show');//配置
-        Route::Put('system/config/{cat}', $path . 'System\ConfigController@update');//配置
+        Route::get('admin/nav/tree', $path.'Admin\NavController@tree');//树桩导航
+        Route::apiResource('admin/nav', $path.'Admin\NavController', ['adv' => true]);//导航管理
+        Route::apiResource('system/schema', $path.'System\SchemaController');//蓝图相关
+        Route::get('system/config/{cat}/{key?}', $path.'System\ConfigController@show');//配置
+        Route::Put('system/config/{cat}', $path.'System\ConfigController@update');//配置
 
         //系统预定义的组建 end
 
