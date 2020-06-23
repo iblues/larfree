@@ -26,7 +26,6 @@ class ModelSaved
      */
     public function __construct(Model $data)
     {
-
         $schemas = $data->getSchemas();
         if ($data->getTmpSave()) {
             foreach ($data->getTmpSave() as $key => $val) {
@@ -40,8 +39,7 @@ class ModelSaved
 
     protected function doRelateSave($key, $schemas, $val, $data)
     {
-
-        $datas=[];
+        $datas = [];
         //考虑user.name 直接修改的方式.  但是有很多其他问题. 暂时不执行
 //        if (stripos($key, '.') > 0) {
 //            $keys = explode('.', $key, 2);
@@ -55,20 +53,24 @@ class ModelSaved
 //            $key=$keys[1];
 //            $datas[$key]=$val;
 //        } else {
-            $schema = $schemas[$key] ?? null;
-            if (!$schema) {
-                $schema = Schemas::searchLinkAs($key, $schemas);
-            }
-            $datas=$val;
-            $method = $key;
+        $schema = $schemas[$key] ?? null;
+        if (!$schema) {
+            $schema = Schemas::searchLinkAs($key, $schemas);
+        }
+        $datas = $val;
+        $method = $key;
 //        }
 
         if (!$schema) {
             return '';
         }
         if (isset($schema['link'])) {
-            if ($data->$method() instanceof BelongsToMany) {
-                $data->$method()->advSync($val);
+            if (count($val) != count($val, 1)) {
+                //看是不是要提取其中的id. 当前先不处理
+            } else {
+                if ($data->$method() instanceof BelongsToMany) {
+                    $data->$method()->advSync($val);
+                }
             }
 //            else if ($data->$method() instanceof BelongsTo) {
 //                $model =  $data->load($method)[$method];
@@ -82,12 +84,12 @@ class ModelSaved
 //                }
 //            }
         }
-
     }
 
-    protected function setAttributes($model,$data){
-        foreach ($data as $k=>$val){
-            $model->setAttribute($k,$val);
+    protected function setAttributes($model, $data)
+    {
+        foreach ($data as $k => $val) {
+            $model->setAttribute($k, $val);
         }
         return $model;
     }
