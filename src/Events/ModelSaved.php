@@ -65,7 +65,8 @@ class ModelSaved
             return '';
         }
         if (isset($schema['link'])) {
-            if (count($val) != count($val, 1)) {
+            //如果是数组,并且是多维数组的
+            if (is_array($val) && count($val) != count($val, 1)) {
                 //看是不是要提取其中的id. 当前先不处理
             } else {
                 if ($data->$method() instanceof BelongsToMany) {
