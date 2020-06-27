@@ -307,13 +307,17 @@ class Schemas
      * @return array
      */
     static function getAllConfig(){
-        $path = schemas_path().'/Schemas/Schemas/Config';
+        $path = schemas_path().'/Schemas/Config';
         $list = scandir($path);
         array_shift($list);
         array_shift($list);
         $lists = array_map(function($file)use($path){
             $data= include($path.'/'.$file);
             $data['key']=humpToLine(basename($file,'.php'));
+            foreach ($data['detail'] as $key=>$val){
+                //mock数据
+                $data['detail'][$key]['value']=1;
+            }
             return $data;
         },$list);
         return $lists;

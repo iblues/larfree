@@ -17,9 +17,14 @@ class ComponentSchemas extends Schemas
     static function getSchemasConfig($name, $target)
     {
         $target = strtolower($target);
+        //如果是配置模块 , 需要单独处理
+        if(strtolower($name) == 'system.config'){
+            $file = null;
+            $name = 'config.'.$target;
+        }else{
+            $file = schemas_path('Components') . '/' . self::fomartName($name) . '.php';
+        }
 
-
-        $file = schemas_path('Components') . '/' . self::fomartName($name) . '.php';
 
         $GlobalSchemas = self::getSchemas($name);//主结构
         if (file_exists($file)) {

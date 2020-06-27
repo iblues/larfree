@@ -47,6 +47,8 @@ Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function 
         Route::get('admin/nav/tree', $path.'Admin\NavController@tree');//树桩导航
         Route::apiResource('admin/nav', $path.'Admin\NavController', ['adv' => true]);//导航管理
         Route::apiResource('system/schema', $path.'System\SchemaController');//蓝图相关
+
+        Route::get('system/config', $path.'System\ConfigController@index');//配置
         Route::get('system/config/{cat}/{key?}', $path.'System\ConfigController@show');//配置
         Route::Put('system/config/{cat}', $path.'System\ConfigController@update');//配置
 
