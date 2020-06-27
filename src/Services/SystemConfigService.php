@@ -57,9 +57,54 @@ class SystemConfigService
         }
 
         DB::commit();
+
+        $this->refreshCache();
         return $this->getAllByCat($cat);
     }
 
+
+    /**
+     * 刷新缓存
+     * @author Blues
+     */
+    public function refreshCache()
+    {
+        $file = config_path('/system.php');
+        $data = $this->model->where('cat','!=','plane')->get()->toArray();
+        $group=[];
+        foreach ($data as $val){
+            $group[$val['cat']][$val['key']]=$val;
+        }
+
+        $strings = [];
+        foreach ($group as $key=>$fields){
+            $string = "    '{$key}' => [\r\n";
+
+            foreach ($fields as $field){
+                $string.="        \"{$field['key']}\" => json_decode('".json_encode($field["value"])."',1),"."\r\n";
+            }
+
+            $string .= "    ]";
+            $strings[]=$string;
+        }
+        $strings = implode(",    \r\n",$strings);
+
+        $content=<<<CONTENT
+<?php
+/**
+ * larfree的系统配置. 生成到system文件中. 方便调用
+ */
+return [
+{$strings}
+];
+CONTENT;
+
+        file_put_contents($file,$content);
+        //正式环境. 保存就刷新缓存
+        if (!config('app.debug')) {
+            Artisan::call('config:cache');
+        }
+    }
 
     /**
      * 批量读取
@@ -69,12 +114,17 @@ class SystemConfigService
      * @throws \Larfree\Exceptions\ApiException
      * @author Blues
      */
-    public function getAllByCat($category, $key='')
+    public function getAllByCat($category = '', $key = '')
     {
         //获取对应的配置文件 , 还需要进一步处理
 //        $data = Schemas::getSchemas('Config.'.$category);
         if (!$key) {
-            $data = $this->model->link()->where('cat', $category)->get();
+            if ($category) {
+                $data = $this->model->link()->where('cat', $category)->get();
+            } else {
+                //读取所有配置
+                $data = $this->model->link()->get();
+            }
             if (!$data) {
                 apiError('配置文件不存在');
             }
@@ -94,7 +144,7 @@ class SystemConfigService
      * @author Blues
      *
      */
-    public function createFileConfig(){
-
+    public function createFileConfig()
+    {
     }
 }

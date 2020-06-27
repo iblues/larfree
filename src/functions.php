@@ -33,11 +33,11 @@ if (!function_exists('conf')) {
     function conf($cat, $name = '')
     {
         if (!$name) {
-            $data = \App\Models\Config::select(['key', 'value'])->where('cat', $cat)->get();
+            $data = \Larfree\Models\System\SystemConfig::select(['key', 'value'])->where('cat', $cat)->get();
             $data = $data->toArray();
             return Arr::pluck($data, 'value', 'key');
         } else {
-            $data = \App\Models\Config::select(['key', 'value'])->where('cat', $cat)->where('key', $name)->first();
+            $data = \Larfree\Models\System\SystemConfig::select(['key', 'value'])->where('cat', $cat)->where('key', $name)->first();
             return $data->value;
         }
     }
