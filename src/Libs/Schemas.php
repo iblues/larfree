@@ -316,7 +316,7 @@ class Schemas
             $data['key']=humpToLine(basename($file,'.php'));
             foreach ($data['detail'] as $key=>$val){
                 //mock数据
-                $data['detail'][$key]['value']=1;
+                $data['detail'][$key]['value']=config('system.'.$data['key'].'.'.$key,'');
             }
             return $data;
         },$list);
