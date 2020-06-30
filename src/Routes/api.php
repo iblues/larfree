@@ -35,8 +35,8 @@ Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function 
 
         //上传相关.
         $path = 'Larfree\\Controllers\\Admin\\Api\\';
-        Route::post('/admin/upload/images', $path.'Common\\UploadController@images')->name('upload.images');
-        Route::post('/admin/upload/files', $path.'Common\\UploadController@files')->name('upload.files');
+        Route::post('/upload/images', $path.'Common\\UploadController@images')->name('upload.images');
+        Route::post('/upload/files', $path.'Common\\UploadController@files')->name('upload.files');
 
         //配置接口
 //        Route::resource('config', $path . 'System\ConfigController');
