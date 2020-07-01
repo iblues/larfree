@@ -10,7 +10,8 @@ use App\Models\System\SystemComponent;
 use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Illuminate\Http\Request;
 use App\Models\Component;
-use Illuminate\Routing\Controlleruse Larfree\Services\SchemaService;
+use Illuminate\Routing\Controller;
+use Larfree\Services\SchemaService;
 
 /**
  * 对蓝图的相关操作
@@ -21,10 +22,10 @@ use Illuminate\Routing\Controlleruse Larfree\Services\SchemaService;
 class SchemaController extends Controller
 {
 
-    protected $service
+    protected $service;
     public function __construct(SchemaService $service)
     {
-        $this->service = $service
+        $this->service = $service;
         parent::__construct();
     }
 

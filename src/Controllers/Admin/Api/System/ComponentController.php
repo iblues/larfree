@@ -81,6 +81,14 @@ class ComponentController extends Controller
      */
     public function linkToUrl(&$value)
     {
+
+        if(isset($value['group_children'])){
+            foreach ($value['group_children'] as $k=>$v){
+                $value['group_children'][$k] = $this->linkToUrl($v);
+            }
+        }
+
+
         //没有link的不用管了
         if (!isset($value['link'])) {
             return $value;
@@ -133,6 +141,9 @@ class ComponentController extends Controller
         if (!isset($value['component_param']['api'])) {
             apiError("当link.model为空时,schemas.{$value['key']}.component_param.api必填");
         }
+
+        return $value;
+
 
 
     }

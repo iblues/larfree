@@ -163,6 +163,9 @@ class SimpleLarfreeService implements BaseServiceInterface
 
             //update不会触发一些函数. 用save代替
             $row = $this->model->link($this->link)->where('id', $id)->first();
+            if(!$row){
+                apiError('记录不存在');
+            }
             foreach ($data as $key => $val) {
                 $row->setAttribute($key, $val);
             }
