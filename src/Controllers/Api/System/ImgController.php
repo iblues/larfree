@@ -6,7 +6,7 @@
  * Time: 9:59
  */
 
-namespace App\Http\Controllers\Api\System;
+namespace Larfree\Controllers\Api\System;
 
 
 use Illuminate\Http\Request;

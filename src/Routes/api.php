@@ -23,7 +23,8 @@ Route::group(['prefix' => 'swagger'], function () {
     Route::get('json', 'Larfree\\Controllers\\SwaggerController@getJSON');
     Route::get('my-data', 'Larfree\\Controllers\\SwaggerController@getMyData');
 });
-
+//配置22
+Route::get('api/system/config/{cat}/{key?}', 'Larfree\Controllers\Api\System\ConfigController@show');//配置
 
 Route::group(['middleware' => ['api.auth', 'api'], 'prefix' => 'api'], function () {
     //图片压缩
