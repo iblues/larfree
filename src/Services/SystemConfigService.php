@@ -130,11 +130,11 @@ CONTENT;
             }
             return $data->pluck('value', 'key');
         } else {
-            $data = $this->model->where('key', $key)->first();
+            $data = $this->model->where('key', $key)->where('cat', $category)->first();
             if (!$data) {
                 apiError('配置文件不存在');
             }
-            return $data->value;
+            return [$key=>$data->value];
         }
     }
 
