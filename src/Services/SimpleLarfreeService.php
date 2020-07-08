@@ -127,7 +127,6 @@ class SimpleLarfreeService implements BaseServiceInterface
                 $row->setAttribute($key, $val);
             }
             $row->save();
-            Log::info(getLoginUserID().'新增管理员信息',$data);
             return $row->link($this->link)->find($row->id);
         } catch (\Exception $e) {
             \DB::rollBack();

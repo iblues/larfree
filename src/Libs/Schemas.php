@@ -87,10 +87,14 @@ class Schemas
         }
 
         //再读取下Components相关. 看有没有需要处理的
+        $larfreeClass = 'Larfree\Components\Field\\'.ucfirst($config['type']);
         $class='App\Components\Field\\'.ucfirst($config['type']);
-        if(method_exists($class,'config')){
-            $config = $class::config($config);
+        if(method_exists($larfreeClass,'config')){
+            $config = $larfreeClass::config($config);
+        } elseif (method_exists($class, 'config')) {
+            $class::config($config);
         }
+
     }
 
 

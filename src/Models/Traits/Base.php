@@ -34,13 +34,14 @@ trait Base
      * 2.获取modelName方便后面使用
      * 3.加载Schemas
      * 4.根据schemas的各个值 执行initProtected
-     * @param array $attributes
+     * @param  array  $attributes
      * @throws \Exception
      */
     public function __construct(array $attributes = [])
     {
-        if (!$this->table)
+        if (!$this->table) {
             $this->table = humpToLine(basename(str_ireplace('\\', '/', get_class($this))));
+        }
 
         if (!$this->_modelName) {
             //自动提取modelName
@@ -48,27 +49,25 @@ trait Base
             $this->_modelName = str_ireplace('\\', '.', $this->_modelName);
             $tmp = explode('.', $this->_modelName);
             if (@$tmp[1]) {
-                $this->_modelName = $tmp[0] . '.' . substr($tmp[1], strlen($tmp[0]));
+                $this->_modelName = $tmp[0].'.'.substr($tmp[1], strlen($tmp[0]));
             }
         }
 
-        //静态化此变量,避免多次读取
+        //静态缓存此变量,避免多次读取
         static $schemasCache;
         if (!isset($schemasCache[$this->_modelName])) {
             $schemas = Schemas::getSchemas($this->_modelName);
+            $schemasCache[$this->_modelName]  = $schemas;
         } else {
             $schemas = $schemasCache[$this->_modelName];
         }
         $this->_schemas = $schemas;
 
-
-//        if ($this->_schemas === false) {
-//            throw new \Exception('找不到schemas配置:' . $this->_modelName);
-//        }
-        if ($this->_schemas === false)
+        if ($this->_schemas === false) {
             $this->_schemas = [];
-        else
+        } else {
             $this->_schemas = array_map([$this, 'initProtected'], $this->_schemas);
+        }
 
 
         //保存相关事件
@@ -79,16 +78,15 @@ trait Base
         $this->checkLinkOverride($this->_link);
 
         parent::__construct($attributes);
-
     }
 
     protected function checkLinkOverride($schemas)
     {
         //非debug环境. 如果method有值,就直接用.
-        if (!config('app.debug'))
+        if (!config('app.debug')) {
             return;
+        }
         foreach ($schemas as $as) {
-
             if (method_exists($this, $as)) {
                 //如果没配置过,直接跳过
                 if (!isset($this->_schemas[$as])) {
@@ -101,8 +99,8 @@ trait Base
                 $class = new \ReflectionClass($this);
                 $method = $class->getMethod($as);
                 if (!stripos($method->getDocComment(), '@override')) {
-                    $lang = static ::class . " 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
-                    $lang .= static ::class . " schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc \n";
+                    $lang = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
+                    $lang .= static ::class." schemas relationship <{$as}> has been override.If you sure to override,Please add @override to the mehotd's phpdoc \n";
                     throw  new SchemasException($lang);
                 }
             }
@@ -119,8 +117,9 @@ trait Base
      */
     public function scopeField($model, $field = '')
     {
-        if (!$field)
+        if (!$field) {
             return $model;
+        }
 
         if (!is_array($field)) {
             $field = explode(',', $field);
@@ -155,10 +154,10 @@ trait Base
 
     /**
      * 获取到对象后,想要对应的值. 暂时没用
-     * @deprecated
      * @param $model
-     * @param array $field
+     * @param  array  $field
      * @return mixed
+     * @deprecated
      * @author Blues
      */
     public function linkMissing($field = [])
@@ -169,16 +168,18 @@ trait Base
                 continue;
             }
             //多对多关系
-            if ($name)
+            if ($name) {
                 $model = $model->loadMissing($name);
+            }
         }
         foreach ($this->_doLinkCount as $k => $name) {
             if ($field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
-            if ($name)
+            if ($name) {
                 $model = $model->loadCount($name);
+            }
         }
         return $model;
     }
@@ -186,7 +187,7 @@ trait Base
     /**
      * 提前返回完整对象的配置的链表
      * @param $model
-     * @param array $field
+     * @param  array  $field
      * @return mixed
      */
     public function scopeLink($model, $field = [])
@@ -196,16 +197,18 @@ trait Base
                 continue;
             }
             //多对多关系
-            if ($name)
+            if ($name) {
                 $model = $model->with($name);
+            }
         }
         foreach ($this->_doLinkCount as $k => $name) {
             if ($field !== true && $field && !in_array($name, $field)) {
                 continue;
             }
             //多对多关系
-            if ($name)
-                $model = $model->withCount($name);
+            if ($name) {
+//                $model = $model->withCount($name);
+            }
         }
         return $model;
     }
@@ -241,7 +244,6 @@ trait Base
                 return $this->attributes[$key];
             }
         }
-
     }
 
 
@@ -252,23 +254,25 @@ trait Base
     public function getColumns()
     {
         static $Columns = [];//laravels可能会出问题
-        if (!$Columns)
+        if (!$Columns) {
             $Columns = Table::getColumns($this->getTable());
+        }
         return $Columns;
     }
 
     /**
      * 获取配置项
-     * @param string $key ='' 空为全部
+     * @param  string  $key  ='' 空为全部
      * @return array|string
      * @author Blues
      */
     public function getSchemas($key = '')
     {
-        if (!$key)
+        if (!$key) {
             return $this->_schemas;
-        else
+        } else {
             return isset($this->_schemas[$key]) ? $this->_schemas[$key] : null;
+        }
     }
 
     public function getModelName()
@@ -302,9 +306,14 @@ trait Base
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
             $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断
             //不初始化
-            if (!isset($link['init']) || $link['init'] == true)
+            if (!isset($link['init']) || $link['init'] == true) {
                 $this->_doLink[$key] = $as;
+            }
         }
+
+        //读取Component上的参数
+//        dump($schemas);
+
         //doLink是实际执行
         //_link是保存个原始的方便恢复原状
 
@@ -339,26 +348,8 @@ trait Base
                 }
             }
 
-            switch (count($parm)) {
-                case '2':
-                    $model = $this->$method($parm[1]);
-                    break;
-                case '3':
-                    $model = $this->$method($parm[1], $parm[2]);
-                    break;
-                case '4':
-                    $model = $this->$method($parm[1], $parm[2], $parm[3]);
-                    break;
-                case '5':
-                    $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4]);
-                    break;
-                case '6':
-                    $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4], $parm[5]);
-                    break;
-                case '7':
-                    $model = $this->$method($parm[1], $parm[2], $parm[3], $parm[4], $parm[5], $parm[6]);
-                    break;
-            }
+            array_shift($parm);
+            $model = $this->$method(...$parm);
 
             //额外筛选
             if ($model) {
@@ -421,9 +412,8 @@ trait Base
      * @param $data
      * @return mixed
      */
-    protected function callComponent($config, $method = 'getAttribute', &$data)
+    protected function callComponent(&$config, $method = 'getAttribute', &$data = null)
     {
-
         //常用的就不用去找了
         $blackType = ['text', 'number'];
         $type = Arr::get($config, 'type', 'text');
@@ -443,15 +433,14 @@ trait Base
         //如果有指定component字段, 用component的
         $component = ucfirst(Arr::get($config, 'component', $type));
         //扩展包内的
-        $larfreeClass = 'Larfree\Components\Field\\' . $component;
+        $larfreeClass = 'Larfree\Components\Field\\'.$component;
         //程序内的
-        $class = 'App\Components\Field\\' . $component;
+        $class = 'App\Components\Field\\'.$component;
         if (method_exists($larfreeClass, $method)) {
             $larfreeClass::$method($config, $data);
         } elseif (method_exists($class, $method)) {
             $class::$method($config, $data);
         }
-
     }
 
     public function __call($method, $parameters)
@@ -476,15 +465,16 @@ trait Base
 
     /**
      * saving事件中,用来临时存储下列以外的数据
-     * @param string $key
+     * @param  string  $key
      * @return mixed
      */
     public function getTmpSave($key = '')
     {
-        if (!$key)
+        if (!$key) {
             return $this->_tmpSave;
-        else
+        } else {
             return $this->_tmpSave[$key];
+        }
     }
 
     public function setTmpSave($key, $val)
@@ -496,13 +486,12 @@ trait Base
     /**
      * 重写
      * 让appends可以动态增减
-     * @param array $attributes
-     * @param bool $exists
+     * @param  array  $attributes
+     * @param  bool  $exists
      * @return static
      */
     public function newInstance($attributes = [], $exists = false)
     {
-
         $model = parent::newInstance($attributes, $exists);
         //解决get获取模型实例时丢失动态添加的appends
         $field = $this->getArrayableAppends();
