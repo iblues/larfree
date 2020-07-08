@@ -24,16 +24,16 @@ trait Chart
 //        $ySql="({$ySql})";//方便实现字段之见的 操作
 //        $query2 = clone $query;
 
-        $field = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
-        $query = $query->groupBy('x')->orderBy("x", "asc");
+        $field     = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
+        $query     = $query->groupBy('x')->orderBy("x", "asc");
         $countData = [];
 
 
         foreach ($y as $k => $q) {
-            $queryField = $field;
-            $newQuery = clone $query;
-            $queryField[] = DB::raw('(' . $q['sql']['field'] . ') as y');
-            $count = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
+            $queryField   = $field;
+            $newQuery     = clone $query;
+            $queryField[] = DB::raw('('.$q['sql']['field'].') as y');
+            $count        = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
 
             foreach ($count as $v) {
                 $countData[$v->x][$k] = $v->y;
@@ -45,6 +45,5 @@ trait Chart
 //        $maxDate = date('Y-m-d');
 
         return $countData;
-
     }
 }

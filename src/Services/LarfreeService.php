@@ -10,7 +10,6 @@ namespace Larfree\Services;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
@@ -18,7 +17,6 @@ use Larfree\Imports\LarfreeImport;
 use Larfree\Libs\ComponentSchemas;
 use Larfree\Repositories\LarfreeRepository;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Files\Disk;
 
 class LarfreeService implements BaseServiceInterface
 {
@@ -32,14 +30,13 @@ class LarfreeService implements BaseServiceInterface
 
     public function __construct()
     {
-
     }
 
     /**
      * 后台模式
-     * @author Blues
-     * @param bool $flag
+     * @param  bool  $flag
      * @return LarfreeService;
+     * @author Blues
      */
     public function setAdmin($flag = true)
     {
@@ -49,9 +46,9 @@ class LarfreeService implements BaseServiceInterface
 
     /**
      * 整个模型是不是待link关联
-     * @author Blues
-     * @param array $link
+     * @param  array  $link
      * @return $this
+     * @author Blues
      */
     public function link($link = [])
     {
@@ -62,23 +59,23 @@ class LarfreeService implements BaseServiceInterface
     /**
      * 获取标准模型的分页.
      * 通用接口在使用
-     * @author Blues
-     * @param array $request
-     * @param array|null $field
-     * @param int $pageSize
-     * @throws $e
+     * @param  array  $request
+     * @param  array|null  $field
+     * @param  int  $pageSize
      * @return mixed
+     * @throws $e
+     * @author Blues
      */
     public function paginate(array $request, array $field = null, $pageSize = 10)
     {
         try {
-            if ($field)
+            if ($field) {
                 $this->repository->field($field);
+            }
 
             $this->repository->link($this->link);
 
             return $this->repository->parseRequest($request)->paginate($pageSize);
-
         } catch (\Exception $e) {
             throw  $e;
         }
@@ -88,23 +85,24 @@ class LarfreeService implements BaseServiceInterface
     /**
      * 标准详情
      * 通用接口在使用
-     * @author Blues
      * @param $id
-     * @param array $request
-     * @param array|null $field
-     * @throws \Exception
+     * @param  array  $request
+     * @param  array|null  $field
      * @return model
+     * @throws \Exception
+     * @author Blues
      */
     public function detail($id, $request, array $field = null)
     {
         try {
-            if ($field)
+            if ($field) {
                 $this->repository->field($field);
-            if($id === 'latest'){
+            }
+            if ($id === 'latest') {
                 return $this->repository->link($this->link)->latest()->first();
-            }elseif($id ==='oldest'){
+            } elseif ($id === 'oldest') {
                 return $this->repository->link($this->link)->oldest()->first();
-            }else{
+            } else {
                 return $this->repository->link($this->link)->find($id);
             }
         } catch (\Exception $e) {
@@ -116,10 +114,10 @@ class LarfreeService implements BaseServiceInterface
     /**
      * 标准新增
      * 通用接口在使用
-     * @author Blues
      * @param $data
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function addOne($data)
     {
@@ -136,24 +134,24 @@ class LarfreeService implements BaseServiceInterface
     /**
      * 标准更新
      * 通用接口在使用
-     * @author Blues
      * @param $data
      * @param $id
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function updateOne($data, $id)
     {
         try {
-            if($id === 'latest'){
+            if ($id === 'latest') {
                 $row = $this->repository->link($this->link)->latest()->first();
-                $id = $row->getAttribute('id', 0);
-            }elseif($id ==='oldest'){
+                $id  = $row->getAttribute('id', 0);
+            } elseif ($id === 'oldest') {
                 $row = $this->repository->link($this->link)->oldest()->first();
-                $id = $row->getAttribute('id', 0);
+                $id  = $row->getAttribute('id', 0);
             }
             if ($id == 0) {
-                apiError('Not Found Record',null,404);
+                apiError('Not Found Record', null, 404);
             }
             $this->repository->update($data, $id);
             //返回带完整格式的
@@ -162,17 +160,16 @@ class LarfreeService implements BaseServiceInterface
             DB::rollBack();
             throw $e;
         }
-
     }
 
     /**
      * 标准删除
      * 通用接口在使用
      * 如果$id是数组,那么支持批量
-     * @author Blues
      * @param $id
      * @return mixed
      * @throws \Exception
+     * @author Blues
      */
     public function delete($id)
     {
@@ -181,13 +178,12 @@ class LarfreeService implements BaseServiceInterface
         } catch (\Exception $e) {
             throw $e;
         }
-
     }
 
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      * @deprecated
      */
     static function new()
@@ -196,17 +192,17 @@ class LarfreeService implements BaseServiceInterface
     }
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      */
-    static function make(){
+    static function make()
+    {
         return app(static::class);
     }
 
 
     public function chart($chart, $request)
     {
-
         $this->repository->link($this->link);
         //处理筛选条件,排序重置为空
         $request['@sort'] = '';
@@ -219,17 +215,17 @@ class LarfreeService implements BaseServiceInterface
 
     /**
      * 基于配置的导出
-     * @author Blues
-     * @param $model = test.test_detail
-     * @param $module = export
+     * @param $model  = test.test_detail
+     * @param $module  = export
      * @param $request
-     * @throws \Exception
      * @return string;
+     * @throws \Exception
+     * @author Blues
      */
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list = $this->repository->parseRequest($request)->limit(2000)->get();
+        $list    = $this->repository->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
@@ -243,20 +239,20 @@ class LarfreeService implements BaseServiceInterface
 
     /**
      * 基于配置的导入
-     * @author Blues
-     * @param $model = test.test
-     * @param string $module
-     * @param $urlFile http://xxxx 远程文件
+     * @param $model  = test.test
+     * @param  string  $module
+     * @param $urlFile  http://xxxx 远程文件
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Larfree\Exceptions\ApiException
+     * @author Blues
      */
     public function import($model, $module = 'import', $urlFile)
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $client = new Client();
+        $client  = new Client();
         try {
-            $res = $client->request('GET', $urlFile);
-            $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
+            $res      = $client->request('GET', $urlFile);
+            $fileName = 'tmp/'.time().'.'.substr($urlFile, strrpos($urlFile, '.') + 1);
             if (Storage::put($fileName, $res->getBody())) {
                 Excel::import(new LarfreeImport($schemas, $this->repository), $fileName);
             }

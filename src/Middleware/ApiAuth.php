@@ -2,8 +2,8 @@
 
 namespace Larfree\Middleware;
 
-use Closure;
 use App\Models\Common\CommonUser;
+use Closure;
 use Illuminate\Support\Facades\Auth;
 use Larfree\Exceptions\ApiException;
 
@@ -12,9 +12,9 @@ class ApiAuth
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param int $is_force 是否强制登录
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  int  $is_force  是否强制登录
      * @return mixed
      * @throws \Larfree\Exceptions\ApiException
      */
@@ -22,7 +22,7 @@ class ApiAuth
     {
         // 开发者模式
         if (env('DEF_USER')) {
-            $user = CommonUser::find(getLoginUserID());
+            $user                    = CommonUser::find(getLoginUserID());
             app()->current_auth_user = $user;// 放入实例中，同请求内复用
             return $next($request);
         } else {
@@ -38,8 +38,9 @@ class ApiAuth
             } catch (ApiException $e) {
                 throw $e;
             } catch (\Exception $e) {
-                if ($is_force)
+                if ($is_force) {
                     apiError('登录失效,请重新登录', null, 401);
+                }
             }
 
             return $next($request);

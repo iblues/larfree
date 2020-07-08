@@ -69,27 +69,27 @@ class SystemConfigService
      */
     public function refreshCache()
     {
-        $file = config_path('/system.php');
-        $data = $this->model->where('cat','!=','plane')->get()->toArray();
-        $group=[];
-        foreach ($data as $val){
-            $group[$val['cat']][$val['key']]=$val;
+        $file  = config_path('/system.php');
+        $data  = $this->model->where('cat', '!=', 'plane')->get()->toArray();
+        $group = [];
+        foreach ($data as $val) {
+            $group[$val['cat']][$val['key']] = $val;
         }
 
         $strings = [];
-        foreach ($group as $key=>$fields){
+        foreach ($group as $key => $fields) {
             $string = "    '{$key}' => [\r\n";
 
-            foreach ($fields as $field){
-                $string.="        \"{$field['key']}\" => json_decode('".json_encode($field["value"])."',1),"."\r\n";
+            foreach ($fields as $field) {
+                $string .= "        \"{$field['key']}\" => json_decode('".json_encode($field["value"])."',1),"."\r\n";
             }
 
-            $string .= "    ]";
-            $strings[]=$string;
+            $string    .= "    ]";
+            $strings[] = $string;
         }
-        $strings = implode(",    \r\n",$strings);
+        $strings = implode(",    \r\n", $strings);
 
-        $content=<<<CONTENT
+        $content = <<<CONTENT
 <?php
 /**
  * larfree的系统配置. 生成到system文件中. 方便调用
@@ -99,7 +99,7 @@ return [
 ];
 CONTENT;
 
-        file_put_contents($file,$content);
+        file_put_contents($file, $content);
         //正式环境. 保存就刷新缓存
         if (!config('app.debug')) {
             Artisan::call('config:cache');
@@ -134,7 +134,7 @@ CONTENT;
             if (!$data) {
                 apiError('配置文件不存在');
             }
-            return [$key=>$data->value];
+            return [$key => $data->value];
         }
     }
 

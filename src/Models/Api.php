@@ -3,7 +3,6 @@
 namespace Larfree\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Larfree\Models\Traits\AdvWhere;
 use Larfree\Models\Traits\Base;
 use Larfree\Models\Traits\Chart;
 use Watson\Rememberable\Rememberable;

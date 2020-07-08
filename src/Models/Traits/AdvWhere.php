@@ -3,7 +3,6 @@
 namespace Larfree\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 /**
@@ -19,17 +18,17 @@ trait AdvWhere
     /**
      *
      * 同一个字段及多个字段组合查询
-     * @param Builder $model
+     * @param  Builder  $model
      * @param $request
      * @return array
      */
     public function scopeParseRequest(Builder $model, $request)
     {
-
         $query = $request;
 //        $where = [];
-        if (!$query)
+        if (!$query) {
             return $model;
+        }
 //        $columns = $this->model->getColumns();
 
         foreach ($query as $key => $val) {
@@ -38,14 +37,12 @@ trait AdvWhere
         }
 
         if ($sort = Arr::get($request, '@sort', null)) {
-
-            $sort = explode('.', $sort,3);
-            if(count($sort)>2){
-                $model->orderByRelationship($sort[0],$sort[1],$sort[2]);
-            }else{
+            $sort = explode('.', $sort, 3);
+            if (count($sort) > 2) {
+                $model->orderByRelationship($sort[0], $sort[1], $sort[2]);
+            } else {
                 $model->orderBy($sort[0], $sort[1]);
             }
-
         } else {
             $model->orderBy('id', 'desc');
         }
@@ -69,13 +66,13 @@ trait AdvWhere
      */
     public function scopeAdvWhere(&$model, $key, $val)
     {
-
         $mode_array = ['|', '$', '!'];
 
         $eq_array = ['>', '>=', '<', '<='];
 
-        if (!$val)
+        if (!$val) {
             return $model;
+        }
 
         //由于之前是key$=name的形式.这里变更下
         $mode = mb_substr($val, 0, 1, 'utf-8');
@@ -93,19 +90,20 @@ trait AdvWhere
 
         //真实的key名字
         $real_key = $key;
-        $key = $key . $mode;
-        $val = substr($val, 1);//处理为之前的模式
+        $key      = $key.$mode;
+        $val      = substr($val, 1);//处理为之前的模式
 
 //        //如果字段中存在| 代表多字段.就or的关系
         if (stripos($key, '|') !== false && stripos($key, '|') != strlen($key) - 1) {
-            if (!in_array($mode, $mode_array))
+            if (!in_array($mode, $mode_array)) {
                 apiError('复杂筛选模式必须$,|,!开头,如id|title');
+            }
             $multi = explode('|', $real_key);
 
             $model->where(function ($query) use ($val, $mode, $multi) {
                 foreach ($multi as $k) {
                     $query->orWhere(function ($query) use ($k, $val, $mode) {
-                        $query->advWhere($k, $mode . $val, $query);
+                        $query->advWhere($k, $mode.$val, $query);
                     });
                 }
             });
@@ -115,33 +113,32 @@ trait AdvWhere
 
 
         //如果存在点.说明是链表的 进行链表处理
-        if(stripos($real_key,'.')){
-            $explode = explode('.',$real_key,2);
-            $model->whereHas($explode[0],function ($query)use($explode,$val){
-                $query->advWhere($explode[1],$val);
+        if (stripos($real_key, '.')) {
+            $explode = explode('.', $real_key, 2);
+            $model->whereHas($explode[0], function ($query) use ($explode, $val) {
+                $query->advWhere($explode[1], $val);
             });
             return $model;
         }
 
 
-
-
         //&user:name$=123&user:id|=1
         if (stripos($key, ':') !== false) {
-            if (!in_array($mode, $mode_array))
+            if (!in_array($mode, $mode_array)) {
                 apiError('复杂筛选模式必须,|,!结尾,如id|title');
+            }
             $multi = explode(':', $real_key);
             if ($mode == '|') {
                 $model->orWhereHas($multi[0], function ($query) use ($multi, $val, $mode) {
-                    $query->advWhere($multi[1], $mode . $val, $query);
+                    $query->advWhere($multi[1], $mode.$val, $query);
                 });
             } elseif ($mode == '$') {
                 $model->whereHas($multi[0], function ($query) use ($multi, $val, $mode) {
-                    $query->advWhere($multi[1], $mode . $val, $query);
+                    $query->advWhere($multi[1], $mode.$val, $query);
                 });
             } elseif ($mode == '!') {
                 $model->whereDoesntHave($multi[0], function ($query) use ($multi, $val, $mode) {
-                    $query->advWhere($multi[1], $mode . $val, $query);
+                    $query->advWhere($multi[1], $mode.$val, $query);
                 });
             }
             return $model;
@@ -159,7 +156,7 @@ trait AdvWhere
                     $multi = explode(',', $val);
                     $model->Where(function ($query) use ($real_key, $multi, $val, $mode) {
                         foreach ($multi as $k) {
-                            $query->advWhere($real_key, '$' . $k);
+                            $query->advWhere($real_key, '$'.$k);
                         }
                     });
                     return $model;
@@ -170,7 +167,7 @@ trait AdvWhere
                     $multi = explode('|', $val);
                     $model->Where(function ($query) use ($real_key, $multi, $val, $mode) {
                         foreach ($multi as $k) {
-                            $query->advWhere($real_key, '|' . $k);
+                            $query->advWhere($real_key, '|'.$k);
                         }
                     });
                     return $model;
@@ -237,7 +234,7 @@ trait AdvWhere
                     $multi = explode(',', $val);
                     $model->orWhere(function ($query) use ($real_key, $multi, $val, $mode) {
                         foreach ($multi as $k) {
-                            $query->advWhere($real_key, '$' . $k);
+                            $query->advWhere($real_key, '$'.$k);
                         }
                     });
                     return $model;
@@ -248,7 +245,7 @@ trait AdvWhere
                     $multi = explode('|', $val);
                     $model->orWhere(function ($query) use ($real_key, $multi, $val, $mode) {
                         foreach ($multi as $k) {
-                            $query->advWhere($real_key, '|' . $k);
+                            $query->advWhere($real_key, '|'.$k);
                         }
                     });
                     return $model;

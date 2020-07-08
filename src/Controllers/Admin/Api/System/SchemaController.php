@@ -21,6 +21,7 @@ class SchemaController extends Controller
 {
 
     protected $service;
+
     public function __construct(SchemaService $service)
     {
         $this->service = $service;

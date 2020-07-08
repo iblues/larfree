@@ -13,14 +13,12 @@ use Route;
 class Routes
 {
     /**
-     * @param string $type
+     * @param  string  $type
      * @return array
      * @author Blues
      */
-    static public function getRoutes($type='')
+    static public function getRoutes($type = '')
     {
-
-
         $routes = Route::getRoutes();
         dump($routes);
         $apiRoutes = [];
@@ -36,17 +34,15 @@ class Routes
         }
 
         return $apiRoutes = self::PareseRoutes($apiRoutes);
-
-
     }
 
     static public function PareseRoutes($apiRoutes)
     {
         $data = [];
         foreach ($apiRoutes as $route) {
-            $url = $route->uri;
+            $url    = $route->uri;
             $method = $route->methods[0];
-            $as = @$route->action['controller'];
+            $as     = @$route->action['controller'];
             $data[] = ['as' => $as, 'method' => $method, 'url' => $url];
         }
         return $data;

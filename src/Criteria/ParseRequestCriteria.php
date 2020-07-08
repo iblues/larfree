@@ -15,8 +15,8 @@ class ParseRequestCriteria implements CriteriaInterface
     /**
      * Apply criteria in query repository
      *
-     * @param string              $model
-     * @param RepositoryInterface $repository
+     * @param  string  $model
+     * @param  RepositoryInterface  $repository
      *
      * @return mixed
      */

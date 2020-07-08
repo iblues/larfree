@@ -11,7 +11,6 @@ namespace Larfree\Services;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Larfree\Exports\LarfreeExport;
 use Larfree\Imports\LarfreeImport;
@@ -34,7 +33,7 @@ class SimpleLarfreeService implements BaseServiceInterface
 
     /**
      * 后台模式
-     * @param bool $flag
+     * @param  bool  $flag
      * @return LarfreeService;
      * @author Blues
      */
@@ -46,7 +45,7 @@ class SimpleLarfreeService implements BaseServiceInterface
 
     /**
      * 整个模型是不是待link关联
-     * @param array $link
+     * @param  array  $link
      * @return $this
      * @author Blues
      */
@@ -59,9 +58,9 @@ class SimpleLarfreeService implements BaseServiceInterface
     /**
      * 获取标准模型的分页.
      * 通用接口在使用
-     * @param array $request
-     * @param array|null $field
-     * @param int $pageSize
+     * @param  array  $request
+     * @param  array|null  $field
+     * @param  int  $pageSize
      * @return mixed
      * @throws $e
      * @author Blues
@@ -69,11 +68,11 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function paginate(array $request, array $field = null, $pageSize = 10)
     {
         try {
-            if ($field)
+            if ($field) {
                 $this->model = $this->model->field($field);
+            }
 
             return $this->model->link($this->link)->parseRequest($request)->paginate($pageSize);
-
         } catch (\Exception $e) {
             throw  $e;
         }
@@ -83,9 +82,9 @@ class SimpleLarfreeService implements BaseServiceInterface
     /**
      * 标准详情
      * 通用接口在使用
-     * @param $id = 0 的时候 最倒叙第一条
-     * @param array $request
-     * @param array|null $field
+     * @param $id  = 0 的时候 最倒叙第一条
+     * @param  array  $request
+     * @param  array|null  $field
      * @return model
      * @throws \Exception
      * @author Blues
@@ -93,9 +92,9 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function detail($id, $request, array $field = null)
     {
         try {
-
-            if ($field)
+            if ($field) {
                 $this->model = $this->model->field($field);
+            }
 
             if ($id === 'latest') {
                 return $this->model->link($this->link)->latest()->first();
@@ -104,7 +103,6 @@ class SimpleLarfreeService implements BaseServiceInterface
             } else {
                 return $this->model->link($this->link)->find($id);
             }
-
         } catch (\Exception $e) {
             throw $e;
         }
@@ -146,14 +144,13 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function updateOne($data, $id)
     {
         try {
-
             //如果id为0 就取最新的一条.
             if ($id === 'latest') {
                 $row = $this->model->link($this->link)->latest()->first();
-                $id = $row->getAttribute('id', 0);
+                $id  = $row->getAttribute('id', 0);
             } elseif ($id === 'oldest') {
                 $row = $this->model->link($this->link)->oldest()->first();
-                $id = $row->getAttribute('id', 0);
+                $id  = $row->getAttribute('id', 0);
             }
             if ($id == 0) {
                 apiError('Not Found Record', null, 404);
@@ -162,7 +159,7 @@ class SimpleLarfreeService implements BaseServiceInterface
 
             //update不会触发一些函数. 用save代替
             $row = $this->model->link($this->link)->where('id', $id)->first();
-            if(!$row){
+            if (!$row) {
                 apiError('记录不存在');
             }
             foreach ($data as $key => $val) {
@@ -179,7 +176,6 @@ class SimpleLarfreeService implements BaseServiceInterface
             \DB::rollBack();
             throw $e;
         }
-
     }
 
     /**
@@ -198,7 +194,6 @@ class SimpleLarfreeService implements BaseServiceInterface
         } catch (\Exception $e) {
             throw $e;
         }
-
     }
 
 
@@ -224,7 +219,6 @@ class SimpleLarfreeService implements BaseServiceInterface
 
     public function chart($chart, $request)
     {
-
         //处理筛选条件,排序重置为空
         $request['@sort'] = '';
         $this->model->parseRequest($request);
@@ -236,8 +230,8 @@ class SimpleLarfreeService implements BaseServiceInterface
 
     /**
      * 基于配置的导出
-     * @param $model = test.test_detail
-     * @param $module = export
+     * @param $model  = test.test_detail
+     * @param $module  = export
      * @param $request
      * @return string;
      * @throws \Exception
@@ -246,7 +240,7 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list = $this->model->link($this->link)->parseRequest($request)->limit(2000)->get();
+        $list    = $this->model->link($this->link)->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
 //            $excel = [];
@@ -260,9 +254,9 @@ class SimpleLarfreeService implements BaseServiceInterface
 
     /**
      * 基于配置的导入
-     * @param $model = test.test
-     * @param string $module
-     * @param $urlFile http://xxxx 远程文件
+     * @param $model  = test.test
+     * @param  string  $module
+     * @param $urlFile  http://xxxx 远程文件
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Larfree\Exceptions\ApiException
      * @author Blues
@@ -270,10 +264,10 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function import($model, $module = 'import', $urlFile)
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $client = new Client();
+        $client  = new Client();
         try {
-            $res = $client->request('GET', $urlFile);
-            $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
+            $res      = $client->request('GET', $urlFile);
+            $fileName = 'tmp/'.time().'.'.substr($urlFile, strrpos($urlFile, '.') + 1);
             if (Storage::put($fileName, $res->getBody())) {
                 Excel::import(new LarfreeImport($schemas, $this->model->link($this->link)), $fileName);
             }

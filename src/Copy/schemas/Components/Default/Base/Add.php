@@ -1,5 +1,6 @@
 <?php
-return function($data,$component,$target) {
+
+return function ($data, $component, $target) {
     $def = [
         'fields' => [],
         'class' => '',
@@ -8,5 +9,5 @@ return function($data,$component,$target) {
             'api' => 'POST:///{$COMPONENT_API}',
         ]
     ];
-    return array_merges($def,$data);
+    return array_merges($def, $data);
 };

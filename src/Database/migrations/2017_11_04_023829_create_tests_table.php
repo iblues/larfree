@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTestsTable extends Migration
 {
@@ -21,8 +21,8 @@ class CreateTestsTable extends Migration
 //            $table->unsignedInteger('select')->comment('普通下拉');
             $table->text('upload')->nullable();//上传的图片  用json存
             $table->text('file')->nullable();//上传的文件  用json存
-            $table->decimal('price',10,2)->index()->default(0);// 10位,10个小数
-            $table->float('float',10,2)->default(0);//随机浮点 10位,10个小数
+            $table->decimal('price', 10, 2)->index()->default(0);// 10位,10个小数
+            $table->float('float', 10, 2)->default(0);//随机浮点 10位,10个小数
             $table->ipAddress('ip')->nullable();//ip
             $table->timestamp('timestamp')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('datetime')->nullable();

@@ -5,8 +5,6 @@ namespace Larfree\Console\Commands;
 use App\Models\Admin\AdminNav;
 use App\Models\Common\CommonUser;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Larfree\Libs\Make;
 use Larfree\Libs\Schemas;
 use Larfree\Models\System\SystemDictionary;
 
@@ -39,22 +37,25 @@ class LarfreeDictionary extends Command
     public function handle()
     {
         $schemas = Schemas::getAllSchemasConfig();
-        foreach($schemas as $schema){
-            array_walk($schema,array($this,'model'));
+        foreach ($schemas as $schema) {
+            array_walk($schema, array($this, 'model'));
         }
     }
 
-    public function model($model){
-        $modelName  = lineToHump( $model['key']);
-        foreach ($model['detail'] as $k=>$field){
-            $insert = [];
-            $insert['key']=$k;
-            $insert['model']=$modelName;
-            $name = $field['name'];
-            if(@$field['tip'] )
+    public function model($model)
+    {
+        $modelName = lineToHump($model['key']);
+        foreach ($model['detail'] as $k => $field) {
+            $insert          = [];
+            $insert['key']   = $k;
+            $insert['model'] = $modelName;
+            $name            = $field['name'];
+            if (@$field['tip']) {
                 $name .= ' | '.$field['tip'];
-            if(@$field['option'] )
-                $name .= ' | '.json_encode($field['option'],JSON_PRETTY_PRINT);
+            }
+            if (@$field['option']) {
+                $name .= ' | '.json_encode($field['option'], JSON_PRETTY_PRINT);
+            }
 
             $insert['value'] = $name;
             SystemDictionary::firstOrCreate($insert);

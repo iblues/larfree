@@ -4,7 +4,7 @@
  * @param $filename
  * @param $width
  * @param $height
- * @param int $mode
+ * @param  int  $mode
  * @return mixed
  */
 
@@ -37,7 +37,8 @@ if (!function_exists('conf')) {
             $data = $data->toArray();
             return Arr::pluck($data, 'value', 'key');
         } else {
-            $data = \Larfree\Models\System\SystemConfig::select(['key', 'value'])->where('cat', $cat)->where('key', $name)->first();
+            $data = \Larfree\Models\System\SystemConfig::select(['key', 'value'])->where('cat', $cat)->where('key',
+                $name)->first();
             return $data->value;
         }
     }
@@ -45,7 +46,7 @@ if (!function_exists('conf')) {
 /**
  * 用来处理
  * @param $str
- * @param bool $mode
+ * @param  bool  $mode
  * @return mixed
  */
 if (!function_exists('larfree_json_decode')) {
@@ -63,14 +64,15 @@ if (!function_exists('larfree_json_decode')) {
 /**
  * 下划线转驼峰
  * @param $str
- * @param bool $ucfirst
+ * @param  bool  $ucfirst
  * @return string
  */
 if (!function_exists('lineToHump')) {
     function lineToHump($str, $ucfirst = true)
     {
-        while (($pos = strpos($str, '_')) !== false)
-            $str = substr($str, 0, $pos) . ucfirst(substr($str, $pos + 1));
+        while (($pos = strpos($str, '_')) !== false) {
+            $str = substr($str, 0, $pos).ucfirst(substr($str, $pos + 1));
+        }
 
         return $ucfirst ? ucfirst($str) : $str;
     }
@@ -78,7 +80,7 @@ if (!function_exists('lineToHump')) {
 /**
  * 驼峰转下划线
  * @param $str
- * @param bool $ucfirst
+ * @param  bool  $ucfirst
  * @return string
  */
 if (!function_exists('humpToLine')) {
@@ -86,7 +88,7 @@ if (!function_exists('humpToLine')) {
     {
         $str = lcfirst($str);
         $str = preg_replace_callback('/([A-Z]{1})/', function ($matches) {
-            return '_' . strtolower($matches[0]);
+            return '_'.strtolower($matches[0]);
         }, $str);
         return $str;
     }
@@ -105,7 +107,7 @@ if (!function_exists('getClassName')) {
 
 /**
  * 获取用户id,也可以指定
- * @param string $uid
+ * @param  string  $uid
  * @return mixed
  */
 if (!function_exists('getLoginUserID')) {
@@ -120,8 +122,9 @@ if (!function_exists('getLoginUserID')) {
             return $id;
         } else {
             $loginid = \Auth()->id();
-            if (!$loginid)
+            if (!$loginid) {
                 return @$_ENV['DEF_USER'];
+            }
             return $loginid;
         }
     }
@@ -129,7 +132,7 @@ if (!function_exists('getLoginUserID')) {
 
 /**
  * 获取用户id,也可以指定
- * @param string $uid
+ * @param  string  $uid
  * @return mixed
  */
 if (!function_exists('getLoginUser')) {
@@ -141,9 +144,9 @@ if (!function_exists('getLoginUser')) {
 
 /**
  * api中报错,抛出异常
- * @param string $msg
- * @param array $data
- * @param int $code
+ * @param  string  $msg
+ * @param  array  $data
+ * @param  int  $code
  * @throws \Larfree\Exceptions\ApiException
  */
 if (!function_exists('apiError')) {
@@ -154,12 +157,11 @@ if (!function_exists('apiError')) {
 }
 
 
-
 /**
  * 请求参数错误导致的异常
- * @param string $msg
- * @param array $data
- * @param int $code
+ * @param  string  $msg
+ * @param  array  $data
+ * @param  int  $code
  * @throws \Larfree\Exceptions\ApiException
  */
 if (!function_exists('requestError')) {
@@ -170,13 +172,12 @@ if (!function_exists('requestError')) {
 }
 
 
-
 /**
  * 把返回的数据集转换成Tree
  * @access public
- * @param array $list 要转换的数据集
- * @param string $pid parent标记字段
- * @param string $level level标记字段
+ * @param  array  $list  要转换的数据集
+ * @param  string  $pid  parent标记字段
+ * @param  string  $level  level标记字段
  * @return array
  */
 if (!function_exists('listToTree')) {
@@ -197,7 +198,7 @@ if (!function_exists('listToTree')) {
                     $tree[] =& $list[$key];
                 } else {
                     if (isset($refer[$parentId])) {
-                        $parent =& $refer[$parentId];
+                        $parent           =& $refer[$parentId];
                         $parent[$child][] =& $list[$key];
                     }
                 }
@@ -212,14 +213,15 @@ if (!function_exists('listToTree')) {
  * @param $filename
  * @param $width
  * @param $height
- * @param int $mode -1 不裁剪
+ * @param  int  $mode  -1 不裁剪
  * @return mixed
  */
 if (!function_exists('getThumb')) {
     function getThumb($filename, $width, $height, $mode = 0)
     {
-        if (!$filename)
+        if (!$filename) {
             return '';
+        }
         $type = config('filesystems.file_type', 'file');
         switch ($type) {
             case 'qiniu':
@@ -227,18 +229,20 @@ if (!function_exists('getThumb')) {
                 if ($mode == '-1') {
                     return $disk->downloadUrl($filename)->__toString();//裁剪
                 } else {
-                    return $disk->imagePreviewUrl($filename, "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
+                    return $disk->imagePreviewUrl($filename,
+                        "imageView2/{$mode}/w/{$width}/h/{$height}")->__toString();//裁剪
                 }
             case 'oss':
                 $url = config('filesystems.file_domain');
                 if ($mode == -1) {
-                    return $url . str_replace('//', '/', '/' . $filename);
+                    return $url.str_replace('//', '/', '/'.$filename);
                 } else {
-                    return $url . str_replace('//', '/', '/' . $filename) . '?x-oss-process=image/resize,l_' . $width . '&x-oss-process=image/crop,w_' . $width . ',h_' . $height . ',g_center';
+                    return $url.str_replace('//', '/',
+                            '/'.$filename).'?x-oss-process=image/resize,l_'.$width.'&x-oss-process=image/crop,w_'.$width.',h_'.$height.',g_center';
                 }
                 break;
             default:
-                return config('filesystems.file_domain') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
+                return config('filesystems.file_domain').'/'.$filename."?imageView2/{$mode}/w/{$width}/h/{$height}";
                 break;
         }
     }
@@ -265,11 +269,11 @@ if (!function_exists('dirToArray')) {
     function dirToArray($dir)
     {
         $result = array();
-        $cdir = scandir($dir);
+        $cdir   = scandir($dir);
         foreach ($cdir as $key => $value) {
             if (!in_array($value, array(".", ".."))) {
-                if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
-                    $result[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
+                if (is_dir($dir.DIRECTORY_SEPARATOR.$value)) {
+                    $result[$value] = dirToArray($dir.DIRECTORY_SEPARATOR.$value);
                 } else {
                     $result[] = $value;
                 }
@@ -290,7 +294,6 @@ if (!function_exists('array_merges')) {
     function array_merges(array $array1, $array2)
     {
         foreach ($array1 as $key => $var) {
-
             if (is_array($var)) {
                 //如果有值,并且不是null
                 if (isset($array2[$key]) && !is_null($array2[$key])) {
@@ -319,14 +322,14 @@ if (!function_exists('array_merges')) {
 if (!function_exists('schemas_path')) {
     function schemas_path($path = '')
     {
-        $path = $path ? '/' . $path : $path;
-        return base_path() . '/schemas' . $path;
+        $path = $path ? '/'.$path : $path;
+        return base_path().'/schemas'.$path;
     }
 }
 
 if (!function_exists('config_path')) {
     function config_path()
     {
-        return dirname(__FILE__) . '/Copy/config';
+        return dirname(__FILE__).'/Copy/config';
     }
 }

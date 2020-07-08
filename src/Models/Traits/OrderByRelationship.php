@@ -20,24 +20,22 @@ trait OrderByRelationship
 
     /**
      * @param $query
-     * @param string $relationship = user.name
-     * @param string $sort = desc
+     * @param  string  $relationship  = user.name
+     * @param  string  $sort  = desc
      * @throws \Exception
      * @author Blues
      *
      */
     public function scopeOrderByRelationship($query, $relationship, $key, $sort = 'desc')
     {
-
         if ($query->getModel()->relationLoaded($relationship)) {
-
             $model = $this->$relationship();
             if ($model instanceof HasOne) {
                 $parent_column = $model->getLocalKeyName();
-                $child_column = $model->getForeignKeyName();
+                $child_column  = $model->getForeignKeyName();
             } elseif ($model instanceof BelongsTo) {
                 $parent_column = $model->getForeignKeyName();
-                $child_column = $model->getOwnerKeyName();
+                $child_column  = $model->getOwnerKeyName();
             } else {
                 throw new \Exception('Relationship must be HasOne or BelongsTo');
             }

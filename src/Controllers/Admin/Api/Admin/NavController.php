@@ -3,11 +3,12 @@
  * Larfree Api类
  * @author blues
  */
+
 namespace Larfree\Controllers\Admin\Api\Admin;
 
-use Larfree\Services\Admin\AdminNavService;
 use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Larfree\Controllers\AdminApisController as Controller;
+use Larfree\Services\Admin\AdminNavService;
 
 class NavController extends Controller
 {
@@ -15,7 +16,8 @@ class NavController extends Controller
      * @var AdminNavService
      */
     public $service;
-    public function __construct( AdminNavService $service )
+
+    public function __construct(AdminNavService $service)
     {
         $this->service = $service;
         $this->service->setAdmin();
@@ -31,8 +33,8 @@ class NavController extends Controller
      *     @ATU\Response({"data":{{"id":true}} })
      * )
      */
-    public function tree(){
-
+    public function tree()
+    {
         $nav = $this->service->getTreeNav();
         return $nav;
     }

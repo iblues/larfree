@@ -13,16 +13,16 @@ class AdminApisController extends ApisController
 
     public function index(Request $request)
     {
-
-        return $this->service->link()->paginate($request->toArray(), $request->get('@columns'), $request->get('pageSize'));
+        return $this->service->link()->paginate($request->toArray(), $request->get('@columns'),
+            $request->get('pageSize'));
     }
 
-    public function import(Request $request,$module = 'import')
+    public function import(Request $request, $module = 'import')
     {
         //批量导出
         $file = $request->post('file');
         if ($file) {
-            return $this->service->link()->import($this->modelName,$module, $file);
+            return $this->service->link()->import($this->modelName, $module, $file);
         } else {
             apiError('file文件不存在');
         }
@@ -35,9 +35,8 @@ class AdminApisController extends ApisController
 
     public function export(Request $request, $module = 'export')
     {
-
         //批量导出
-        return $this->service->link()->export($this->modelName,$module, $request->toArray());
+        return $this->service->link()->export($this->modelName, $module, $request->toArray());
     }
 
 }

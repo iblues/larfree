@@ -29,7 +29,6 @@ class LarfreeMigrate extends Command
     public function __construct()
     {
         parent::__construct();
-
     }
 
     /**
@@ -39,26 +38,24 @@ class LarfreeMigrate extends Command
      */
     public function handle()
     {
-
         $dir = scandir(base_path('database/migrations/'));
         echo "Which folder will you want to do?\r\n";
-        foreach($dir as $key => $path){
-            if($key == 0){
-                echo $key," : Cancel\r\n";
-            }elseif($key == 1){
-                echo $key," : All\r\n";
-            }else{
-                echo $key,' : ',$path."\r\n";
+        foreach ($dir as $key => $path) {
+            if ($key == 0) {
+                echo $key, " : Cancel\r\n";
+            } elseif ($key == 1) {
+                echo $key, " : All\r\n";
+            } else {
+                echo $key, ' : ', $path."\r\n";
             }
-
         }
         $number = $this->ask('Please enter a number');
 
         //遍历指定文件夹
-        if($number>1){
-            echo $path = '/database/migrations/'.$dir[$number],"\r\n";
+        if ($number > 1) {
+            echo $path = '/database/migrations/'.$dir[$number], "\r\n";
             $this->call('migrate', [
-                '--path' =>$path,
+                '--path' => $path,
             ]);
         }
 
@@ -67,17 +64,15 @@ class LarfreeMigrate extends Command
         Cache::tags(['table_column'])->flush();
 
         //遍历全部
-        if($number==1){
-            foreach($dir as $key => $path){
-                if($key>1){
-                    echo $path = '/database/migrations/'.$dir[$key],"\r\n";
+        if ($number == 1) {
+            foreach ($dir as $key => $path) {
+                if ($key > 1) {
+                    echo $path = '/database/migrations/'.$dir[$key], "\r\n";
                     $this->call('migrate', [
-                        '--path' =>$path,
+                        '--path' => $path,
                     ]);
                 }
             }
         }
-
-
     }
 }

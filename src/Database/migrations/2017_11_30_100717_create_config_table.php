@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateConfigTable extends Migration
 {
@@ -19,7 +19,7 @@ class CreateConfigTable extends Migration
             $table->string('cat')->comment('分类')->index();
             $table->string('type')->comment('类型')->default('');
             $table->text('value')->comment('内容');
-            $table->unique(['key','cat']);
+            $table->unique(['key', 'cat']);
             $table->timestamps();
         });
     }

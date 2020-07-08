@@ -5,10 +5,8 @@ namespace Larfree\Console\Commands;
 use App\Models\Common\CommonUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Event;
-use Larfree\Libs\Make;
 use Larfree\Models\Admin\AdminNav;
 use LarfreePermission\Models\User\UserAdmin;
-use function GuzzleHttp\Psr7\str;
 
 class LarfreeInstall extends Command
 {
@@ -38,9 +36,8 @@ class LarfreeInstall extends Command
      */
     public function handle()
     {
-
         $arguments = $this->arguments();
-        $replace = $arguments['replace'];
+        $replace   = $arguments['replace'];
         $this->createAdmin();
         $this->createNav();
 
@@ -58,7 +55,7 @@ class LarfreeInstall extends Command
             'module' => '',
             'status' => 1,
         ];
-        AdminNav::firstOrCreate(['url'=>$nav['url']],$nav);
+        AdminNav::firstOrCreate(['url' => $nav['url']], $nav);
         $nav = [
             'name' => '用户管理',
             'url' => '/curd/common.user/',
@@ -66,7 +63,7 @@ class LarfreeInstall extends Command
             'module' => '',
             'status' => 1,
         ];
-        AdminNav::firstOrCreate(['url'=>$nav['url']],$nav);
+        AdminNav::firstOrCreate(['url' => $nav['url']], $nav);
     }
 
     private function createAdmin()
@@ -81,7 +78,7 @@ class LarfreeInstall extends Command
             ]);
 
 
-        Event::dispatch('larfree.install.admin',['user'=>$user]);
+        Event::dispatch('larfree.install.admin', ['user' => $user]);
     }
 
 }

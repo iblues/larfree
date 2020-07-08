@@ -3,15 +3,13 @@
 
 namespace Larfree\Models;
 
-use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Larfree\Models\Api;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Laravel\Passport\HasApiTokens;
 
 /**
  * 带了laravel默认的auth验证的
@@ -42,7 +40,6 @@ class ApiUser extends Api implements
     protected $hidden = [
         'password', 'remember_token',
     ];
-
 
 
 }

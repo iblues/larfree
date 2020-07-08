@@ -1,15 +1,17 @@
 <?php
 
 namespace Larfree\Exceptions;
+
 use Exception;
 
 class SchemasException extends Exception
 {
-    protected $data=[];
+    protected $data = [];
+
 //
-    public function __construct($message = "",$data=[], $code = 500,Throwable $previous = null)
+    public function __construct($message = "", $data = [], $code = 500, Throwable $previous = null)
     {
-        $this->data=$data;
+        $this->data = $data;
         parent::__construct($message, $code, $previous);
     }
 

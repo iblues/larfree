@@ -12,7 +12,7 @@ namespace Larfree\Models;
 use App\Models\Common\CommonPay;
 use Illuminate\Database\Eloquent\Model;
 
-abstract  class Order extends Api
+abstract class Order extends Api
 {
 
     /**
@@ -22,15 +22,15 @@ abstract  class Order extends Api
      */
     abstract public function complete($id);
 
-    public function addPay(Model $model,$price,$uid){
-
-        $Pay = new CommonPay();
-        $Pay->model = get_class($model);
+    public function addPay(Model $model, $price, $uid)
+    {
+        $Pay           = new CommonPay();
+        $Pay->model    = get_class($model);
         $Pay->order_id = $model->id;
-        $Pay->user_id = $uid;
-        $Pay->title = '订单id'.$model->id;
-        $Pay->price = $price;
-        $Pay->status = 0;
+        $Pay->user_id  = $uid;
+        $Pay->title    = '订单id'.$model->id;
+        $Pay->price    = $price;
+        $Pay->status   = 0;
         $Pay->save();
         return $Pay;
 

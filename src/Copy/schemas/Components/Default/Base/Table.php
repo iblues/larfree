@@ -1,9 +1,10 @@
 <?php
+
 return function ($data, $component, $target) {
     $def = [
         'fields' => [],
         'chart' => [
-            'title'=>'统计模块',
+            'title' => '统计模块',
             'component' => [
                 'chart.line.new' => [
                     'title' => '标题1'
@@ -44,8 +45,8 @@ return function ($data, $component, $target) {
         ],
         'html' => ''
     ];
-    if(!is_array($data)){
-        apiError($target.'不存在',null,404);
+    if (!is_array($data)) {
+        apiError($target.'不存在', null, 404);
     }
     return array_merges($def, $data);
 };

@@ -13,9 +13,9 @@ class ApiResponse extends JsonResponse
      * Constructor.
      *
      * @param  mixed  $data
-     * @param  int    $status
+     * @param  int  $status
      * @param  array  $headers
-     * @param  int    $options
+     * @param  int  $options
      */
     public function __construct($data = null, $status = 200, $headers = [], $options = 0)
     {

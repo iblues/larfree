@@ -38,9 +38,9 @@ abstract class LarfreeRepository extends BaseRepository
 
     /**
      * 筛选字段
-     * @author Blues
-     * @param string $field
+     * @param  string  $field
      * @return $this
+     * @author Blues
      */
     public function field($field = '')
     {
@@ -53,30 +53,31 @@ abstract class LarfreeRepository extends BaseRepository
      *
      * 同一个字段及多个字段组合查询
      * 示例: http://laravel.dev/api/min?id=1&search_id=2&gt_key=2&egt_key=2&lt_key=2&elt_key=3
-     * @param array $query
+     * @param  array  $query
      * @return array
      */
     public function parseRequest($query = [])
     {
-
         $advFieldSearch = $this->advFieldSearch;
-        $model = $this->model;
+        $model          = $this->model;
 
         if ($advFieldSearch === false) {
             return $this;
         }
-        if (!$query)
+        if (!$query) {
             return $this;
+        }
 
 
         foreach ($query as $key => $val) {
             //高级搜索模式
-            if (Arr::get($advFieldSearch, 0, '*') == '*' || in_array($key, $advFieldSearch))
+            if (Arr::get($advFieldSearch, 0, '*') == '*' || in_array($key, $advFieldSearch)) {
                 $model->AdvWhere($key, $val);
+            }
         }
 
         if (isset($query['@sort'])) {
-            if($query['@sort']) {
+            if ($query['@sort']) {
                 $sort = explode('.', @$query['@sort']);
                 $model->orderBy($sort[0], $sort[1]);
             }
@@ -87,53 +88,53 @@ abstract class LarfreeRepository extends BaseRepository
         $this->model = $model;
 
         return $this;
-
     }
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      * @deprecated
      */
-    static function new(){
+    static function new()
+    {
         return app(static::class);
     }
 
     /**
-     * @author Blues
      * @return $this
+     * @author Blues
      */
-    static function make(){
+    static function make()
+    {
         return app(static::class);
     }
 
     /**
      * 基于时间的线状统计
-     * @author Blues
      * @param $query
-     * @param array $y 配置中的y结构 参考chart.line
-     * @param string $xField
-     * @param string $xFormat
+     * @param  array  $y  配置中的y结构 参考chart.line
+     * @param  string  $xField
+     * @param  string  $xFormat
      * @return array
+     * @author Blues
      */
-    function TimeChart( array $y, string $xField = 'create_at', $xFormat = '%Y-%m-%d %H:%M:%S')
+    function TimeChart(array $y, string $xField = 'create_at', $xFormat = '%Y-%m-%d %H:%M:%S')
     {
 //        $ySql="({$ySql})";//方便实现字段之见的 操作
 //        $query2 = clone $query;
 
-        $field = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
-        $model = $this->model->groupBy('x')->orderBy("x", "asc");
+        $field     = [DB::raw("FROM_UNIXTIME(UNIX_TIMESTAMP({$xField}),'{$xFormat}') as x")];
+        $model     = $this->model->groupBy('x')->orderBy("x", "asc");
         $countData = [];
 
         foreach ($y as $k => $q) {
-            $queryField = $field;
-            $newQuery = clone $model;
-            $queryField[] = DB::raw('(' . $q['sql']['field'] . ') as y');
-            $count = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
+            $queryField   = $field;
+            $newQuery     = clone $model;
+            $queryField[] = DB::raw('('.$q['sql']['field'].') as y');
+            $count        = $newQuery->select($queryField)->whereRaw($q['sql']['where'])->get();
             foreach ($count as $v) {
                 $countData[$v->x][$k] = $v->y;
             }
-
         }
         $this->resetModel();
 //        $date = array_keys($countData);
@@ -142,6 +143,5 @@ abstract class LarfreeRepository extends BaseRepository
 //        $maxDate = date('Y-m-d');
 
         return $countData;
-
     }
 }

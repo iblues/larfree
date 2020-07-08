@@ -7,6 +7,7 @@
  */
 
 namespace Larfree\Components\Field;
+
 use Larfree\Components\Components;
 
 class Timestamp extends Components
@@ -16,9 +17,10 @@ class Timestamp extends Components
      * @param $config
      * @param $array
      */
-    static public function getAttribute($config,&$array){
-        $value  = $array[$config['key']];
-        $time = strtotime($value);
-        $array[$config['key'] . '_timestamp'] = $time ? $time: 0;
+    static public function getAttribute($config, &$array)
+    {
+        $value                              = $array[$config['key']];
+        $time                               = strtotime($value);
+        $array[$config['key'].'_timestamp'] = $time ? $time : 0;
     }
 }

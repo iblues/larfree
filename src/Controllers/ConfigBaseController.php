@@ -6,12 +6,12 @@
 
 namespace Larfree\Controllers;
 
-use Iblues\AnnotationTestUnit\Annotation as ATU;
-use Larfree\Repositories\SystemConfigRepository;
-use Illuminate\Http\Request;
 use ApiController as Controller;
 use App\Models\System\SystemConfig;
+use Iblues\AnnotationTestUnit\Annotation as ATU;
+use Illuminate\Http\Request;
 use Larfree\Libs\Schemas;
+use Larfree\Repositories\SystemConfigRepository;
 use Larfree\Services\SystemConfigService;
 
 class ConfigBaseController extends Controller
@@ -33,22 +33,22 @@ class ConfigBaseController extends Controller
     /**
      * 获取配置 按 分类
      * @param $cat
-     * @param Request $request
+     * @param  Request  $request
      * @return mixed
      * @ATU\Api(
      *     path={"plane","home"},
      * )
      * @author Blues
      */
-    public function show($cat, Request $request, $key='')
+    public function show($cat, Request $request, $key = '')
     {
         return $this->service->getAllByCat($request->cat, $key);
     }
 
     /**
      * 更新
-     * @param \Illuminate\Http\Request $request
-     * @param string $cat 分类名
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $cat  分类名
      * @return mixed
      * @ATU\Api(
      *     path="plane",

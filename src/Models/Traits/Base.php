@@ -2,7 +2,6 @@
 
 namespace Larfree\Models\Traits;
 
-use Doctrine\Common\Annotations\Annotation\Target;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Larfree\Events\ModelSaved;
@@ -47,7 +46,7 @@ trait Base
             //自动提取modelName
             $this->_modelName = substr(get_class($this), strpos(get_class($this), '\Models\\') + 8);
             $this->_modelName = str_ireplace('\\', '.', $this->_modelName);
-            $tmp = explode('.', $this->_modelName);
+            $tmp              = explode('.', $this->_modelName);
             if (@$tmp[1]) {
                 $this->_modelName = $tmp[0].'.'.substr($tmp[1], strlen($tmp[0]));
             }
@@ -56,8 +55,8 @@ trait Base
         //静态缓存此变量,避免多次读取
         static $schemasCache;
         if (!isset($schemasCache[$this->_modelName])) {
-            $schemas = Schemas::getSchemas($this->_modelName);
-            $schemasCache[$this->_modelName]  = $schemas;
+            $schemas                         = Schemas::getSchemas($this->_modelName);
+            $schemasCache[$this->_modelName] = $schemas;
         } else {
             $schemas = $schemasCache[$this->_modelName];
         }
@@ -71,7 +70,7 @@ trait Base
 
 
         //保存相关事件
-        $this->dispatchesEvents['saved'] = ModelSaved::class;
+        $this->dispatchesEvents['saved']  = ModelSaved::class;
         $this->dispatchesEvents['saving'] = ModelSaving::class;
 
         //检查关联关系和config中的是不是有冲突. 如果有冲突.需要在method中加上@override.表示确实是要覆盖
@@ -96,7 +95,7 @@ trait Base
                 if (!isset($schema['model'])) {
                     return;
                 }
-                $class = new \ReflectionClass($this);
+                $class  = new \ReflectionClass($this);
                 $method = $class->getMethod($as);
                 if (!stripos($method->getDocComment(), '@override')) {
                     $lang = static ::class." 配置的关联关系 <{$as}> 被覆盖了,如果确实要覆盖,请在对应方法注释中加上@override \n";
@@ -128,14 +127,14 @@ trait Base
         //排除appends字段
         if ($this->appends) {
             $this->appends = array_intersect($field, $this->appends);
-            $field = array_diff($field, $this->appends); //排除append的字段.
+            $field         = array_diff($field, $this->appends); //排除append的字段.
         }
 
         //排除link
         if ($field) {
             $this->_doLink = array_intersect($this->_link, $field);
-            $link = array_flip($this->_doLink);
-            $field = array_merge($field, $link);//为了处理用了as的字段
+            $link          = array_flip($this->_doLink);
+            $field         = array_merge($field, $link);//为了处理用了as的字段
         }
 
         foreach ($field as $f) {
@@ -302,7 +301,7 @@ trait Base
         if (isset($schemas['link'])) {
             $link = $schemas['link'];
             //默认as是key本身
-            $as = $schemas['link']['as'] ?? $key;
+            $as                = $schemas['link']['as'] ?? $key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
             $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断
             //不初始化
@@ -328,11 +327,11 @@ trait Base
      */
     protected function callLink($field)
     {
-        $link = array_flip($this->_link);
-        $field = $link[$field];
+        $link   = array_flip($this->_link);
+        $field  = $link[$field];
         $schema = $this->_schemas[$field];
         if (isset($schema['link']) && isset($schema['link']['model'])) {
-            $parm = $schema['link']['model'];
+            $parm   = $schema['link']['model'];
             $method = $parm[0];
 
             if ($method == 'belongsToMany') {
@@ -344,7 +343,7 @@ trait Base
                     }
                     //中间表名
                     $tableName = $this->getLinkTableName(get_class($this), $parm[1]);
-                    $parm[2] = $tableName;
+                    $parm[2]   = $tableName;
                 }
             }
 
@@ -416,7 +415,7 @@ trait Base
     {
         //常用的就不用去找了
         $blackType = ['text', 'number'];
-        $type = Arr::get($config, 'type', 'text');
+        $type      = Arr::get($config, 'type', 'text');
 
 
         //规范返回类型
@@ -494,7 +493,7 @@ trait Base
     {
         $model = parent::newInstance($attributes, $exists);
         //解决get获取模型实例时丢失动态添加的appends
-        $field = $this->getArrayableAppends();
+        $field          = $this->getArrayableAppends();
         $model->appends = $field;
         return $model;
     }

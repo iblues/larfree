@@ -19,19 +19,20 @@ class PayController extends ApisController
 
     /**
      * 获取支付相关信息
-     * @param int $id
-     * @param Request $request
+     * @param  int  $id
+     * @param  Request  $request
      * @return mixed
      */
-    public function show($id,Request $request){
+    public function show($id, Request $request)
+    {
         $type = $request->type;
-        $pay = $this->model->find($id);
+        $pay  = $this->model->find($id);
         switch ($type) {
             case 'wechatpay':
-            //当前只有微信支付
+                //当前只有微信支付
             default :
                 $payment = new WechatPay();
-                $code = $payment->pay($pay);
+                $code    = $payment->pay($pay);
                 break;
         }
         return $code;
@@ -42,11 +43,12 @@ class PayController extends ApisController
      * 就把订单状态改为已支付
      * 并同时把purchasegoods表中的添加的数据状态改为已支付
      */
-    public function notify(Request $request){
+    public function notify(Request $request)
+    {
         $type = $request->type;
         switch ($type) {
             case 'wechatpay':
-                $pay = new WechatPay();
+                $pay    = new WechatPay();
                 $return = $pay->notify($request);
                 break;
         }
@@ -55,7 +57,12 @@ class PayController extends ApisController
 
 
     //前台禁止修改和编辑
-    public function store(Request $request){}
-    public function update(Request $request, $id){}
+    public function store(Request $request)
+    {
+    }
+
+    public function update(Request $request, $id)
+    {
+    }
 
 }

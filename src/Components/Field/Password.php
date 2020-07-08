@@ -7,6 +7,7 @@
  */
 
 namespace Larfree\Components\Field;
+
 use Larfree\Components\Components;
 
 class Password extends Components

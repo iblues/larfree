@@ -22,20 +22,20 @@ class SchemaService implements BaseServiceInterface
         $dir = $this->getDirList();
     }
 
-    protected function getDirList($path = '',$preName='')
+    protected function getDirList($path = '', $preName = '')
     {
         if (!is_dir($path)) {
             return false;
         }
-        $arr = array();
+        $arr  = array();
         $data = scandir($path);
         foreach ($data as $value) {
             if ($value[0] != '.') {
                 if (is_dir($path.'/'.$value)) {
-                    $arr[$value] = $this->getDirList($path.'/'.$value,$value);
+                    $arr[$value] = $this->getDirList($path.'/'.$value, $value);
                 } else {
-                    $fileName = str_ireplace('.php', '', $value);
-                    $arr[$preName.$fileName]['name'] = $preName.$fileName;
+                    $fileName                           = str_ireplace('.php', '', $value);
+                    $arr[$preName.$fileName]['name']    = $preName.$fileName;
                     $arr[$preName.$fileName]['content'] = include $path.'/'.$value;
                 }
             }

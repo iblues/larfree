@@ -18,21 +18,21 @@ class ComponentSchemas extends Schemas
     {
         $target = strtolower($target);
         //如果是配置模块 , 需要单独处理
-        if(strtolower($name) == 'system.config'){
+        if (strtolower($name) == 'system.config') {
             $file = null;
             $name = 'config.'.$target;
-        }else{
-            $file = schemas_path('Components') . '/' . self::fomartName($name) . '.php';
+        } else {
+            $file = schemas_path('Components').'/'.self::fomartName($name).'.php';
         }
 
 
         $GlobalSchemas = self::getSchemas($name);//主结构
         if (file_exists($file)) {
-            $Schemas = include $file;
-            $Schemas = @$Schemas['detail'][$target];
-            $field = self::formatFields(@$Schemas['fields']);
-            $search = self::formatFields(@$Schemas['search']);
-            $advSearch = self::formatFields(@$Schemas['adv_search']);
+            $Schemas      = include $file;
+            $Schemas      = @$Schemas['detail'][$target];
+            $field        = self::formatFields(@$Schemas['fields']);
+            $search       = self::formatFields(@$Schemas['search']);
+            $advSearch    = self::formatFields(@$Schemas['adv_search']);
             $filter_field = [];
             //合并结构
             if ($field) {
@@ -47,7 +47,7 @@ class ComponentSchemas extends Schemas
                         //是分组的,循环一次,合并结构
                         foreach ($f['group_children'] as $group_key => $group_field) {
                             if (is_array($group_field)) {
-                                $filter_field[$group_key] = '';
+                                $filter_field[$group_key]  = '';
                                 $GlobalSchemas[$group_key] = $group_field + Arr::get($GlobalSchemas, $group_key, []);
                             } else {
                                 $filter_field[$group_field] = '';
@@ -63,10 +63,11 @@ class ComponentSchemas extends Schemas
                     if (isset($val['group_children'])) {
                         $group_children = [];
                         foreach ($val['group_children'] as $k => $v) {
-                            if (!is_array($v))
+                            if (!is_array($v)) {
                                 $group_children[$v] = $filter_field[$v];
-                            else
+                            } else {
                                 $group_children[$k] = $filter_field[$k];
+                            }
                         }
                         $val['group_children'] = $group_children;
                     } else {
@@ -84,17 +85,18 @@ class ComponentSchemas extends Schemas
                     }
                 }
                 $search = array_intersect_key($GlobalSchemas, $search);
-                if ($advSearch)
+                if ($advSearch) {
                     $advSearch = array_intersect_key($GlobalSchemas, $advSearch);
+                }
                 $Schemas['search'] = $search;
-                if ($advSearch)
+                if ($advSearch) {
                     $Schemas['adv_search'] = $advSearch;
+                }
             }
             $Schemas = array_filter($Schemas);
             return $Schemas;
-
         } else {
-            $field = self::getSchemas($name);
+            $field   = self::getSchemas($name);
             $Schemas = ['fields' => $field];//主结构
         }
         if (!$field) {
@@ -110,13 +112,14 @@ class ComponentSchemas extends Schemas
      */
     static public function getComponetDefConfig($path, $config, $target = '')
     {
-        $name = str_replace('.', '/', $path);
-        $cpath = schemas_path() . '/Components/Default/' . self::fomartName($name) . '.php';
+        $name  = str_replace('.', '/', $path);
+        $cpath = schemas_path().'/Components/Default/'.self::fomartName($name).'.php';
         if (file_exists($cpath)) {
-            $func = include schemas_path() . '/Components/Default/' . self::fomartName($name) . '.php';
+            $func = include schemas_path().'/Components/Default/'.self::fomartName($name).'.php';
             return $func($config, $path, $target);
-        } else
+        } else {
             return [];
+        }
     }
 
     /**
@@ -125,7 +128,6 @@ class ComponentSchemas extends Schemas
      */
     static public function getComponentConfig($schemas, $action)
     {
-
         $target = explode('.', $action);
         //根据chart.line.chart  chart.line  chart 3种不同模式,进行解析
 
@@ -144,7 +146,6 @@ class ComponentSchemas extends Schemas
                 break;
             default:
                 throw new \Exception('参数格式错误');
-
         }
         return $config;
     }

@@ -37,9 +37,9 @@ class LarfreeMake extends Command
      */
     public function handle()
     {
-        $arguments = $this->arguments();
-        $table = $arguments['table'];
-        $mode = $arguments['mode'];
+        $arguments  = $this->arguments();
+        $table      = $arguments['table'];
+        $mode       = $arguments['mode'];
         $modeChoice = [
             'cancel',
             'all:(Schemas,Model,Service,Router,Controller,AdminNav)',
@@ -52,7 +52,7 @@ class LarfreeMake extends Command
 
         if ($mode == 'false' || !key_exists($mode, $modeChoice)) {
             $choice = $this->choice('选择哪种生成模式?', $modeChoice, 0);
-            $mode = @array_flip($modeChoice)[$choice];
+            $mode   = @array_flip($modeChoice)[$choice];
         }
 
         $make = new Make($table);
@@ -93,7 +93,6 @@ class LarfreeMake extends Command
                 $make->makeAdminMenu();
                 break;
         }
-
 //        $make = new Make($table, $controller, $model);
 
 

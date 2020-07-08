@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 
-use Larfree\Models\Api;
 use Tests\TestCase;
 
 
-class ComponentApiTest extends TestCase {
+class ComponentApiTest extends TestCase
+{
     /**
      * 用于测试高级url的功能.
      * 详情见doc/url.md
@@ -17,12 +17,13 @@ class ComponentApiTest extends TestCase {
     /**
      * name|id$ = 20
      */
-    public function testApi(){
+    public function testApi()
+    {
         $dir = self::dirToArray(base_path('/config/Schemas/Schemas'));
-        foreach ($dir as $key=>$value){
-            foreach ($value as $v){
-                $name = explode('.',$v);
-                $url = '/api/admin/system/component/'.strtolower($key).'.'.lcfirst($name[0]).'/base.table';
+        foreach ($dir as $key => $value) {
+            foreach ($value as $v) {
+                $name     = explode('.', $v);
+                $url      = '/api/admin/system/component/'.strtolower($key).'.'.lcfirst($name[0]).'/base.table';
                 $response = $this->json('GET', $url);
                 dump($url);
                 $response
@@ -34,15 +35,15 @@ class ComponentApiTest extends TestCase {
         }
     }
 
-    static function dirToArray($dir) {
+    static function dirToArray($dir)
+    {
         $result = array();
-        $cdir = scandir($dir);
+        $cdir   = scandir($dir);
         foreach ($cdir as $key => $value) {
-            if (!in_array($value,array(".",".."))) {
-                if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
-                    $result[$value] = self::dirToArray($dir . DIRECTORY_SEPARATOR . $value);
-                }
-                else {
+            if (!in_array($value, array(".", ".."))) {
+                if (is_dir($dir.DIRECTORY_SEPARATOR.$value)) {
+                    $result[$value] = self::dirToArray($dir.DIRECTORY_SEPARATOR.$value);
+                } else {
                     $result[] = $value;
                 }
             }

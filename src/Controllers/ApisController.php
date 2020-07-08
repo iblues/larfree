@@ -6,20 +6,19 @@
 namespace Larfree\Controllers;
 
 
+use Auth;
+use Crypt;
 use Iblues\AnnotationTestUnit\Annotation as ATU;
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Auth;
 use Illuminate\Validation\Rule;
 use Larfree\Libs\ApiSchemas;
 use Larfree\Resources\ApiResource;
-use Illuminate\Support\Facades\DB;
-use Crypt;
 use Larfree\Services\SimpleLarfreeService;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -41,9 +40,9 @@ class ApisController extends BaseController
 
     public function __construct()
     {
-        $name = explode('\\', get_class($this));
+        $name            = explode('\\', get_class($this));
         $this->modelName = substr(array_pop($name), 0, -10);
-        $this->modelName = array_pop($name) . '.' . $this->modelName;
+        $this->modelName = array_pop($name).'.'.$this->modelName;
     }
 
     /**
@@ -53,8 +52,9 @@ class ApisController extends BaseController
     protected function method()
     {
         $action = \Route::current();
-        if (!$action)
+        if (!$action) {
             return '';
+        }
         $action = $action->getActionName();
         list($class, $method) = explode('@', $action);
         return $method;
@@ -62,7 +62,7 @@ class ApisController extends BaseController
 
     /**
      * 分页列表
-     * @param Request $request
+     * @param  Request  $request
      * @return mixed
      * @throws \Exception
      * @ATU\Api(
@@ -72,12 +72,13 @@ class ApisController extends BaseController
      */
     public function index(Request $request)
     {
-        return $this->service->link()->paginate($request->toArray(), $request->get('@columns'), $request->get('pageSize'));
+        return $this->service->link()->paginate($request->toArray(), $request->get('@columns'),
+            $request->get('pageSize'));
     }
 
     /**
      * 添加
-     * @param Request $request
+     * @param  Request  $request
      * @return mixed
      * @throws \Exception
      * @author Blues
@@ -91,7 +92,7 @@ class ApisController extends BaseController
     /**
      * 详情
      * @param $id
-     * @param Request $request
+     * @param  Request  $request
      * @return \Larfree\Services\model
      * @throws \Exception
      * @author Blues
@@ -107,7 +108,7 @@ class ApisController extends BaseController
 
     /**
      * 更新
-     * @param Request $request
+     * @param  Request  $request
      * @param $id
      * @return mixed
      * @throws \Exception
@@ -122,7 +123,7 @@ class ApisController extends BaseController
     /**
      * 删除
      * @param $id
-     * @param Request $request
+     * @param  Request  $request
      * @return string|void
      * @throws \Exception
      * @author Blues
@@ -135,7 +136,7 @@ class ApisController extends BaseController
 
     /**
      * 设置msg
-     * @param string $title
+     * @param  string  $title
      * @author Blues
      */
     protected function setMsg(string $title)
@@ -148,22 +149,22 @@ class ApisController extends BaseController
      * 获取验证规则. put的时候 会自动加上sometimes
      * 接口文档那边要用 所以暂时设置为public
      * @param $method 函数名
-     * @param string $httpMethod http方法
-     * @param Request $request
+     * @param  string  $httpMethod  http方法
+     * @param  Request  $request
      * @return array
      * @throws \Exception
      * @author Blues
      */
     public function getValidation($method, $httpMethod = 'POST', $param)
     {
-        $ext = isset($this->in[$method]) ? $this->in[$method] : ['*'];
+        $ext      = isset($this->in[$method]) ? $this->in[$method] : ['*'];
         $validate = ApiSchemas::getValidate($this->modelName, 'in', $ext);
         //PUT修改的,不一定是所有字段都有,所以自动加上sometimes
         array_walk($validate['rules'], function (&$value) use ($param, $httpMethod, $method) {
             //方法是Put或者方法名中包含update的
             if ($httpMethod == 'PUT' || stripos($method, 'update') !== false) {
                 if (stripos($value, 'sometimes') === false) {
-                    $value = 'sometimes|' . $value;
+                    $value = 'sometimes|'.$value;
                 }
             }
 
@@ -211,14 +212,14 @@ class ApisController extends BaseController
      * $in的定义
      * 接口文档可能会用,所以public
      * @param $method
-     * @param string $group
+     * @param  string  $group
      * @return array
      * @throws \Exception
      * @author Blues
      */
     public function getParamDefine($method, $group = 'in')
     {
-        $ext = isset($this->in[$method]) ? $this->in[$method] : ['*'];
+        $ext      = isset($this->in[$method]) ? $this->in[$method] : ['*'];
         $validate = ApiSchemas::getApiAllowField($this->modelName, $group, $method, $ext);
         return $validate;
     }
@@ -255,7 +256,6 @@ class ApisController extends BaseController
      */
     public function callAction($method, $parameters)
     {
-
         /**
          * 进行输入参数的验证和过滤
          * //当参数存在,并且他是Request 而且不是Get. get就不做参数验证了
@@ -296,7 +296,6 @@ class ApisController extends BaseController
         }
         return (new ApiResource($return))
             ->additional(['msg' => $this->msg]);
-
     }
 
 }
