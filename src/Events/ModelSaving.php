@@ -31,7 +31,7 @@ class ModelSaving
         }
 
         $data->beforeSave($data);
-        foreach ($data->toArray() as $key =>$val) {
+        foreach ($data->getAttributes() as $key =>$val) {
             if(!in_array($key,$columns)){
                 $data->setTmpSave($key,$data->$key);
                 unset($data->$key);
