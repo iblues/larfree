@@ -39,16 +39,15 @@ class RelationGenerator
      * @author Blues
      *
      */
-    function generator()
+    function generator($echo = 0)
     {
-        $link = array_flip($this->model->getLink());
-        dump($link);
+        $link    = array_flip($this->model->getLink());
         $schemas = $this->model->getSchemas();
-        foreach ($link as $method) {
-            if (!method_exists($this->model, $method)) {
-                if (isset($link[$method])) {
-                    $key = $link[$method];
-                    $this->add2File($schemas[$key], $method);
+        foreach ($link as $key => $method) {
+            if (!method_exists($this->model, $key)) {
+                if (isset($link[$key])) {
+                    $filedName = $link[$key];
+                    $this->add2File($schemas[$filedName], $key, $echo);
                 }
 //
             }
@@ -57,17 +56,22 @@ class RelationGenerator
 
     /**
      * 生成到文件
+     * @param $link
      * @param $method
+     * @param $echo
      * @author Blues
-     *
      */
-    protected function add2File($link, $method)
+    protected function add2File($link, $method, $echo = 0)
     {
         $relation    = ucfirst($link['link']['model'][0]);
+        $model    = ucfirst($link['link']['model'][1]);
+        $json = json_encode($link['link']);
         $content     = <<<FILE
 
     /**
-     * {$link['key']} {$link['name']} 关联关系
+     * {$link['name']} {$link['key']} 关联关系
+     * {$json}
+     * @link \\{$model}
      * @return \Illuminate\Database\Eloquent\Relations\\{$relation}
      * @author Larfree
      * @override
@@ -82,7 +86,12 @@ FILE;
         $fileContent = substr($fileContent, 0, strripos($fileContent, '}'));
         $fileContent = $fileContent.$content."\n}";
 //        dump($fileContent);
-        file_put_contents($this->path, $fileContent);
+        $flag = file_put_contents($this->path, $fileContent);
+        if ($echo && $flag) {
+            echo "file://".$this->path." add {$method}  Success!\r\n";
+        }
+        dd();
+        return true;
     }
 
 
