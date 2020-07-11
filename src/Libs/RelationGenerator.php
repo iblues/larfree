@@ -30,8 +30,8 @@ class RelationGenerator
     function __construct(Api $model)
     {
         $this->model = $model;
-        $reflector = new ReflectionClass($this->model);
-        $this->path = $reflector->getFileName();
+        $reflector   = new ReflectionClass($this->model);
+        $this->path  = $reflector->getFileName();
     }
 
     /**
@@ -46,9 +46,9 @@ class RelationGenerator
         $schemas = $this->model->getSchemas();
         foreach ($link as $method) {
             if (!method_exists($this->model, $method)) {
-                if(isset($link[$method])){
+                if (isset($link[$method])) {
                     $key = $link[$method];
-                    $this->add2File($schemas[$key],$method);
+                    $this->add2File($schemas[$key], $method);
                 }
 //
             }
@@ -61,11 +61,10 @@ class RelationGenerator
      * @author Blues
      *
      */
-    protected function add2File($link,$method)
+    protected function add2File($link, $method)
     {
-
-        $relation = ucfirst($link['link']['model'][0]);
-        $content =<<<FILE
+        $relation    = ucfirst($link['link']['model'][0]);
+        $content     = <<<FILE
 
     /**
      * {$link['key']} {$link['name']} 关联关系
@@ -80,13 +79,11 @@ class RelationGenerator
 FILE;
         $fileContent = file_get_contents($this->path);
 
-        $fileContent = substr($fileContent,0,strripos($fileContent,'}'));
+        $fileContent = substr($fileContent, 0, strripos($fileContent, '}'));
         $fileContent = $fileContent.$content."\n}";
 //        dump($fileContent);
-        file_put_contents($this->path,$fileContent);
-
+        file_put_contents($this->path, $fileContent);
     }
-
 
 
 }
