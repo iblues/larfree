@@ -17,6 +17,7 @@ use Larfree\Console\Commands\LarfreeInstall;
 use Larfree\Console\Commands\LarfreeMake;
 use Larfree\Console\Commands\LarfreeMigrate;
 use Illuminate\Support\Facades\Response;
+use Larfree\Console\Commands\LarfreeModel;
 use Larfree\Resources\ApiResource;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
@@ -95,6 +96,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 LarfreeInstall::class,
                 LarfreeMigrate::class,
                 LarfreeDictionary::class,
+                LarfreeModel::class,
             ]);
         }
 

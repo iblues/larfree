@@ -500,6 +500,14 @@ trait Base
 
 
     /**
+     * @author Blues
+     * 返回model中的link
+     */
+    public function getLink(){
+        return $this->_link;
+    }
+
+    /**
      * 保存和添加的回调
      * @param $data
      */
