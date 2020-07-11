@@ -90,7 +90,6 @@ FILE;
         if ($echo && $flag) {
             echo "file://".$this->path." add {$method}  Success!\r\n";
         }
-        dd();
         return true;
     }
 
