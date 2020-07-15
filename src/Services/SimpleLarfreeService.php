@@ -125,7 +125,7 @@ class SimpleLarfreeService implements BaseServiceInterface
                 $row->setAttribute($key, $val);
             }
             $row->save();
-            return $row->link($this->link)->find($row->id);
+            return $row->linkMissing($this->link);
         } catch (\Exception $e) {
             \DB::rollBack();
             throw $e;
@@ -171,7 +171,7 @@ class SimpleLarfreeService implements BaseServiceInterface
                 apiError('保存失败', null, 500);
             }
             //返回带完整格式的
-            return $this->model->link($this->link)->find($id);
+            return $row->linkMissing($this->link);
         } catch (\Exception $e) {
             \DB::rollBack();
             throw $e;

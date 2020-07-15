@@ -161,7 +161,9 @@ trait Base
      */
     public function linkMissing($field = [])
     {
+        //还需要改进到collection中去;
         $model = $this;
+
         foreach ($this->_doLink as $k => $name) {
             if ($field && !in_array($name, $field)) {
                 continue;
@@ -303,7 +305,9 @@ trait Base
             //默认as是key本身
             $as                = $schemas['link']['as'] ?? $key;
             $this->_link[$key] = $as;//添加到link里面.否则无法识别
-            $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断
+            //  后续发现设置了 在loadMissing会有问题 而且新版本不需要设置就可以懒加载了
+//            $this->setRelation($as, $this->$as());//设置有关联关系. 方便后续用relationLoaded判断.
+
             //不初始化
             if (!isset($link['init']) || $link['init'] == true) {
                 $this->_doLink[$key] = $as;
@@ -503,7 +507,8 @@ trait Base
      * @author Blues
      * 返回model中的link
      */
-    public function getLink(){
+    public function getLink()
+    {
         return $this->_link;
     }
 
