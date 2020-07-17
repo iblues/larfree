@@ -22,7 +22,6 @@ class ApiFormat
 //        dd($request->headers);s
         $response = $next($request);
 
-
         if ($response instanceof BinaryFileResponse) {
             return $response;
         }
