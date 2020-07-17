@@ -35,8 +35,7 @@ class ApiResource extends Resource
             return $return = $return['data'];
         } else {
 //            $request = $this->getDoc($request);//自动文档
-
-            $data = parent::toArray($request);
+//            $data = parent::toArray($request);
             $data = $this->resource;
             //解决一个奇怪的问题,如果有data 整体会上提一层
             if (isset($data['data']) || @is_null($data['data'])) {
