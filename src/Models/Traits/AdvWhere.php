@@ -70,7 +70,7 @@ trait AdvWhere
 
         $eq_array = ['>', '>=', '<', '<='];
 
-        if (is_null($val) || $val!=='') {
+        if (is_null($val) || $val==='') {
             return $model;
         }
 
