@@ -3,6 +3,7 @@
 namespace Larfree\Middleware;
 
 use Closure;
+use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ApiFormat
@@ -19,9 +20,10 @@ class ApiFormat
         $request->headers->set('X-Requested-With', 'XMLHttpRequest');
         $request->headers->set('accept', 'application/json');
 
-//        dd($request->headers);s
+        /**
+         * @var $response Response
+         */
         $response = $next($request);
-
 
         if ($response instanceof BinaryFileResponse) {
             return $response;
@@ -33,35 +35,31 @@ class ApiFormat
         $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS, DELETE');
         $response->header('Access-Control-Allow-Credentials', 'false');
 
-        $content = $response->getOriginalContent();
-
+        //设置json返回中文
         if (method_exists($response, 'setEncodingOptions')) {
             $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
         }
 
-//dd($content);
         $json = json_decode($response->getContent(), true);
 
-        if (isset($json['code'])) {
+        //有code和status和msg可以认为已经格式化了
+        if (isset($json['code']) && isset($json['status']) && isset($json['msg'])) {
             $this->setHttpCode($json['code'], $response);
             $this->appCode($request, $response);
-
             return $response;
         }
-        //没数据的时候
-//        if( $content['message']=='Object of class Illuminate\Database\Eloquent\Builder could not be converted to string'){
-//            $content=[];
-//            $response->setStatusCode(200);
-//        }
+
+        //非ajax请求.
         if (!$request->ajax()) {
             return $response;
         }
+
         //200代码的才是正常返回
         $code = $response->getStatusCode() < 400 ? 1 : 0;
-
-        //对分页进行再处理
-        $page     = $this->FormatPage($content);
-        $response = $this->FormatJson($response, $content, $page, $code);
+        //获取原始内容
+        $content = $response->getOriginalContent();
+        //重新规整输出格式.
+        $response = $this->FormatJson($response, $content, $code);
         $this->appCode($request, $response);
         return $response;
     }
@@ -93,13 +91,10 @@ class ApiFormat
      * @param  int  $code
      * @return mixed
      */
-    protected function FormatJson($response, $content, $page, $code = 1)
+    protected function FormatJson($response, $content, $code = 1)
     {
         $StatusCode = $response->getStatusCode();
         $msg        = '';
-        //ios需要返回200才能解析
-//        if($StatusCode!=500)
-//            $response->setStatusCode(200);
 
         if ($StatusCode == 302) {
             return $response;
@@ -114,46 +109,39 @@ class ApiFormat
             $msg     = current(current($content));
             $content = $content;
         }
+        return $this->resource($response, $content, $code, $StatusCode, $msg);
+    }
 
-//        if($StatusCode==401)
-//            $code=-10;
-
+    /**
+     * 如果需要修改返回格式, 请重写此函数
+     * @param $response
+     * @param $content
+     * @param $code
+     * @param $status
+     * @param $msg
+     * @return mixed
+     * @author Blues
+     *
+     */
+    protected function resource($response, $content = null, $code = 200, $status = 1, $msg = '')
+    {
         //重新设置格式
         if (method_exists($response, 'setData')) {
             //如果是json响应
             return $response->setData([
                 'msg' => $msg,
-                'code' => $StatusCode,
+                'code' => $status,
                 'status' => $code,
                 'data' => $content,
-                'debug' => '',
             ]);
         } else {
             //视图类响应
             return $response->setContent([
-                'code' => $StatusCode,
+                'code' => $status,
                 'status' => $code,
                 'data' => $content,
-                'debug' => '',
+                'msg' => '',
             ]);
         }
-    }
-
-    /**
-     * 如果是分页类,重构下结果
-     * @param &$data
-     * @return array 分页数组
-     */
-    protected function FormatPage(&$data)
-    {
-        //不是分页类
-        if (!is_subclass_of($data, '\Illuminate\Pagination\AbstractPaginator')) {
-            return [];
-        }
-        $data = $data->toArray();
-        $page = $data;
-        $data = $data['data'];
-        unset($page['data']);
-        return $page;
     }
 }
