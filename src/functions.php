@@ -238,7 +238,7 @@ if (!function_exists('getThumb')) {
                     return $url.str_replace('//', '/', '/'.$filename);
                 } else {
                     return $url.str_replace('//', '/',
-                            '/'.$filename).'?x-oss-process=image/resize,l_'.$width.'&x-oss-process=image/crop,w_'.$width.',h_'.$height.',g_center';
+                            '/'.$filename).'?x-oss-process=image/resize,l_'.$width;
                 }
                 break;
             default:
