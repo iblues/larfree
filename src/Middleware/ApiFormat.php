@@ -125,23 +125,19 @@ class ApiFormat
      */
     protected function resource($response, $content = null, $code = 200, $status = 1, $msg = '')
     {
+        $return = [
+            'msg' => $msg,
+            'code' => $status,
+            'status' => $code,
+            'data' => $content,
+        ];
         //重新设置格式
         if (method_exists($response, 'setData')) {
             //如果是json响应
-            return $response->setData([
-                'msg' => $msg,
-                'code' => $status,
-                'status' => $code,
-                'data' => $content,
-            ]);
+            return $response->setData($return);
         } else {
             //视图类响应
-            return $response->setContent([
-                'code' => $status,
-                'status' => $code,
-                'data' => $content,
-                'msg' => '',
-            ]);
+            return $response->setContent($return);
         }
     }
 }
