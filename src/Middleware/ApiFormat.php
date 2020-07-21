@@ -64,6 +64,13 @@ class ApiFormat
         return $response;
     }
 
+    /**
+     * 特殊设备强制返回200
+     * @param $request
+     * @param $response
+     * @author Blues
+     *
+     */
     protected function appCode($request, $response)
     {
         if ($request->headers->get('device') == 'app' && $response->getStatusCode() < 500) {
@@ -71,6 +78,13 @@ class ApiFormat
         }
     }
 
+    /**
+     * 设置httpCode
+     * @param $code
+     * @param $response
+     * @author Blues
+     *
+     */
     protected function setHttpCode($code, $response)
     {
         if ($code > 10000) {
