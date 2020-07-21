@@ -41,8 +41,63 @@ class ApiFormat
 
         $this->setHttpCode(null,$response);
         $this->appCode($request,$response);
+        $code = $response->getStatusCode()<400?1:0;
 
-        return $response;
+        //重置特殊错误码
+        if($response->getStatusCode()>300) {
+            return $response = $this->FormatJson($response, $content, $code);
+        }else{
+            return $response;
+        }
+    }
+
+
+    /**
+     * 重置json格式
+     * @param $response
+     * @param $content
+     * @param int $code
+     * @return mixed
+     */
+    protected function FormatJson($response,$content,$code=1){
+        $StatusCode = $response->getStatusCode();
+        $msg = '';
+        if($StatusCode==302){
+            return $response;
+        }
+        if($StatusCode==422 && isset($content['errors'])){
+            $msg = current(current($content['errors']));
+            $content = $content['errors'];
+        }
+
+        //兼容不同版本的validate返回
+        if($StatusCode==422 && !$msg){
+            $msg = current(current($content));
+            $content = $content;
+        }
+
+//        if($StatusCode==401)
+//            $code=-10;
+
+        //重新设置格式
+        if(method_exists($response,'setData')) {
+            //如果是json响应
+            return $response->setData([
+                'msg'=>$msg,
+                'code' => $StatusCode,
+                'status' => $code,
+                'data' => $content,
+                'debug' => '',
+            ]);
+        }else{
+            //视图类响应
+            return $response->setContent([
+                'code' => $StatusCode,
+                'status' => $code,
+                'data' => $content,
+                'debug' => '',
+            ]);
+        }
     }
 
     /**
