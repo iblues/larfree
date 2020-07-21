@@ -32,7 +32,6 @@ class ApiFormat
         $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, OPTIONS, DELETE');
         $response->header('Access-Control-Allow-Credentials', 'false');
 
-        $content = $response->getOriginalContent();
 
         //设置中文不要转码
         if (method_exists($response, 'setEncodingOptions')) {
@@ -45,6 +44,7 @@ class ApiFormat
 
         //重置特殊错误码
         if($response->getStatusCode()>300) {
+            $content = $response->getOriginalContent();
             return $response = $this->FormatJson($response, $content, $code);
         }else{
             return $response;
