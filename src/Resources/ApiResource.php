@@ -4,7 +4,7 @@ namespace Larfree\Resources;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource as Resource;
 use Illuminate\Support\Arr;
 use Illuminate\Pagination\AbstractPaginator;
 
