@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Validation\Rule;
@@ -275,7 +275,7 @@ class ApisController extends BaseController
             return $return;
         }
         //如果已经有Resource 就不管了
-        if ($return instanceof Resource) {
+        if ($return instanceof JsonResource) {
             return $return;
         }
         if ($return instanceof BinaryFileResponse) {

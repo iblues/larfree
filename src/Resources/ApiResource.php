@@ -2,7 +2,7 @@
 
 namespace Larfree\Resources;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Support\Arr;
 
@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
  * Class ApiResource
  * @package Larfree\Resources
  */
-class ApiResource extends Resource
+class ApiResource extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
