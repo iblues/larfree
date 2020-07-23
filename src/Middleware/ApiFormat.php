@@ -43,7 +43,7 @@ class ApiFormat
         $json = json_decode($response->getContent(), true);
 
         //有code和status和msg可以认为已经格式化了
-        if (isset($json['code']) && isset($json['status']) && isset($json['msg'])) {
+        if (isset($json['code']) && isset($json['status'])) {
             $this->setHttpCode($json['code'], $response);
             $this->appCode($request, $response);
             return $response;
