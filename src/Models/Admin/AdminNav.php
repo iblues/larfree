@@ -38,6 +38,10 @@ class AdminNav extends Api
 
         $return = Event::dispatch('permission.filter_nav', ['nav' => $nav]);
         $nav    = $return[0] ?? $nav;
+        //如果还是没有任何菜单
+        if(!$nav){
+            return [];
+        }
         $nav    = $nav->toArray();
         if (!$tree) {
             return $nav;
