@@ -238,7 +238,8 @@ if (!function_exists('getThumb')) {
                     return $url.str_replace('//', '/', '/'.$filename);
                 } else {
                     return $url.str_replace('//', '/',
-                            '/'.$filename).'?x-oss-process=image/resize,l_'.$width;
+                            '/'.$filename).'?x-oss-process=image/resize,l_'.$width.'&';
+                    //todo 避免一些错误
                 }
                 break;
             default:
