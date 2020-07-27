@@ -18,6 +18,17 @@ class Api extends Model
     {
         return parent::resolveChildRouteBinding($childType, $value, $field);
     }
+
+    /**
+     * 为数组 / JSON 序列化准备日期。
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    protected function serializeDate(\DateTimeInterface $date)
+    {
+        return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
+    }
 // 日志相关
 //    protected $revisionEnabled = true; //是否开启日志记录
 //    protected $dontKeepRevisionOf = ['deleted_at', 'created_at', 'updated_at'];//这3个字段不写日志
