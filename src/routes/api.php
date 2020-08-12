@@ -48,13 +48,13 @@ Route::group(['middleware' => ['api'],'prefix' => 'api'],function () {
             Route::resource('/admin/nav',$path.'Admin\\NavController');
 
             //上传相关
-            Route::any('/upload/images',$path.'Common\\UploadController@images')->name('upload.images');
-            Route::any('/upload/files',$path.'Common\\UploadController@files')->name('upload.files');
+            Route::post('/upload/images',$path.'Common\\UploadController@images')->name('upload.images');
+            Route::post('/upload/files',$path.'Common\\UploadController@files')->name('upload.files');
 
             //配置接口
             Route::resource('config', $path.'System\ConfigController');
             //component获取
-            Route::any('/system/component/{key}/{action}', $path.'System\ComponentController@module');
+            Route::get('/system/component/{key}/{action}', $path.'System\ComponentController@module');
             //系统预定义的组建 end
 
         });
