@@ -108,13 +108,8 @@ if( !function_exists('getClassName')) {
 if( !function_exists('getLoginUserID')) {
     function getLoginUserID($uid = '')
     {
-        static $id;
         if ($uid) {
-            $id = $uid;
             Auth::loginUsingId($uid);
-        }
-        if ($id) {
-            return $id;
         } else {
             $loginid = \Auth()->id();
             if (!$loginid)
@@ -187,7 +182,7 @@ if( !function_exists('getThumb')) {
     {
         if (!$filename)
             return '';
-        $type = env('UPLOAD_TYPE', 'qiniu');
+        $type = env('UPLOAD_TYPE', 'oss');
         switch ($type) {
             case 'file':
                 return env('APP_URL') . '/' . $filename . "?imageView2/{$mode}/w/{$width}/h/{$height}";
