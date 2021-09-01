@@ -42,7 +42,7 @@ class LarfreeExport implements FromCollection, WithHeadings, WithMapping, Should
     {
         $row = [];
         foreach ($this->schema['fields'] as $field) {
-            $row[] = $data[$field['key']];
+            $row[] = Arr::get($data,$field['key']);
         }
         return $row;
     }
