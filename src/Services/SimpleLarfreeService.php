@@ -120,7 +120,10 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function addOne($data)
     {
         try {
-            $row = $this->model;
+            if(!$this->model instanceof Model){
+                $model = $this->model->getModel();
+            }
+            $row = $model->refresh();
             foreach ($data as $key => $val) {
                 $row->setAttribute($key, $val);
             }
