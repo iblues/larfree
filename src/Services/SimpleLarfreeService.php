@@ -123,7 +123,7 @@ class SimpleLarfreeService implements BaseServiceInterface
             if(!$this->model instanceof Model){
                 $model = $this->model->getModel();
             }
-            $row = $model->refresh();
+            $row = $this->model->refresh();
             foreach ($data as $key => $val) {
                 $row->setAttribute($key, $val);
             }
