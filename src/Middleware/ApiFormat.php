@@ -113,6 +113,12 @@ class ApiFormat
         if ($StatusCode == 302) {
             return $response;
         }
+
+        //强转数组
+        if(is_object($content)){
+            $content = json_decode(json_encode($content),true);
+        }
+
         if ($StatusCode == 422 && isset($content['errors'])) {
             $msg     = current(current($content['errors']));
             $content = $content['errors'];
