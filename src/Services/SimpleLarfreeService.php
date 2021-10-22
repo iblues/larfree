@@ -74,10 +74,9 @@ class SimpleLarfreeService implements BaseServiceInterface
 
             return $this->model->link($this->link)->parseRequest($request)->paginate($pageSize);
         } catch (\Exception $e) {
-            throw  $e;
+            throw $e;
         }
     }
-
 
     /**
      * 标准详情
@@ -108,7 +107,6 @@ class SimpleLarfreeService implements BaseServiceInterface
         }
     }
 
-
     /**
      * 标准新增
      * 通用接口在使用
@@ -120,10 +118,10 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function addOne($data)
     {
         try {
-            if(!$this->model instanceof Model){
+            if (!$this->model instanceof Model) {
                 $model = $this->model->getModel();
                 $row = new $model;
-            }else {
+            } else {
                 $row = new $this->model;
             }
             foreach ($data as $key => $val) {
@@ -152,15 +150,14 @@ class SimpleLarfreeService implements BaseServiceInterface
             //如果id为0 就取最新的一条.
             if ($id === 'latest') {
                 $row = $this->model->link($this->link)->latest()->first();
-                $id  = $row->getAttribute('id', 0);
+                $id = $row->getAttribute('id', 0);
             } elseif ($id === 'oldest') {
                 $row = $this->model->link($this->link)->oldest()->first();
-                $id  = $row->getAttribute('id', 0);
+                $id = $row->getAttribute('id', 0);
             }
             if ($id == 0) {
                 apiError('Not Found Record', null, 404);
             }
-
 
             //update不会触发一些函数. 用save代替
             $row = $this->model->link($this->link)->where('id', $id)->first();
@@ -195,20 +192,19 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function delete($id)
     {
         try {
-            return $this->model->where('id', $id)->delete();
+            $model = $this->model->getModel();
+            return $model->destroy($id);
         } catch (\Exception $e) {
             throw $e;
         }
     }
-
 
     /**
      * @return $this
      * @author Blues
      * @deprecated
      */
-    static function new()
-    {
+    function new () {
         return app(static::class);
     }
 
@@ -216,11 +212,10 @@ class SimpleLarfreeService implements BaseServiceInterface
      * @return $this
      * @author Blues
      */
-    static function make()
+    public static function make()
     {
         return app(static::class);
     }
-
 
     public function chart($chart, $request)
     {
@@ -245,15 +240,15 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function export($model, $module = 'export', $request = [])
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $list    = $this->model->link($this->link)->parseRequest($request)->limit(2000)->get();
+        $list = $this->model->link($this->link)->parseRequest($request)->limit(2000)->get();
         return Excel::download(new LarfreeExport($list, $schemas), 'users.xlsx');
 //        $file = (new FastExcel($list))->download('export.xlsx', function ($data) use ($schemas) {
-//            $excel = [];
-//            foreach ($schemas['component_fields'] as $schema) {
-//                $excel[$schema['name']] = $data[$schema['key']];
-//            }
-//            return $excel;
-//        });
+        //            $excel = [];
+        //            foreach ($schemas['component_fields'] as $schema) {
+        //                $excel[$schema['name']] = $data[$schema['key']];
+        //            }
+        //            return $excel;
+        //        });
         return $file;
     }
 
@@ -269,10 +264,10 @@ class SimpleLarfreeService implements BaseServiceInterface
     public function import($model, $module = 'import', $urlFile)
     {
         $schemas = ComponentSchemas::getComponentConfig($model, $module);
-        $client  = new Client();
+        $client = new Client();
         try {
-            $res      = $client->request('GET', $urlFile);
-            $fileName = 'tmp/'.time().'.'.substr($urlFile, strrpos($urlFile, '.') + 1);
+            $res = $client->request('GET', $urlFile);
+            $fileName = 'tmp/' . time() . '.' . substr($urlFile, strrpos($urlFile, '.') + 1);
             if (Storage::put($fileName, $res->getBody())) {
                 Excel::import(new LarfreeImport($schemas, $this->model->link($this->link)), $fileName);
             }
