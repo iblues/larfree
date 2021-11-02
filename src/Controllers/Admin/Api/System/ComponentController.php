@@ -7,8 +7,6 @@
 namespace Larfree\Controllers\Admin\Api\System;
 
 use ApiController as Controller;
-use App\Models\Component;
-use App\Models\System\SystemComponent;
 use Iblues\AnnotationTestUnit\Annotation as ATU;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -54,7 +52,6 @@ class ComponentController extends Controller
         $config = str_replace('{$COMPONENT_API}', str_ireplace('.', '/', $module), $config);
         $config = json_decode($config, true);
 
-
         //增加url和show的url,供后端使用
         if (@$config['fields']) {
             array_walk($config['fields'], [$this, 'linkToUrl']);
@@ -84,12 +81,14 @@ class ComponentController extends Controller
      */
     public function linkToUrl(&$value)
     {
+        if (!isset($value['show'])) {
+            $value['show'] = true;
+        }
         if (isset($value['group_children'])) {
             foreach ($value['group_children'] as $k => $v) {
                 $value['group_children'][$k] = $this->linkToUrl($v);
             }
         }
-
 
         //没有link的不用管了
         if (!isset($value['link'])) {
@@ -103,39 +102,38 @@ class ComponentController extends Controller
                 $model = substr($model[1], stripos($model[1], '\Models\\') + 8);
                 $model = explode('\\', $model);
                 if (@$model[1]) {
-                    $url  = humpToLine($model[0]).'/'.humpToLine(substr($model[1], strlen($model[0])));
-                    $show = humpToLine($model[0]).'.'.humpToLine(substr($model[1], strlen($model[0])));
+                    $url = humpToLine($model[0]) . '/' . humpToLine(substr($model[1], strlen($model[0])));
+                    $show = humpToLine($model[0]) . '.' . humpToLine(substr($model[1], strlen($model[0])));
                 } else {
-                    $url  = humpToLine($model[0]);
+                    $url = humpToLine($model[0]);
                     $show = humpToLine($model[0]);
                 }
 
                 // 这个是用于前端读取后端列表用的. 基本上是必填.
                 if (!isset($value['component_param']['api'])) {
-                    $value['link']['url']            = '/'.$url.'?pageSize=30'; //以后 逐步废弃
-                    $value['component_param']['api'] = '/'.$url.'?pageSize=30';  //代替link中的url
+                    $value['link']['url'] = '/' . $url . '?pageSize=30'; //以后 逐步废弃
+                    $value['component_param']['api'] = '/' . $url . '?pageSize=30'; //代替link中的url
                 }
 
                 // 用于前端调跳转到配置用.
                 if (!isset($value['component_param']['show'])) {
-                    $value['component_param']['show'] = 'edit/'.$show.'/{{id}}'; //代替link
-                    $value['link']['show']            = 'edit/'.$show.'/{{id}}'; //以后 逐步废弃
+                    $value['component_param']['show'] = 'edit/' . $show . '/{{id}}'; //代替link
+                    $value['link']['show'] = 'edit/' . $show . '/{{id}}'; //以后 逐步废弃
                 }
 
                 // 设置了select 但是没有设置name的. 先过渡下
                 if (isset($value['link']['select']) && !isset($value['component_param']['name'])) {
                     $value['component_param']['key'] = $value['link']['select'][0];
-                    $name                            = '';
+                    $name = '';
                     foreach ($value['link']['select'] as $k => $t) {
                         if ($k > 0) {
                             $name .= "{{{$t}}} ";
                         }
                     }
-                    $value['component_param']['name'] = $name;  //代替link中的url
+                    $value['component_param']['name'] = $name; //代替link中的url
                 }
             }
         }
-
 
         if (!isset($value['component_param']['api'])) {
             apiError("当link.model为空时,schemas.{$value['key']}.component_param.api必填");
@@ -143,6 +141,5 @@ class ComponentController extends Controller
 
         return $value;
     }
-
 
 }
